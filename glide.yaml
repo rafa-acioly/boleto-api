@@ -1,0 +1,5 @@
+package: bitbucket.org/mundipagg/boletoapi
+import:
+- package: github.com/PMoneda/dianadb
+  subpackages:
+  - compress
