@@ -90,3 +90,11 @@ func TestShouldFailWithAmountInCentsMinorThanOne(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestShouldReturnBankNumberIsValid(t *testing.T) {
+	var b BankNumber = 237
+
+	if b.IsBankNumberValid() == false {
+		t.Fail()
+	}
+}
