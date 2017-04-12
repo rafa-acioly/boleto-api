@@ -1,5 +1,6 @@
 {
     "BoletoRequest": {
+        "BankNumber": 1,
         "Authentication": {
             "Username": "client_id",
             "Password": "client_secret"
