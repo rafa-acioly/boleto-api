@@ -1,6 +1,6 @@
 package main
 
-import "fmt"
+import "bitbucket.org/mundipagg/boletoapi/api"
 
 // BB
 type bbObj struct {
@@ -104,5 +104,5 @@ type tituloSantander struct {
 }
 
 func main() {
-	fmt.Println("Hello BoletoApi")
+	api.InstallRestAPI()
 }
