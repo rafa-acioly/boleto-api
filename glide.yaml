@@ -1,5 +1,4 @@
 package: bitbucket.org/mundipagg/boletoapi
 import:
-- package: github.com/PMoneda/dianadb
-  subpackages:
-  - compress
+- package: github.com/beevik/etree
+  version: v0
