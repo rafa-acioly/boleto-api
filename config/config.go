@@ -17,8 +17,8 @@ func Get() Config {
 		Version:            "0.0.1",
 		SEQUrl:             "http://stglog.mundipagg.com/", //Pegar o SEQ de dev
 		SEQAPIKey:          "4jZzTybZ9bUHtJiPdh6",
-		EnableRequestLog:   true,
-		EnablePrintRequest: true,
+		EnableRequestLog:   false, // Log a cada request no SEQ
+		EnablePrintRequest: true,  // Imprime algumas informacoes da request no console
 	}
 	return cnf
 }
