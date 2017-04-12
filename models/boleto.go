@@ -6,11 +6,29 @@ type BoletoRequest struct {
 	Agreement      Agreement
 	Title          Title
 	Buyer          Buyer
-	BankNumber     int
+	BankNumber     BankNumber
 }
 
 // BoletoResponse entidade de saída para o boleto
 type BoletoResponse struct {
+}
+
+// BankNumber número de identificação do banco
+type BankNumber int16
+
+// IsBankNumberValid verifica se o banco enviado existe
+func (b BankNumber) IsBankNumberValid() bool {
+	switch int16(b) {
+	case Santander:
+	case Itau:
+	case Bradesco:
+	case Caixa:
+	case BancoDoBrasil:
+		return true
+	default:
+		return false
+	}
+	return false
 }
 
 const (
@@ -25,4 +43,7 @@ const (
 
 	// Bradesco constante do Bradesco
 	Bradesco = 237
+
+	// Caixa constante do Caixa
+	Caixa = 104
 )
