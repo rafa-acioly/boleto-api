@@ -3,8 +3,11 @@ package main
 import (
 	"fmt"
 
+	"os"
+
 	"bitbucket.org/mundipagg/boletoapi/api"
 	"bitbucket.org/mundipagg/boletoapi/config"
+	"bitbucket.org/mundipagg/boletoapi/log"
 )
 
 // BB
@@ -110,6 +113,11 @@ type tituloSantander struct {
 
 func main() {
 	logo()
+	err := log.Install()
+	if err != nil {
+		fmt.Println("Log SEQ Fails")
+		os.Exit(-1)
+	}
 	api.InstallRestAPI()
 }
 
@@ -125,5 +133,5 @@ func logo() {
                                      |_|      
 	`
 	fmt.Println(l)
-	fmt.Println(config.GetConfig().Version)
+	fmt.Println("Version: " + config.Get().Version)
 }

@@ -8,7 +8,14 @@ import (
 //InstallRestAPI "instala" e sobe o servico de rest
 func InstallRestAPI() {
 	gin.SetMode(gin.ReleaseMode)
-	router := gin.Default()
+	router := gin.New()
+	router.Use(gin.Recovery())
+	if config.Get().EnableRequestLog {
+		router.Use(RequestLogger())
+	}
+	if config.Get().EnablePrintRequest {
+		router.Use(gin.Logger())
+	}
 	InstallV1(router)
-	router.Run(config.GetConfig().APIPort)
+	router.Run(config.Get().APIPort)
 }
