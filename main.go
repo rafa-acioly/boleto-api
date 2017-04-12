@@ -122,7 +122,6 @@ type tituloSantander struct {
 
 func main() {
 	logo()
-	main1()
 	err := log.Install()
 	if err != nil {
 		fmt.Println("Log SEQ Fails")
