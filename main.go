@@ -1,6 +1,11 @@
 package main
 
-import "bitbucket.org/mundipagg/boletoapi/api"
+import (
+	"fmt"
+
+	"bitbucket.org/mundipagg/boletoapi/api"
+	"bitbucket.org/mundipagg/boletoapi/config"
+)
 
 // BB
 type bbObj struct {
@@ -104,5 +109,21 @@ type tituloSantander struct {
 }
 
 func main() {
+	logo()
 	api.InstallRestAPI()
+}
+
+func logo() {
+	l := `
+  ____        _      _                      _ 
+ |  _ \      | |    | |         /\         (_)
+ | |_) | ___ | | ___| |_ ___   /  \   _ __  _ 
+ |  _ < / _ \| |/ _ \ __/ _ \ / /\ \ | '_ \| |
+ | |_) | (_) | |  __/ || (_) / ____ \| |_) | |
+ |____/ \___/|_|\___|\__\___/_/    \_\ .__/|_|
+                                     | |      
+                                     |_|      
+	`
+	fmt.Println(l)
+	fmt.Println(config.GetConfig().Version)
 }
