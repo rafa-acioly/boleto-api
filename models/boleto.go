@@ -14,21 +14,16 @@ type BoletoResponse struct {
 }
 
 // BankNumber número de identificação do banco
-type BankNumber int16
+type BankNumber int
 
 // IsBankNumberValid verifica se o banco enviado existe
 func (b BankNumber) IsBankNumberValid() bool {
-	switch int16(b) {
-	case Santander:
-	case Itau:
-	case Bradesco:
-	case Caixa:
-	case BancoDoBrasil:
+	switch b {
+	case BancoDoBrasil, Itau, Santander, Caixa, Bradesco:
 		return true
 	default:
 		return false
 	}
-	return false
 }
 
 const (
