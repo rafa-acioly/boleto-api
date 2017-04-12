@@ -60,6 +60,15 @@ type caixaObj struct {
 	identificadorOrigem string
 	nossoNumero         int64
 	tipoEspecie         string // talvez não seja obrigatório
+	caixaAuth           caixaAuth
+}
+
+type caixaAuth struct {
+	codigoCedente    string
+	nossoNumero      string
+	dataDeVencimento string
+	valor            int64
+	cpfCnpj          string
 }
 
 // Santander
