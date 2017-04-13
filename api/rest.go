@@ -19,3 +19,8 @@ func InstallRestAPI() {
 	InstallV1(router)
 	router.Run(config.Get().APIPort)
 }
+
+type errorResponse struct {
+	Code    string
+	Message string
+}
