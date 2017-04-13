@@ -46,14 +46,43 @@ func (b bankBB) Login(user, password, body string) (auth.Token, error) {
 	return tok, nil
 }
 func (b bankBB) RegisterBoleto(boleto models.BoletoRequest) (models.BoletoResponse, error) {
+	//Body do request necessário para pegar o token do registrar boleto
 	body := "grant_type=client_credentials&scope=cobranca.registro-boletos"
 	token, err := b.Login(boleto.Authentication.Username, boleto.Authentication.Password, body)
 	if err != nil {
-		return models.BoletoResponse{}, err
+		return models.BoletoResponse{StatusCode: token.Status, Error: token.Error, ErrorDescription: token.ErrorDescription}, err
 	}
 	fmt.Println(token)
 	return models.BoletoResponse{}, nil
 }
+
+//GetBankNumber retorna o codigo do banco
 func (b bankBB) GetBankNumber() models.BankNumber {
 	return models.BancoDoBrasil
+}
+
+//registerBoletoRequest faz a requisição no serviço do banco para registro de boleto
+func registerBoletoRequest(message string, token auth.Token) (string, error) {
+	client := util.DefaultHTTPClient()
+	body := strings.NewReader(message)
+	req, err := http.NewRequest("POST", "https://cobranca.desenv.bb.com.br:7101/registrarBoleto", body)
+	if err != nil {
+		return "", err
+	}
+	req.Header.Add("SOAPACTION", "registrarBoleto")
+	req.Header.Add("Authorization", "Bearer "+token.AccessToken)
+	req.Header.Add("Content-Type", "text/xml; charset=utf-8")
+	//data, _ := httputil.DumpRequest(req, true)
+	//fmt.Println(string(data))
+	resp, errResp := client.Do(req)
+	if errResp != nil {
+		return "", errResp
+	}
+	defer resp.Body.Close()
+	data, errResponse := ioutil.ReadAll(resp.Body)
+	if errResponse != nil {
+		return "", errResponse
+	}
+
+	return string(data), nil
 }
