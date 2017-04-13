@@ -39,8 +39,8 @@ func ParseXML(xmlDoc string) (*etree.Document, error) {
 	return doc, nil
 }
 
-//ExtractValues extrai os valores do documento de acordo com uma lista de regras de "de-para"
-func ExtractValues(doc *etree.Document, translate *TranslatorMap) map[string]string {
+//ExtractValuesFromXML extrai os valores do documento de acordo com uma lista de regras de "de-para"
+func ExtractValuesFromXML(doc *etree.Document, translate *TranslatorMap) map[string]string {
 	values := make(map[string]string)
 	for _, rule := range translate.rules {
 		for _, t := range doc.FindElements(rule.XMLQuery) {
@@ -49,4 +49,13 @@ func ExtractValues(doc *etree.Document, translate *TranslatorMap) map[string]str
 		}
 	}
 	return values
+}
+
+// ExtractValues extrai valores de uma string
+func ExtractValues(xmlDoc string, translator *TranslatorMap) (map[string]string, error) {
+	doc, err := ParseXML(xmlDoc)
+	if err != nil {
+		return nil, err
+	}
+	return ExtractValuesFromXML(doc, translator), nil
 }

@@ -9,7 +9,10 @@ import (
 	"strings"
 
 	"bitbucket.org/mundipagg/boletoapi/auth"
+	"bitbucket.org/mundipagg/boletoapi/letters"
 	"bitbucket.org/mundipagg/boletoapi/models"
+	"bitbucket.org/mundipagg/boletoapi/parser"
+	"bitbucket.org/mundipagg/boletoapi/tmpl"
 	"bitbucket.org/mundipagg/boletoapi/util"
 )
 
@@ -45,15 +48,37 @@ func (b bankBB) Login(user, password, body string) (auth.Token, error) {
 	}
 	return tok, nil
 }
-func (b bankBB) RegisterBoleto(boleto models.BoletoRequest) (models.BoletoResponse, error) {
+func (b bankBB) RegisterBoleto(boleto models.BoletoRequest) (string, error) {
 	//Body do request necessário para pegar o token do registrar boleto
 	body := "grant_type=client_credentials&scope=cobranca.registro-boletos"
 	token, err := b.Login(boleto.Authentication.Username, boleto.Authentication.Password, body)
 	if err != nil {
-		return models.BoletoResponse{StatusCode: token.Status, Error: token.Error, ErrorDescription: token.ErrorDescription}, err
+		j, _ := json.Marshal(models.BoletoResponse{StatusCode: token.Status, Error: token.Error, ErrorDescription: token.ErrorDescription})
+		return string(j), err
 	}
-	fmt.Println(token)
-	return models.BoletoResponse{}, nil
+	builder := tmpl.New()
+	soap, err := builder.From(boleto).To(letters.GetRegisterBoletoBBTmpl()).XML().Transform()
+	if err != nil {
+		j, _ := json.Marshal(models.BoletoResponse{StatusCode: http.StatusInternalServerError, ErrorDescription: err.Error()})
+		return string(j), err
+	}
+	response, status, errRegister := registerBoletoRequest(soap, token)
+	if errRegister != nil {
+		j, _ := json.Marshal(models.BoletoResponse{StatusCode: http.StatusInternalServerError, ErrorDescription: errRegister.Error()})
+		return string(j), errRegister
+	}
+	if status != http.StatusOK {
+		value, _ := parser.ExtractValues(response, letters.GetRegisterBoletoError())
+		j, _ := json.Marshal(models.BoletoResponse{StatusCode: http.StatusBadRequest, ErrorDescription: value["messageString"], Error: value["faultCode"]})
+		return string(j), errRegister
+	}
+	value, _ := parser.ExtractValues(response, letters.GetRegisterBoletoReponseTranslator())
+	j, errJSON := builder.From(value).To(letters.GetRegisterBoletoBBApiResponseTmpl()).Transform()
+	if errJSON != nil {
+		fmt.Println(errJSON.Error())
+	}
+	return j, nil
+
 }
 
 //GetBankNumber retorna o codigo do banco
@@ -62,12 +87,12 @@ func (b bankBB) GetBankNumber() models.BankNumber {
 }
 
 //registerBoletoRequest faz a requisição no serviço do banco para registro de boleto
-func registerBoletoRequest(message string, token auth.Token) (string, error) {
+func registerBoletoRequest(message string, token auth.Token) (string, int, error) {
 	client := util.DefaultHTTPClient()
 	body := strings.NewReader(message)
 	req, err := http.NewRequest("POST", "https://cobranca.desenv.bb.com.br:7101/registrarBoleto", body)
 	if err != nil {
-		return "", err
+		return "", http.StatusInternalServerError, err
 	}
 	req.Header.Add("SOAPACTION", "registrarBoleto")
 	req.Header.Add("Authorization", "Bearer "+token.AccessToken)
@@ -76,13 +101,12 @@ func registerBoletoRequest(message string, token auth.Token) (string, error) {
 	//fmt.Println(string(data))
 	resp, errResp := client.Do(req)
 	if errResp != nil {
-		return "", errResp
+		return "", resp.StatusCode, errResp
 	}
 	defer resp.Body.Close()
 	data, errResponse := ioutil.ReadAll(resp.Body)
 	if errResponse != nil {
-		return "", errResponse
+		return "", resp.StatusCode, errResponse
 	}
-
-	return string(data), nil
+	return string(data), resp.StatusCode, nil
 }

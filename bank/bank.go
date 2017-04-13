@@ -10,7 +10,7 @@ import (
 //Bank é a interface que vai oferecer os serviços em comum entre os bancos
 type Bank interface {
 	Login(string, string, string) (auth.Token, error)
-	RegisterBoleto(models.BoletoRequest) (models.BoletoResponse, error)
+	RegisterBoleto(models.BoletoRequest) (string, error)
 	GetBankNumber() models.BankNumber
 }
 

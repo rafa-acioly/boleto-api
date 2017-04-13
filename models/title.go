@@ -7,10 +7,11 @@ import (
 
 // Title título de cobrança de entrada
 type Title struct {
-	createDate    time.Time
-	ExpireDate    time.Time
-	AmountInCents int64
-	OurNumber     int64
+	createDate     time.Time
+	ExpireDateTime time.Time
+	ExpireDate     string
+	AmountInCents  int64
+	OurNumber      int64
 }
 
 // NewTitle instancia um novo título
@@ -31,10 +32,10 @@ func NewTitle(expDate string, amountInCents int64, ourNumber int64) (*Title, err
 
 	title := Title{}
 	title.AmountInCents = amountInCents
-	title.ExpireDate = eDate
+	title.ExpireDateTime = eDate
 	title.OurNumber = ourNumber
 	title.createDate = cDate
-	if title.createDate.After(title.ExpireDate) {
+	if title.createDate.After(title.ExpireDateTime) {
 		return nil, errors.New("Data de expiração não pode ser menor que a data de hoje")
 	}
 

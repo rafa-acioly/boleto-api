@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -46,7 +47,53 @@ func TestXmlParser(t *testing.T) {
 	}
 	translator := NewTranslatorMap()
 	translator.AddRule(Rule{XMLQuery: "///ns0:resposta/ns0:codigoRetornoPrograma", MapKey: "returnCode"})
-	values := ExtractValues(doc, translator)
+	values := ExtractValuesFromXML(doc, translator)
+	for _, rule := range translator.GetRules() {
+		_, ok := values[rule.MapKey]
+		if !ok {
+			t.Fail()
+		}
+	}
+}
+
+const errorBB = `
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope 
+    xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+    <SOAP-ENV:Body>
+        <SOAP-ENV:Fault>
+            <faultcode 
+                xmlns="">SOAP-ENV:Server
+            </faultcode>
+            <faultstring 
+                xmlns="">This is an operation implementation generated fault
+            </faultstring>
+            <faultactor 
+                xmlns=""/>
+                <detail 
+                    xmlns="">
+                    <ns:erro 
+                        xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                        xmlns:ns="http://www.tibco.com/schemas/bws_registro_cbr/Recursos/XSD/Schema.xsd" 
+                        xmlns:ns0="http://schemas.xmlsoap.org/soap/envelope/">
+                        <ns:Mensagem>Dados de entrada inválidos.</ns:Mensagem>
+                    </ns:erro>
+                </detail>
+            </SOAP-ENV:Fault>
+        </SOAP-ENV:Body>
+    </SOAP-ENV:Envelope>
+`
+
+func TestXMLErrorParser(t *testing.T) {
+	doc, err := ParseXML(errorBB)
+	if err != nil {
+		t.Fail()
+	}
+	translator := NewTranslatorMap()
+	translator.AddRule(Rule{XMLQuery: "//////ns:Mensagem", MapKey: "messageString"})
+	values := ExtractValuesFromXML(doc, translator)
+	fmt.Println(values)
 	for _, rule := range translator.GetRules() {
 		_, ok := values[rule.MapKey]
 		if !ok {

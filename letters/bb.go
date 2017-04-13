@@ -101,60 +101,108 @@ xmlns:sch="http://www.tibco.com/schemas/bws_registro_cbr/Recursos/XSD/Schema.xsd
 
 
 
-*/
-
 // registerBoleto representa a "carta" de integracao com o banco
-const registerBoleto = `<?xml version="1.0" encoding="UTF-8"?>
+const registerBoleto = `
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
 xmlns:sch="http://www.tibco.com/schemas/bws_registro_cbr/Recursos/XSD/Schema.xsd">
  <soapenv:Header/>
  <soapenv:Body>
 <sch:requisicao>
- <sch:numeroConvenio>{{.numeroConvenio}}</sch:numeroConvenio>
- <sch:numeroCarteira>{{.numeroCarteira}}</sch:numeroCarteira>
- <sch:numeroVariacaoCarteira>{{.numeroVariacaoCarteira}}</sch:numeroVariacaoCarteira>
- <sch:codigoModalidadeTitulo>{{.codigoModalidadeTitulo}}</sch:codigoModalidadeTitulo>
- <sch:dataEmissaoTitulo>{{.dataEmissaoTitulo}}</sch:dataEmissaoTitulo>
- <sch:dataVencimentoTitulo>{{.dataVencimentoTitulo}}</sch:dataVencimentoTitulo>
- <sch:valorOriginalTitulo>{{.valorOriginalTitulo}}</sch:valorOriginalTitulo>
- <sch:codigoTipoDesconto>{{.codigoTipoDesconto}}</sch:codigoTipoDesconto>
- <sch:dataDescontoTitulo>{{.dataDescontoTitulo}}</sch:dataDescontoTitulo>
+ <sch:numeroConvenio>{{.Agreement.AgreementNumber}}</sch:numeroConvenio>
+ <sch:numeroCarteira>17</sch:numeroCarteira>
+ <sch:numeroVariacaoCarteira>{{.Agreement.WalletVariation}}</sch:numeroVariacaoCarteira>
+ <sch:codigoModalidadeTitulo>1</sch:codigoModalidadeTitulo>
+ <sch:dataEmissaoTitulo>{{replace (today | brdate) "/" "."}}</sch:dataEmissaoTitulo>
+ <sch:dataVencimentoTitulo>{{.Title.ExpireDate}}</sch:dataVencimentoTitulo>
+ <sch:valorOriginalTitulo>{{.Title.AmountInCents}}</sch:valorOriginalTitulo>
+ <sch:codigoTipoDesconto>0</sch:codigoTipoDesconto>
+ <sch:dataDescontoTitulo></sch:dataDescontoTitulo>
  <sch:percentualDescontoTitulo/>
- <sch:valorDescontoTitulo>{{.valorDescontoTitulo}}</sch:valorDescontoTitulo>
+ <sch:valorDescontoTitulo></sch:valorDescontoTitulo>
  <sch:valorAbatimentoTitulo/>
- <sch:quantidadeDiaProtesto>{{.quantidadeDiaProtesto}}</sch:quantidadeDiaProtesto>
- <sch:codigoTipoJuroMora>{{.codigoTipoJuroMora}}</sch:codigoTipoJuroMora>
- <sch:codigoTipoMulta>{{.codigoTipoMulta}}</sch:codigoTipoMulta>
- <sch:dataMultaTitulo>{{.dataMultaTitulo}}</sch:dataMultaTitulo>
- <sch:percentualMultaTitulo>{{.percentualMultaTitulo}}</sch:percentualMultaTitulo>
- <sch:codigoAceiteTitulo>{{.codigoAceiteTitulo}}</sch:codigoAceiteTitulo>
- <sch:codigoTipoTitulo>{{.codigoTipoTitulo}}</sch:codigoTipoTitulo>
- <sch:textoDescricaoTipoTitulo>{{.textoDescricaoTipoTitulo}}</sch:textoDescricaoTipoTitulo>
- <sch:indicadorPermissaoRecebimentoParcial>{{.indicadorPermissaoRecebimentoParcial}}</sch:indicadorPermissaoRecebimentoParcial>
- <sch:textoNumeroTituloBeneficiario>{{.textoNumeroTituloBeneficiario}}</sch:textoNumeroTituloBeneficiario>
+ <sch:quantidadeDiaProtesto></sch:quantidadeDiaProtesto>
+ <sch:codigoTipoJuroMora></sch:codigoTipoJuroMora>
+ <sch:codigoTipoMulta></sch:codigoTipoMulta>
+ <sch:dataMultaTitulo></sch:dataMultaTitulo>
+ <sch:percentualMultaTitulo></sch:percentualMultaTitulo>
+ <sch:codigoAceiteTitulo></sch:codigoAceiteTitulo>
+ <sch:codigoTipoTitulo></sch:codigoTipoTitulo>
+ <sch:textoDescricaoTipoTitulo></sch:textoDescricaoTipoTitulo>
+ <sch:indicadorPermissaoRecebimentoParcial>N</sch:indicadorPermissaoRecebimentoParcial>
+ <sch:textoNumeroTituloBeneficiario></sch:textoNumeroTituloBeneficiario>
  <sch:textoCampoUtilizacaoBeneficiario/>
- <sch:textoNumeroTituloCliente>{{.textoNumeroTituloCliente}}</sch:textoNumeroTituloCliente>
- <sch:textoMensagemBloquetoOcorrencia>{{.textoMensagemBloquetoOcorrencia}}</sch:textoMensagemBloquetoOcorrencia>
- <sch:codigoTipoInscricaoPagador>{{.codigoTipoInscricaoPagador}}</sch:codigoTipoInscricaoPagador>
- <sch:numeroInscricaoPagador>{{.numeroInscricaoPagador}}</sch:numeroInscricaoPagador>
- <sch:nomePagador>{{.nomePagador}}</sch:nomePagador>
- <sch:textoEnderecoPagador>{{.textoEnderecoPagador}}</sch:textoEnderecoPagador>
- <sch:numeroCepPagador>{{.numeroCepPagador}}</sch:numeroCepPagador>
- <sch:nomeMunicipioPagador>{{.nomeMunicipioPagador}}</sch:nomeMunicipioPagador>
- <sch:nomeBairroPagador>{{.nomeBairroPagador}}</sch:nomeBairroPagador>
- <sch:siglaUfPagador>{{.siglaUfPagador}}</sch:siglaUfPagador>
- <sch:textoNumeroTelefonePagador>{{.textoNumeroTelefonePagador}}</sch:textoNumeroTelefonePagador>
+ <sch:textoNumeroTituloCliente>{{.Title.OurNumber}}</sch:textoNumeroTituloCliente>
+ <sch:textoMensagemBloquetoOcorrencia></sch:textoMensagemBloquetoOcorrencia>
+ <sch:codigoTipoInscricaoPagador>{{docType .Buyer.Document.Type}}</sch:codigoTipoInscricaoPagador>
+ <sch:numeroInscricaoPagador>{{.Buyer.Document.Number}}</sch:numeroInscricaoPagador>
+ <sch:nomePagador>{{.Buyer.Name}}</sch:nomePagador>
+ <sch:textoEnderecoPagador>{{.Buyer.Address.Street}}</sch:textoEnderecoPagador>
+ <sch:numeroCepPagador>{{.Buyer.Address.ZipCode}}</sch:numeroCepPagador>
+ <sch:nomeMunicipioPagador>{{.Buyer.Address.City}}</sch:nomeMunicipioPagador>
+ <sch:nomeBairroPagador>{{.Buyer.Address.District}}</sch:nomeBairroPagador>
+ <sch:siglaUfPagador>{{.Buyer.Address.StateCode}}</sch:siglaUfPagador>
+ <sch:textoNumeroTelefonePagador/>
  <sch:codigoTipoInscricaoAvalista/>
  <sch:numeroInscricaoAvalista/>
  <sch:nomeAvalistaTitulo/>
- <sch:codigoChaveUsuario>{{.codigoChaveUsuario}}</sch:codigoChaveUsuario>
- <sch:codigoTipoCanalSolicitacao>{{.codigoTipoCanalSolicitacao}}</sch:codigoTipoCanalSolicitacao>
+ <sch:codigoChaveUsuario>1</sch:codigoChaveUsuario>
+ <sch:codigoTipoCanalSolicitacao>5</sch:codigoTipoCanalSolicitacao>
  </sch:requisicao>
  </soapenv:Body>
 </soapenv:Envelope>`
+*/
+const registerBoleto = `
+ <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+xmlns:sch="http://www.tibco.com/schemas/bws_registro_cbr/Recursos/XSD/Schema.xsd">
+ <soapenv:Header/>
+ <soapenv:Body>
+<sch:requisicao>
+ <sch:numeroConvenio>1014051</sch:numeroConvenio>
+ <sch:numeroCarteira>17</sch:numeroCarteira>
+ <sch:numeroVariacaoCarteira>19</sch:numeroVariacaoCarteira>
+ <sch:codigoModalidadeTitulo>1</sch:codigoModalidadeTitulo>
+ <sch:dataEmissaoTitulo>01.03.2017</sch:dataEmissaoTitulo>
+ <sch:dataVencimentoTitulo>21.11.2017</sch:dataVencimentoTitulo>
+ <sch:valorOriginalTitulo>30000</sch:valorOriginalTitulo>
+ <sch:codigoTipoDesconto>1</sch:codigoTipoDesconto>
+ <sch:dataDescontoTitulo>21.11.2016</sch:dataDescontoTitulo>
+ <sch:percentualDescontoTitulo/>
+ <sch:valorDescontoTitulo>10</sch:valorDescontoTitulo>
+ <sch:valorAbatimentoTitulo/>
+ <sch:quantidadeDiaProtesto>0</sch:quantidadeDiaProtesto>
+ <sch:codigoTipoJuroMora>0</sch:codigoTipoJuroMora>
+ <sch:codigoTipoMulta>2</sch:codigoTipoMulta>
+ <sch:dataMultaTitulo>22.11.2017</sch:dataMultaTitulo>
+ <sch:percentualMultaTitulo>10</sch:percentualMultaTitulo>
+ <sch:codigoAceiteTitulo>N</sch:codigoAceiteTitulo>
+ <sch:codigoTipoTitulo>2</sch:codigoTipoTitulo>
+ <sch:textoDescricaoTipoTitulo>DUPLICATA</sch:textoDescricaoTipoTitulo>
+ <sch:indicadorPermissaoRecebimentoParcial>N</sch:indicadorPermissaoRecebimentoParcial>
+ <sch:textoNumeroTituloBeneficiario>987654321987654</sch:textoNumeroTituloBeneficiario>
+ <sch:textoCampoUtilizacaoBeneficiario/>
+ <sch:textoNumeroTituloCliente>00010140510000000630</sch:textoNumeroTituloCliente>
+ <sch:textoMensagemBloquetoOcorrencia>Pagamento dispon├¡vel at├® a data de vencimento</sch:textoMensagemBloquetoOcorrencia>
+ <sch:codigoTipoInscricaoPagador>2</sch:codigoTipoInscricaoPagador>
+ <sch:numeroInscricaoPagador>73400584000166</sch:numeroInscricaoPagador>
+ <sch:nomePagador>MERCADO ANDREAZA DE MACEDO</sch:nomePagador>
+ <sch:textoEnderecoPagador>RUA SEM NOME</sch:textoEnderecoPagador>
+ <sch:numeroCepPagador>12345678</sch:numeroCepPagador>
+ <sch:nomeMunicipioPagador>BRASILIA</sch:nomeMunicipioPagador>
+ <sch:nomeBairroPagador>SIA</sch:nomeBairroPagador>
+ <sch:siglaUfPagador>DF</sch:siglaUfPagador>
+ <sch:textoNumeroTelefonePagador>45619988</sch:textoNumeroTelefonePagador>
+ <sch:codigoTipoInscricaoAvalista/>
+ <sch:numeroInscricaoAvalista/>
+ <sch:nomeAvalistaTitulo/>
+ <sch:codigoChaveUsuario>1</sch:codigoChaveUsuario>
+ <sch:codigoTipoCanalSolicitacao>5</sch:codigoTipoCanalSolicitacao>
+ </sch:requisicao>
+ </soapenv:Body>
+</soapenv:Envelope>
+ `
 
-//GetRegisterBoletoTmpl retorna o template do Banco do Brasil
-func GetRegisterBoletoTmpl() string {
+//GetRegisterBoletoBBTmpl retorna o template do Banco do Brasil
+func GetRegisterBoletoBBTmpl() string {
 	return registerBoleto
 }
 
@@ -185,4 +233,42 @@ func GetRegisterBoletoReponseTranslator() *parser.TranslatorMap {
 	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:codigoMunicipioBeneficiario", MapKey: "beneficiaryCityCode"})
 	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:numeroContratoCobranca", MapKey: "chargingContractNumber"})
 	return translator
+}
+
+// GetRegisterBoletoError retorna as regras para ler os campos de erro do banco do brasil
+func GetRegisterBoletoError() *parser.TranslatorMap {
+	translator := parser.NewTranslatorMap()
+	translator.AddRule(parser.Rule{XMLQuery: "//////ns:Mensagem", MapKey: "messageString"})
+	translator.AddRule(parser.Rule{XMLQuery: "////faultstring", MapKey: "faultString"})
+	translator.AddRule(parser.Rule{XMLQuery: "////faultcode", MapKey: "faultCode"})
+	return translator
+}
+
+const bbRegisterBoletoResponse = `{
+	"beneficiaryZipCode": "{{trim .beneficiaryZipCode}}",
+	"numberTextTitleCharging": "{{trim .numberTextTitleCharging}}",
+	"rateNumberWalletCharging": "{{trim .rateNumberWalletCharging}}",
+	"digitableLine": "{{trim .digitableLine}}",
+	"addressTypeCodeBeneficiary": "{{trim .addressTypeCodeBeneficiary}}",
+	"walletNumberCharging": "{{trim .walletNumberCharging}}",
+	"clientCode": "{{trim .clientCode}}",
+	"addressBeneficiary": "{{trim .addressBeneficiary}}",
+	"beneficiaryCity": "{{trim .beneficiaryCity}}",
+	"prefixCodeBeneficiaryDependency": "{{trim .prefixCodeBeneficiaryDependency}}",
+	"checkingNumberBeneficiary": "{{trim .checkingNumberBeneficiary}}",
+	"beneficiaryCityCode": "{{trim .beneficiaryCityCode}}",
+	"beneficiaryIndicatorEvidence": "{{trim .beneficiaryIndicatorEvidence}}",
+	"returnCode": "{{trim .returnCode}}",
+	"programError": "{{trim .programError}}",
+	"positionNumberErrorProgram": "{{trim .positionNumberErrorProgram}}",
+	"returnTypeCodeProgram": "{{trim .returnTypeCodeProgram}}",
+	"chargingContractNumber": "{{trim .chargingContractNumber}}",
+	"errorMessage": "{{trim .errorMessage}}",
+	"barcodeNumber": "{{trim .barcodeNumber}}",
+	"beneficiaryNeighborhood": "{{trim .beneficiaryNeighborhood}}"
+}`
+
+//GetRegisterBoletoBBApiResponseTmpl retorna o template do Banco do Brasil de resposta para a Api
+func GetRegisterBoletoBBApiResponseTmpl() string {
+	return bbRegisterBoletoResponse
 }
