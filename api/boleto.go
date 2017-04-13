@@ -17,6 +17,10 @@ func registerBoleto(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorResponse{Code: "001", Message: err.Error()})
 		return
 	}
-	bank.RegisterBoleto(boleto)
-	c.JSON(200, boleto)
+	_, errR := bank.RegisterBoleto(boleto)
+	if errR != nil {
+		c.JSON(http.StatusBadRequest, errorResponse{Code: "001", Message: errR.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, boleto)
 }
