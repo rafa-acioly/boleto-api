@@ -6,17 +6,15 @@ import (
 	"os"
 
 	"bitbucket.org/mundipagg/boletoapi/api"
+	"bitbucket.org/mundipagg/boletoapi/bank"
 	"bitbucket.org/mundipagg/boletoapi/config"
 	"bitbucket.org/mundipagg/boletoapi/log"
 )
 
 func main() {
 	logo()
-	err := log.Install()
-	if err != nil {
-		fmt.Println("Log SEQ Fails")
-		os.Exit(-1)
-	}
+	installLog()
+	bank.InstallBanks()
 	api.InstallRestAPI()
 }
 
@@ -33,4 +31,12 @@ func logo() {
 	`
 	fmt.Println(l)
 	fmt.Println("Version: " + config.Get().Version)
+}
+
+func installLog() {
+	err := log.Install()
+	if err != nil {
+		fmt.Println("Log SEQ Fails")
+		os.Exit(-1)
+	}
 }
