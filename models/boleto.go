@@ -11,6 +11,9 @@ type BoletoRequest struct {
 
 // BoletoResponse entidade de saída para o boleto
 type BoletoResponse struct {
+	StatusCode       int `json:"-"`
+	Error            string
+	ErrorDescription string
 }
 
 // BankNumber número de identificação do banco
