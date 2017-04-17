@@ -41,6 +41,11 @@
         }
     },
     "BoletoResponse": {
-
+        "Errors": [
+            {
+                "Code": 200,
+                "Message": "Mensagem do erro"
+            }
+        ]
     }
 }
