@@ -115,11 +115,11 @@ xmlns:sch="http://www.tibco.com/schemas/bws_registro_cbr/Recursos/XSD/Schema.xsd
  <sch:codigoTipoDesconto>0</sch:codigoTipoDesconto> 
  <sch:codigoTipoMulta>0</sch:codigoTipoMulta> 
  <sch:codigoAceiteTitulo>N</sch:codigoAceiteTitulo>
- <sch:codigoTipoTitulo>2</sch:codigoTipoTitulo>
- <sch:textoDescricaoTipoTitulo>DUPLICATA</sch:textoDescricaoTipoTitulo>
+ <sch:codigoTipoTitulo>19</sch:codigoTipoTitulo>
+ <sch:textoDescricaoTipoTitulo></sch:textoDescricaoTipoTitulo>
  <sch:indicadorPermissaoRecebimentoParcial>N</sch:indicadorPermissaoRecebimentoParcial>
- <sch:textoNumeroTituloBeneficiario>987654321987654</sch:textoNumeroTituloBeneficiario>
- <sch:textoNumeroTituloCliente>{{.Title.OurNumber}}</sch:textoNumeroTituloCliente>
+ <sch:textoNumeroTituloBeneficiario></sch:textoNumeroTituloBeneficiario>
+ <sch:textoNumeroTituloCliente>000{{padLeft (toString .Agreement.AgreementNumber) "0" 7}}{{padLeft (toString .Title.OurNumber) "0" 10}}</sch:textoNumeroTituloCliente>
  <sch:textoMensagemBloquetoOcorrencia>Pagamento disponível até a data de vencimento</sch:textoMensagemBloquetoOcorrencia>
  <sch:codigoTipoInscricaoPagador>{{docType .Buyer.Document.Type}}</sch:codigoTipoInscricaoPagador>
  <sch:numeroInscricaoPagador>{{.Buyer.Document.Number}}</sch:numeroInscricaoPagador>
