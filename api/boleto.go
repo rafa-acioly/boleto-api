@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"bitbucket.org/mundipagg/boletoapi/bank"
+	"bitbucket.org/mundipagg/boletoapi/boleto"
 	"bitbucket.org/mundipagg/boletoapi/models"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
@@ -36,4 +37,10 @@ func registerBoleto(c *gin.Context) {
 		return
 	}
 	c.Data(http.StatusOK, "application/json", []byte(resp))
+}
+
+func getBoleto(c *gin.Context) {
+	c.Status(200)
+	c.Header("Content-Type", "application/pdf")
+	boleto.Create(c.Writer)
 }

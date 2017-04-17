@@ -6,4 +6,5 @@ import gin "gopkg.in/gin-gonic/gin.v1"
 func InstallV1(router *gin.Engine) {
 	v1 := router.Group("v1")
 	v1.POST("/registrarBoleto", registerBoleto)
+	v1.GET("/boleto", getBoleto)
 }

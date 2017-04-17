@@ -6,3 +6,5 @@ import:
   version: v1.1.4
 - package: github.com/mundipagg/goseq
 - package: github.com/Pallinder/go-randomdata
+- package: github.com/jung-kurt/gofpdf
+- package: github.com/boombuler/barcode
