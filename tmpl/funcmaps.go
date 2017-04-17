@@ -13,12 +13,17 @@ import (
 )
 
 var funcMap = template.FuncMap{
-	"today":   today,
-	"brdate":  brDate,
-	"replace": replace,
-	"docType": docType,
-	"trim":    trim,
-	"padLeft": padLeft,
+	"today":    today,
+	"brdate":   brDate,
+	"replace":  replace,
+	"docType":  docType,
+	"trim":     trim,
+	"padLeft":  padLeft,
+	"toString": toString,
+}
+
+func toString(number int) string {
+	return strconv.Itoa(number)
 }
 
 func padLeft(value, char string, total uint) string {
