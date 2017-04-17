@@ -98,58 +98,6 @@ xmlns:sch="http://www.tibco.com/schemas/bws_registro_cbr/Recursos/XSD/Schema.xsd
         </ns0:resposta>
     </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
-
-
-
-// registerBoleto representa a "carta" de integracao com o banco
-const registerBoleto = `
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
-xmlns:sch="http://www.tibco.com/schemas/bws_registro_cbr/Recursos/XSD/Schema.xsd">
- <soapenv:Header/>
- <soapenv:Body>
-<sch:requisicao>
- <sch:numeroConvenio>{{.Agreement.AgreementNumber}}</sch:numeroConvenio>
- <sch:numeroCarteira>17</sch:numeroCarteira>
- <sch:numeroVariacaoCarteira>{{.Agreement.WalletVariation}}</sch:numeroVariacaoCarteira>
- <sch:codigoModalidadeTitulo>1</sch:codigoModalidadeTitulo>
- <sch:dataEmissaoTitulo>{{replace (today | brdate) "/" "."}}</sch:dataEmissaoTitulo>
- <sch:dataVencimentoTitulo>{{.Title.ExpireDate}}</sch:dataVencimentoTitulo>
- <sch:valorOriginalTitulo>{{.Title.AmountInCents}}</sch:valorOriginalTitulo>
- <sch:codigoTipoDesconto>0</sch:codigoTipoDesconto>
- <sch:dataDescontoTitulo></sch:dataDescontoTitulo>
- <sch:percentualDescontoTitulo/>
- <sch:valorDescontoTitulo></sch:valorDescontoTitulo>
- <sch:valorAbatimentoTitulo/>
- <sch:quantidadeDiaProtesto></sch:quantidadeDiaProtesto>
- <sch:codigoTipoJuroMora></sch:codigoTipoJuroMora>
- <sch:codigoTipoMulta></sch:codigoTipoMulta>
- <sch:dataMultaTitulo></sch:dataMultaTitulo>
- <sch:percentualMultaTitulo></sch:percentualMultaTitulo>
- <sch:codigoAceiteTitulo></sch:codigoAceiteTitulo>
- <sch:codigoTipoTitulo></sch:codigoTipoTitulo>
- <sch:textoDescricaoTipoTitulo></sch:textoDescricaoTipoTitulo>
- <sch:indicadorPermissaoRecebimentoParcial>N</sch:indicadorPermissaoRecebimentoParcial>
- <sch:textoNumeroTituloBeneficiario></sch:textoNumeroTituloBeneficiario>
- <sch:textoCampoUtilizacaoBeneficiario/>
- <sch:textoNumeroTituloCliente>{{.Title.OurNumber}}</sch:textoNumeroTituloCliente>
- <sch:textoMensagemBloquetoOcorrencia></sch:textoMensagemBloquetoOcorrencia>
- <sch:codigoTipoInscricaoPagador>{{docType .Buyer.Document.Type}}</sch:codigoTipoInscricaoPagador>
- <sch:numeroInscricaoPagador>{{.Buyer.Document.Number}}</sch:numeroInscricaoPagador>
- <sch:nomePagador>{{.Buyer.Name}}</sch:nomePagador>
- <sch:textoEnderecoPagador>{{.Buyer.Address.Street}}</sch:textoEnderecoPagador>
- <sch:numeroCepPagador>{{.Buyer.Address.ZipCode}}</sch:numeroCepPagador>
- <sch:nomeMunicipioPagador>{{.Buyer.Address.City}}</sch:nomeMunicipioPagador>
- <sch:nomeBairroPagador>{{.Buyer.Address.District}}</sch:nomeBairroPagador>
- <sch:siglaUfPagador>{{.Buyer.Address.StateCode}}</sch:siglaUfPagador>
- <sch:textoNumeroTelefonePagador/>
- <sch:codigoTipoInscricaoAvalista/>
- <sch:numeroInscricaoAvalista/>
- <sch:nomeAvalistaTitulo/>
- <sch:codigoChaveUsuario>1</sch:codigoChaveUsuario>
- <sch:codigoTipoCanalSolicitacao>5</sch:codigoTipoCanalSolicitacao>
- </sch:requisicao>
- </soapenv:Body>
-</soapenv:Envelope>`
 */
 const registerBoleto = `
  <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
@@ -164,24 +112,15 @@ xmlns:sch="http://www.tibco.com/schemas/bws_registro_cbr/Recursos/XSD/Schema.xsd
  <sch:dataEmissaoTitulo>{{replace (today | brdate) "/" "."}}</sch:dataEmissaoTitulo>
  <sch:dataVencimentoTitulo>{{replace (.Title.ExpireDateTime | brdate) "/" "."}}</sch:dataVencimentoTitulo>
  <sch:valorOriginalTitulo>{{.Title.AmountInCents}}</sch:valorOriginalTitulo>
- <sch:codigoTipoDesconto>1</sch:codigoTipoDesconto>
- <sch:dataDescontoTitulo>21.11.2016</sch:dataDescontoTitulo>
- <sch:percentualDescontoTitulo/>
- <sch:valorDescontoTitulo>10</sch:valorDescontoTitulo>
- <sch:valorAbatimentoTitulo/>
- <sch:quantidadeDiaProtesto>0</sch:quantidadeDiaProtesto>
- <sch:codigoTipoJuroMora>0</sch:codigoTipoJuroMora>
- <sch:codigoTipoMulta>2</sch:codigoTipoMulta>
- <sch:dataMultaTitulo>22.11.2017</sch:dataMultaTitulo>
- <sch:percentualMultaTitulo>10</sch:percentualMultaTitulo>
+ <sch:codigoTipoDesconto>0</sch:codigoTipoDesconto> 
+ <sch:codigoTipoMulta>0</sch:codigoTipoMulta> 
  <sch:codigoAceiteTitulo>N</sch:codigoAceiteTitulo>
  <sch:codigoTipoTitulo>2</sch:codigoTipoTitulo>
  <sch:textoDescricaoTipoTitulo>DUPLICATA</sch:textoDescricaoTipoTitulo>
  <sch:indicadorPermissaoRecebimentoParcial>N</sch:indicadorPermissaoRecebimentoParcial>
  <sch:textoNumeroTituloBeneficiario>987654321987654</sch:textoNumeroTituloBeneficiario>
- <sch:textoCampoUtilizacaoBeneficiario/>
  <sch:textoNumeroTituloCliente>{{.Title.OurNumber}}</sch:textoNumeroTituloCliente>
- <sch:textoMensagemBloquetoOcorrencia>Pagamento dispon├¡vel at├® a data de vencimento</sch:textoMensagemBloquetoOcorrencia>
+ <sch:textoMensagemBloquetoOcorrencia>Pagamento disponível até a data de vencimento</sch:textoMensagemBloquetoOcorrencia>
  <sch:codigoTipoInscricaoPagador>{{docType .Buyer.Document.Type}}</sch:codigoTipoInscricaoPagador>
  <sch:numeroInscricaoPagador>{{.Buyer.Document.Number}}</sch:numeroInscricaoPagador>
  <sch:nomePagador>{{.Buyer.Name}}</sch:nomePagador>
@@ -189,11 +128,7 @@ xmlns:sch="http://www.tibco.com/schemas/bws_registro_cbr/Recursos/XSD/Schema.xsd
  <sch:numeroCepPagador>{{.Buyer.Address.ZipCode}}</sch:numeroCepPagador>
  <sch:nomeMunicipioPagador>{{.Buyer.Address.City}}</sch:nomeMunicipioPagador>
  <sch:nomeBairroPagador>{{.Buyer.Address.District}}</sch:nomeBairroPagador>
- <sch:siglaUfPagador>{{.Buyer.Address.StateCode}}</sch:siglaUfPagador>
- <sch:textoNumeroTelefonePagador>45619988</sch:textoNumeroTelefonePagador>
- <sch:codigoTipoInscricaoAvalista/>
- <sch:numeroInscricaoAvalista/>
- <sch:nomeAvalistaTitulo/>
+ <sch:siglaUfPagador>{{.Buyer.Address.StateCode}}</sch:siglaUfPagador> 
  <sch:codigoChaveUsuario>1</sch:codigoChaveUsuario>
  <sch:codigoTipoCanalSolicitacao>5</sch:codigoTipoCanalSolicitacao>
  </sch:requisicao>

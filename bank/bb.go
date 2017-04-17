@@ -58,7 +58,6 @@ func (b bankBB) RegisterBoleto(boleto models.BoletoRequest) (string, error) {
 	}
 	builder := tmpl.New()
 	soap, err := builder.From(boleto).To(letters.GetRegisterBoletoBBTmpl()).XML().Transform()
-	fmt.Println(soap)
 	if err != nil {
 		j, _ := json.Marshal(models.BoletoResponse{StatusCode: http.StatusInternalServerError, ErrorDescription: err.Error()})
 		return string(j), err
