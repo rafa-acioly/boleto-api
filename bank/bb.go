@@ -81,6 +81,10 @@ func (b bankBB) RegisterBoleto(boleto models.BoletoRequest) (string, error) {
 
 }
 
+func (b bankBB) ValidateBoleto(boleto models.BoletoRequest) []string {
+	return nil
+}
+
 //GetBankNumber retorna o codigo do banco
 func (b bankBB) GetBankNumber() models.BankNumber {
 	return models.BancoDoBrasil
