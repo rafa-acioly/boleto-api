@@ -1,7 +1,11 @@
 package models
 
-import "testing"
-import "time"
+import (
+	"testing"
+	"time"
+
+	"bitbucket.org/mundipagg/boletoapi/test"
+)
 
 func TestShouldReturnValidCpfOnDocumentType(t *testing.T) {
 	document := Document{Number: "12345678901", Type: "CPF"}
@@ -97,4 +101,10 @@ func TestShouldReturnBankNumberIsValid(t *testing.T) {
 	if b.IsBankNumberValid() == false {
 		t.Fail()
 	}
+}
+
+func TestShouldAppendCollectionOfErrrors(t *testing.T) {
+	e := NewErrorCollection(ErrorResponse{Code: 200, Message: "Hue2"})
+	e.Append(ErrorResponse{Code: 100, Message: "Hue"})
+	test.ExpectTrue(len(e) == 2, t)
 }
