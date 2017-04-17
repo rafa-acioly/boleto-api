@@ -15,3 +15,12 @@ func RequestLogger() gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+// ReturnHeaders 'seta' os headers padrões de resposta
+func ReturnHeaders() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		log.Info("Registrando Headers")
+		c.Header("Content-Type", "application/json")
+		c.Next()
+	}
+}

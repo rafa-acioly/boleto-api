@@ -10,6 +10,7 @@ func InstallRestAPI() {
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
 	router.Use(gin.Recovery())
+	router.Use(ReturnHeaders())
 	if config.Get().EnableRequestLog {
 		router.Use(RequestLogger())
 	}

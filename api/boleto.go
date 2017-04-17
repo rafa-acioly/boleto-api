@@ -15,14 +15,14 @@ func registerBoleto(c *gin.Context) {
 	boleto := models.BoletoRequest{}
 	errBind := c.BindJSON(&boleto)
 	//TODO melhorar isso
+	if errBind != nil {
+		c.JSON(http.StatusBadRequest, errorResponse{Code: "000", Message: errBind.Error()})
+		return
+	}
 	d, errFmt := time.Parse("2006-01-02", boleto.Title.ExpireDate)
 	boleto.Title.ExpireDateTime = d
 	if errFmt != nil {
 		c.JSON(http.StatusBadRequest, errorResponse{Code: "000", Message: errFmt.Error()})
-		return
-	}
-	if errBind != nil {
-		c.JSON(http.StatusBadRequest, errorResponse{Code: "000", Message: errBind.Error()})
 		return
 	}
 	bank, err := bank.Get(boleto.BankNumber)
