@@ -157,13 +157,13 @@ xmlns:sch="http://www.tibco.com/schemas/bws_registro_cbr/Recursos/XSD/Schema.xsd
  <soapenv:Header/>
  <soapenv:Body>
 <sch:requisicao>
- <sch:numeroConvenio>1014051</sch:numeroConvenio>
+ <sch:numeroConvenio>{{.Agreement.AgreementNumber}}</sch:numeroConvenio>
  <sch:numeroCarteira>17</sch:numeroCarteira>
- <sch:numeroVariacaoCarteira>19</sch:numeroVariacaoCarteira>
+ <sch:numeroVariacaoCarteira>{{.Agreement.WalletVariation}}</sch:numeroVariacaoCarteira>
  <sch:codigoModalidadeTitulo>1</sch:codigoModalidadeTitulo>
- <sch:dataEmissaoTitulo>01.03.2017</sch:dataEmissaoTitulo>
- <sch:dataVencimentoTitulo>21.11.2017</sch:dataVencimentoTitulo>
- <sch:valorOriginalTitulo>30000</sch:valorOriginalTitulo>
+ <sch:dataEmissaoTitulo>{{replace (today | brdate) "/" "."}}</sch:dataEmissaoTitulo>
+ <sch:dataVencimentoTitulo>{{replace (.Title.ExpireDateTime | brdate) "/" "."}}</sch:dataVencimentoTitulo>
+ <sch:valorOriginalTitulo>{{.Title.AmountInCents}}</sch:valorOriginalTitulo>
  <sch:codigoTipoDesconto>1</sch:codigoTipoDesconto>
  <sch:dataDescontoTitulo>21.11.2016</sch:dataDescontoTitulo>
  <sch:percentualDescontoTitulo/>
@@ -180,16 +180,16 @@ xmlns:sch="http://www.tibco.com/schemas/bws_registro_cbr/Recursos/XSD/Schema.xsd
  <sch:indicadorPermissaoRecebimentoParcial>N</sch:indicadorPermissaoRecebimentoParcial>
  <sch:textoNumeroTituloBeneficiario>987654321987654</sch:textoNumeroTituloBeneficiario>
  <sch:textoCampoUtilizacaoBeneficiario/>
- <sch:textoNumeroTituloCliente>00010140510000000630</sch:textoNumeroTituloCliente>
+ <sch:textoNumeroTituloCliente>{{.Title.OurNumber}}</sch:textoNumeroTituloCliente>
  <sch:textoMensagemBloquetoOcorrencia>Pagamento dispon├¡vel at├® a data de vencimento</sch:textoMensagemBloquetoOcorrencia>
- <sch:codigoTipoInscricaoPagador>2</sch:codigoTipoInscricaoPagador>
- <sch:numeroInscricaoPagador>73400584000166</sch:numeroInscricaoPagador>
- <sch:nomePagador>MERCADO ANDREAZA DE MACEDO</sch:nomePagador>
- <sch:textoEnderecoPagador>RUA SEM NOME</sch:textoEnderecoPagador>
- <sch:numeroCepPagador>12345678</sch:numeroCepPagador>
- <sch:nomeMunicipioPagador>BRASILIA</sch:nomeMunicipioPagador>
- <sch:nomeBairroPagador>SIA</sch:nomeBairroPagador>
- <sch:siglaUfPagador>DF</sch:siglaUfPagador>
+ <sch:codigoTipoInscricaoPagador>{{docType .Buyer.Document.Type}}</sch:codigoTipoInscricaoPagador>
+ <sch:numeroInscricaoPagador>{{.Buyer.Document.Number}}</sch:numeroInscricaoPagador>
+ <sch:nomePagador>{{.Buyer.Name}}</sch:nomePagador>
+ <sch:textoEnderecoPagador>{{.Buyer.Address.Street}}</sch:textoEnderecoPagador>
+ <sch:numeroCepPagador>{{.Buyer.Address.ZipCode}}</sch:numeroCepPagador>
+ <sch:nomeMunicipioPagador>{{.Buyer.Address.City}}</sch:nomeMunicipioPagador>
+ <sch:nomeBairroPagador>{{.Buyer.Address.District}}</sch:nomeBairroPagador>
+ <sch:siglaUfPagador>{{.Buyer.Address.StateCode}}</sch:siglaUfPagador>
  <sch:textoNumeroTelefonePagador>45619988</sch:textoNumeroTelefonePagador>
  <sch:codigoTipoInscricaoAvalista/>
  <sch:numeroInscricaoAvalista/>
