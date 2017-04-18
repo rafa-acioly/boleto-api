@@ -7,12 +7,14 @@ import (
 
 	"bitbucket.org/mundipagg/boletoapi/bank"
 	"bitbucket.org/mundipagg/boletoapi/boleto"
+	"bitbucket.org/mundipagg/boletoapi/log"
 	"bitbucket.org/mundipagg/boletoapi/models"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
 //Regista um boleto em um determinado banco
 func registerBoleto(c *gin.Context) {
+	log.Info("Request")
 	boleto := models.BoletoRequest{}
 	errBind := c.BindJSON(&boleto)
 	//TODO melhorar isso

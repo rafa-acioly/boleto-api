@@ -5,6 +5,7 @@ import:
 - package: gopkg.in/gin-gonic/gin.v1
   version: v1.1.4
 - package: github.com/mundipagg/goseq
+  version: v1.0.0
 - package: github.com/Pallinder/go-randomdata
 - package: github.com/jung-kurt/gofpdf
 - package: github.com/boombuler/barcode

@@ -12,6 +12,7 @@ import (
 )
 
 func main() {
+	defer log.Close()
 	logo1()
 	installLog()
 	bank.InstallBanks()
