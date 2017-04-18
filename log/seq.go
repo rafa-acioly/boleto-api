@@ -13,6 +13,9 @@ func Install() error {
 	if err != nil {
 		return err
 	}
+	_logger.SetDefaultProperties(map[string]string{
+		"Application": "BoletoOnline",
+	})
 	logger = _logger
 	return nil
 }
