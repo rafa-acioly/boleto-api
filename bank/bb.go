@@ -10,6 +10,7 @@ import (
 
 	"bitbucket.org/mundipagg/boletoapi/auth"
 	"bitbucket.org/mundipagg/boletoapi/letters"
+	"bitbucket.org/mundipagg/boletoapi/log"
 	"bitbucket.org/mundipagg/boletoapi/models"
 	"bitbucket.org/mundipagg/boletoapi/parser"
 	"bitbucket.org/mundipagg/boletoapi/tmpl"
@@ -62,6 +63,10 @@ func (b bankBB) RegisterBoleto(boleto models.BoletoRequest) (string, error) {
 		j, _ := json.Marshal(models.BoletoResponse{StatusCode: http.StatusInternalServerError, ErrorDescription: err.Error()})
 		return string(j), err
 	}
+
+	// Teste de log
+	log.Request(soap)
+
 	response, status, errRegister := registerBoletoRequest(soap, token)
 	if errRegister != nil {
 		j, _ := json.Marshal(models.BoletoResponse{StatusCode: http.StatusInternalServerError, ErrorDescription: errRegister.Error()})

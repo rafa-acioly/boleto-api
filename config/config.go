@@ -11,6 +11,8 @@ type Config struct {
 	EnableRequestLog   bool
 	EnablePrintRequest bool
 	Environment        string
+	SEQDomain          string
+	ApplicationName    string
 }
 
 //Get retorna o objeto de configurações da aplicação
@@ -24,6 +26,8 @@ func Get() Config {
 		EnableRequestLog:   os.Getenv("ENABLE_REQUEST_LOG") == "true",   // Log a cada request no SEQ
 		EnablePrintRequest: os.Getenv("ENABLE_PRINT_REQUEST") == "true", // Imprime algumas informacoes da request no console
 		Environment:        os.Getenv("ENVIROMENT"),
+		SEQDomain:          "One",
+		ApplicationName:    "BoletoOnline",
 	}
 	return cnf
 }
