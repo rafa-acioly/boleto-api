@@ -1,5 +1,7 @@
 package config
 
+import "os"
+
 //Config é a estrutura que tem todas as configurações da aplicação
 type Config struct {
 	APIPort            string
@@ -13,13 +15,15 @@ type Config struct {
 
 //Get retorna o objeto de configurações da aplicação
 func Get() Config {
+
 	cnf := Config{
-		APIPort:            ":3000",
-		Version:            "0.0.1",
-		SEQUrl:             "http://localhost:5341/", //Pegar o SEQ de dev // SEQAPIKey:          "4jZzTybZ9bUHtJiPdh6",
-		EnableRequestLog:   false,                    // Log a cada request no SEQ
-		EnablePrintRequest: true,                     // Imprime algumas informacoes da request no console
-		Environment:        "Development",
+		APIPort:            ":" + os.Getenv("API_PORT"),
+		Version:            os.Getenv("API_VERSION"),
+		SEQUrl:             os.Getenv("SEQ_URL"),                        //Pegar o SEQ de dev
+		SEQAPIKey:          os.Getenv("SEQ_API_KEY"),                    //Staging Key:
+		EnableRequestLog:   os.Getenv("ENABLE_REQUEST_LOG") == "true",   // Log a cada request no SEQ
+		EnablePrintRequest: os.Getenv("ENABLE_PRINT_REQUEST") == "true", // Imprime algumas informacoes da request no console
+		Environment:        os.Getenv("ENVIROMENT"),
 	}
 	return cnf
 }
