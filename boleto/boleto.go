@@ -25,23 +25,53 @@ func drawPaymentLocal(pdf *gofpdf.Fpdf) {
 	pdf.MoveTo(10, 27)
 	pdf.SetFont("Arial", "B", fontSize-4)
 	pdf.Cell(20, 10, "Local de Pagamento")
-	pdf.SetFont("Arial", "", fontSize-5.2)
-	pdf.MoveTo(10, 34)
+	pdf.SetFont("Arial", "", fontSize-4)
+	pdf.MoveTo(10, 35)
 	tr := pdf.UnicodeTranslatorFromDescriptor("")
-	ht := pdf.PointConvert(fontSize - 5.2)
+	ht := pdf.PointConvert(fontSize - 4)
 	str := "ATÉ O VENCIMENTO EM QUALQUER BANCO OU CORRESPONDENTE NÃO BANCÁRIO, APÓS O VENCIMENTO,"
 	str += "PAGUE EM QUALQUER BANCO OU CORRESPONDENTE NÃO BANCÁRIO"
 	pdf.MultiCell(140, ht, tr(str), "", "J", false)
+}
+
+func drawBeneficiaryInfo(pdf *gofpdf.Fpdf) {
+	tr := pdf.UnicodeTranslatorFromDescriptor("")
+	pdf.MoveTo(10, 42)
+	pdf.SetFont("Arial", "B", fontSize-4)
+
+	pdf.Cell(20, 10, tr("Nome do Beneficiário / CNPJ / CPF / Endereço:"))
+	pdf.SetFont("Arial", "", fontSize-4)
+	pdf.MoveTo(10, 52)
+	ht := pdf.PointConvert(fontSize - 4)
+
+	beneficiaryName := "Simulação                   "
+	docType := "CNPJ"
+	docNum := "01.000.000\\0001\\00"
+	str := beneficiaryName + "\t" + docType + "\t" + docNum
+	pdf.MultiCell(340, ht, tr(str), "", "J", false)
+	pdf.MoveTo(10, 56)
+	pdf.MultiCell(340, ht, tr("Rua simulação, 1 0 Jardim Simulação - São Paulo - SP - 10000-000"), "", "J", false)
+}
+
+func drawAgencyAccountBeneficiary(pdf *gofpdf.Fpdf) {
+	tr := pdf.UnicodeTranslatorFromDescriptor("")
+	pdf.MoveTo(151, 42)
+	pdf.SetFont("Arial", "B", fontSize-4)
+	pdf.Cell(20, 10, tr("Agência/Código Beneficiário"))
+	pdf.SetFont("Arial", "", fontSize)
+	pdf.MoveTo(163, 55)
+	ht := pdf.PointConvert(fontSize)
+	pdf.MultiCell(340, ht, "157/12345678-9", "", "J", false)
 }
 
 func drawPaymentDate(pdf *gofpdf.Fpdf) {
 	pdf.MoveTo(150, 27)
 	pdf.SetFont("Arial", "B", fontSize-4)
 	pdf.Cell(20, 10, "Data de Pagamento")
-	pdf.SetFont("Arial", "", fontSize-4)
+	pdf.SetFont("Arial", "B", fontSize)
 	tr := pdf.UnicodeTranslatorFromDescriptor("")
-	ht := pdf.PointConvert(fontSize - 4)
-	pdf.MoveTo(184, 36)
+	ht := pdf.PointConvert(fontSize)
+	pdf.MoveTo(173, 40)
 	pdf.MultiCell(140, ht, tr("01/01/2016"), "", "J", false)
 }
 
@@ -51,22 +81,17 @@ func Boleto(w gin.ResponseWriter) {
 	pdf := gofpdf.New("P", "mm", "A4", "") // A4 210.0 x 297.0
 
 	pdf.SetFont("Arial", "", fontSize)
-	//ht := pdf.PointConvert(fontSize)
-	//tr := pdf.UnicodeTranslatorFromDescriptor("") // "" defaults to "cp1252"
-	//write := func(str string) {
-	//	pdf.MultiCell(150, ht, tr(str), "", "C", false)
-	//	pdf.Ln(2 * ht)
-	//}
+
 	pdf.SetMargins(15, 20, 15)
 	pdf.AddPage()
-	//	write("Boleto Banco do Brasil")
 	//Desenha as grids
-
 	pdf.Line(60, 30, 60, 22) //linha topo vertical 1
 	pdf.Line(80, 30, 80, 22) //linha topo vertical 2
-	drawRows(10, 30, 2, pdf)
+	drawRows(15, 30, 2, pdf)
 	drawPaymentLocal(pdf)
 	drawPaymentDate(pdf)
+	drawBeneficiaryInfo(pdf)
+	drawAgencyAccountBeneficiary(pdf)
 	drawRows(25, 70, 2, pdf)
 
 	//Desenha o numero 341-7
