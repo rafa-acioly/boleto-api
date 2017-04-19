@@ -48,10 +48,12 @@ func configFlags() {
 		os.Setenv("API_PORT", "3000")
 		os.Setenv("API_VERSION", "0.0.1")
 		os.Setenv("ENVIROMENT", "Development")
-		os.Setenv("SEQ_URL", "http://localhost:5341/")
-		os.Setenv("SEQ_API_KEY", "") //4jZzTybZ9bUHtJiPdh6
+		os.Setenv("SEQ_URL", "http://stglog.mundipagg.com/") // http://localhost:5341/
+		os.Setenv("SEQ_API_KEY", "4jZzTybZ9bUHtJiPdh6")      //4jZzTybZ9bUHtJiPdh6
 		os.Setenv("ENABLE_REQUEST_LOG", "false")
 		os.Setenv("ENABLE_PRINT_REQUEST", "true")
+		os.Setenv("URL_BB_REGISTER_BOLETO", "https://cobranca.desenv.bb.com.br:7101/registrarBoleto")
+		os.Setenv("URL_BB_TOKEN", "https://oauth.desenv.bb.com.br:43000/oauth/token")
 	}
 }
 func main() {
