@@ -29,6 +29,24 @@ func (b BankNumber) IsBankNumberValid() bool {
 	}
 }
 
+// BankName retorna o nome do banco
+func (b BankNumber) BankName() string {
+	switch b {
+	case BancoDoBrasil:
+		return "BancoDoBrasil"
+	case Itau:
+		return "Itau"
+	case Santander:
+		return "Santander"
+	case Caixa:
+		return "Caixa"
+	case Bradesco:
+		return "Bradesco"
+	default:
+		return ""
+	}
+}
+
 const (
 	// BancoDoBrasil constante do Banco do Brasil
 	BancoDoBrasil = 1
