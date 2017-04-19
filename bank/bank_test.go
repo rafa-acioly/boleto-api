@@ -8,7 +8,6 @@ import (
 )
 
 func TestShouldExecuteBBStrategy(t *testing.T) {
-	InstallBanks()
 	var bb models.BankNumber = models.BancoDoBrasil
 	bank, err := Get(bb)
 	number := bank.GetBankNumber()
