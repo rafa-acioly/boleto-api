@@ -14,7 +14,7 @@ import (
 
 //Regista um boleto em um determinado banco
 func registerBoleto(c *gin.Context) {
-	log.Info("Request")
+	log.Operation = "RegisterBoleto"
 	boleto := models.BoletoRequest{}
 	errBind := c.BindJSON(&boleto)
 	//TODO melhorar isso

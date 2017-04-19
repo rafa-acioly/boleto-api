@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"bitbucket.org/mundipagg/boletoapi/auth"
+	"bitbucket.org/mundipagg/boletoapi/config"
 	"bitbucket.org/mundipagg/boletoapi/letters"
 	"bitbucket.org/mundipagg/boletoapi/log"
 	"bitbucket.org/mundipagg/boletoapi/models"
@@ -22,7 +23,7 @@ type bankBB struct {
 
 func (b bankBB) Login(user, password, body string) (auth.Token, error) {
 	client := util.DefaultHTTPClient()
-	req, err := http.NewRequest("POST", "https://oauth.desenv.bb.com.br:43000/oauth/token", strings.NewReader(body))
+	req, err := http.NewRequest("POST", config.Get().URLBBToken, strings.NewReader(body))
 	if err != nil {
 		return auth.Token{}, err
 	}
@@ -64,10 +65,8 @@ func (b bankBB) RegisterBoleto(boleto models.BoletoRequest) (string, error) {
 		return string(j), err
 	}
 
-	// Teste de log
-	log.Request(soap)
+	response, status, errRegister := b.registerBoletoRequest(soap, token)
 
-	response, status, errRegister := registerBoletoRequest(soap, token)
 	if errRegister != nil {
 		j, _ := json.Marshal(models.BoletoResponse{StatusCode: http.StatusInternalServerError, ErrorDescription: errRegister.Error()})
 		return string(j), errRegister
@@ -83,7 +82,6 @@ func (b bankBB) RegisterBoleto(boleto models.BoletoRequest) (string, error) {
 		fmt.Println(errJSON.Error())
 	}
 	return j, nil
-
 }
 
 func (b bankBB) ValidateBoleto(boleto models.BoletoRequest) []string {
@@ -96,18 +94,19 @@ func (b bankBB) GetBankNumber() models.BankNumber {
 }
 
 //registerBoletoRequest faz a requisição no serviço do banco para registro de boleto
-func registerBoletoRequest(message string, token auth.Token) (string, int, error) {
+func (b bankBB) registerBoletoRequest(message string, token auth.Token) (string, int, error) {
 	client := util.DefaultHTTPClient()
 	body := strings.NewReader(message)
-	req, err := http.NewRequest("POST", "https://cobranca.desenv.bb.com.br:7101/registrarBoleto", body)
+	req, err := http.NewRequest("POST", config.Get().URLBBRegisterBoleto, body)
 	if err != nil {
 		return "", http.StatusInternalServerError, err
 	}
 	req.Header.Add("SOAPACTION", "registrarBoleto")
 	req.Header.Add("Authorization", "Bearer "+token.AccessToken)
 	req.Header.Add("Content-Type", "text/xml; charset=utf-8")
-	//data, _ := httputil.DumpRequest(req, true)
-	//fmt.Println(string(data))
+
+	log.Request(message, config.Get().URLBBRegisterBoleto, req.Header, b.GetBankNumber())
+
 	resp, errResp := client.Do(req)
 	if errResp != nil {
 		return "", resp.StatusCode, errResp
@@ -117,5 +116,10 @@ func registerBoletoRequest(message string, token auth.Token) (string, int, error
 	if errResponse != nil {
 		return "", resp.StatusCode, errResponse
 	}
-	return string(data), resp.StatusCode, nil
+
+	sData := string(data)
+
+	log.Response(sData, b.GetBankNumber())
+
+	return sData, resp.StatusCode, nil
 }
