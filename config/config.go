@@ -27,7 +27,7 @@ func Get() Config {
 		SEQAPIKey:           os.Getenv("SEQ_API_KEY"),                    //Staging Key:
 		EnableRequestLog:    os.Getenv("ENABLE_REQUEST_LOG") == "true",   // Log a cada request no SEQ
 		EnablePrintRequest:  os.Getenv("ENABLE_PRINT_REQUEST") == "true", // Imprime algumas informacoes da request no console
-		Environment:         os.Getenv("ENVIROMENT"),
+		Environment:         os.Getenv("ENVIRONMENT"),
 		SEQDomain:           "One",
 		ApplicationName:     "BoletoOnline",
 		URLBBRegisterBoleto: os.Getenv("URL_BB_REGISTER_BOLETO"),
