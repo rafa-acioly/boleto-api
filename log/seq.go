@@ -16,6 +16,12 @@ var Operation string
 // Recipient o nome do banco
 var Recipient string
 
+type Log struct {
+	Operation string
+	Recipient string
+	logger    *goseq.Logger
+}
+
 //Install instala o "servico" de log do SEQ
 func Install() error {
 	_logger, err := goseq.GetLogger(config.Get().SEQUrl, config.Get().SEQAPIKey)
@@ -35,37 +41,42 @@ func formatter(message string) string {
 	return "[{Application}: {Operation}] - {MessageType} " + message
 }
 
+//CreateLog cria uma nova instancia do Log
+func CreateLog() *Log {
+	return &Log{
+		logger: logger,
+	}
+}
+
 // Request loga o request para algum banco
-func Request(content interface{}, url string, headers http.Header) {
+func (l Log) Request(content interface{}, url string, headers http.Header) {
 	go (func() {
 		messageType = "Request"
 		props := goseq.NewProperties()
 		props.AddProperty("MessageType", messageType)
 		props.AddProperty("Content", content)
-		props.AddProperty("Recipient", Recipient)
+		props.AddProperty("Recipient", l.Recipient)
 		props.AddProperty("Headers", headers)
-		props.AddProperty("Operation", Operation)
+		props.AddProperty("Operation", l.Operation)
 		props.AddProperty("URL", url)
 
 		msg := formatter("to {Recipient} ({URL})")
 
-		logger.Information(msg, props)
+		l.logger.Information(msg, props)
 	})()
 }
 
 // Response loga o response para algum banco
-func Response(content interface{}) {
+func (l Log) Response(content interface{}) {
 	go (func() {
 		messageType = "Response"
 		props := goseq.NewProperties()
 		props.AddProperty("MessageType", messageType)
 		props.AddProperty("Content", content)
-		props.AddProperty("Recipient", Recipient)
-		props.AddProperty("Operation", Operation)
-
+		props.AddProperty("Recipient", l.Recipient)
+		props.AddProperty("Operation", l.Operation)
 		msg := formatter("from {Recipient}")
-
-		logger.Information(msg, props)
+		l.logger.Information(msg, props)
 	})()
 }
 

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"bitbucket.org/mundipagg/boletoapi/auth"
+	"bitbucket.org/mundipagg/boletoapi/log"
 	"bitbucket.org/mundipagg/boletoapi/models"
 )
 
@@ -13,13 +14,16 @@ type Bank interface {
 	RegisterBoleto(models.BoletoRequest) (string, error)
 	ValidateBoleto(models.BoletoRequest) []string
 	GetBankNumber() models.BankNumber
+	Log() *log.Log
 }
 
 //Get retorna estrategia de acordo com o banco ou erro caso o banco não exista
 func Get(number models.BankNumber) (Bank, error) {
 	switch number {
 	case models.BancoDoBrasil:
-		return bankBB{}, nil
+		return bankBB{
+			log: log.CreateLog(),
+		}, nil
 	default:
 		return nil, fmt.Errorf("Banco %d não existe", number)
 	}

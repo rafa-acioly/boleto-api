@@ -1,21 +1,19 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
 	"time"
 
 	"bitbucket.org/mundipagg/boletoapi/bank"
 	"bitbucket.org/mundipagg/boletoapi/boleto"
-	"bitbucket.org/mundipagg/boletoapi/log"
 	"bitbucket.org/mundipagg/boletoapi/models"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
 //Regista um boleto em um determinado banco
 func registerBoleto(c *gin.Context) {
-	log.Operation = "RegisterBoleto"
-
 	boleto := models.BoletoRequest{}
 	errBind := c.BindJSON(&boleto)
 	//TODO melhorar isso
@@ -31,21 +29,22 @@ func registerBoleto(c *gin.Context) {
 		return
 	}
 	bank, err := bank.Get(boleto.BankNumber)
+	lg := bank.Log()
+	lg.Operation = "RegisterBoleto"
 	if err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse{Code: "001", Message: err.Error()})
 		return
 	}
-
-	log.Recipient = bank.GetBankNumber().BankName()
-	log.Request(boleto, c.Request.URL.RequestURI(), c.Request.Header)
+	lg.Recipient = bank.GetBankNumber().BankName()
+	lg.Request(boleto, c.Request.URL.RequestURI(), c.Request.Header)
 
 	resp, errR := bank.RegisterBoleto(boleto)
 	if errR != nil {
 		c.Data(http.StatusBadRequest, "application/json", []byte(resp))
 		return
 	}
-
-	log.Response(resp)
+	fmt.Println(lg)
+	lg.Response(resp)
 
 	c.Data(http.StatusOK, "application/json", []byte(resp))
 }
