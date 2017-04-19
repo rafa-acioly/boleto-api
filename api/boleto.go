@@ -15,6 +15,7 @@ import (
 //Regista um boleto em um determinado banco
 func registerBoleto(c *gin.Context) {
 	log.Operation = "RegisterBoleto"
+
 	boleto := models.BoletoRequest{}
 	errBind := c.BindJSON(&boleto)
 	//TODO melhorar isso
@@ -22,6 +23,7 @@ func registerBoleto(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorResponse{Code: "000", Message: errBind.Error()})
 		return
 	}
+
 	d, errFmt := time.Parse("2006-01-02", boleto.Title.ExpireDate)
 	boleto.Title.ExpireDateTime = d
 	if errFmt != nil {
@@ -33,11 +35,18 @@ func registerBoleto(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorResponse{Code: "001", Message: err.Error()})
 		return
 	}
+
+	log.Recipient = bank.GetBankNumber().BankName()
+	log.Request(boleto, c.Request.URL.RequestURI(), c.Request.Header)
+
 	resp, errR := bank.RegisterBoleto(boleto)
 	if errR != nil {
 		c.Data(http.StatusBadRequest, "application/json", []byte(resp))
 		return
 	}
+
+	log.Response(resp)
+
 	c.Data(http.StatusOK, "application/json", []byte(resp))
 }
 

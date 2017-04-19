@@ -105,7 +105,7 @@ func (b bankBB) registerBoletoRequest(message string, token auth.Token) (string,
 	req.Header.Add("Authorization", "Bearer "+token.AccessToken)
 	req.Header.Add("Content-Type", "text/xml; charset=utf-8")
 
-	log.Request(message, config.Get().URLBBRegisterBoleto, req.Header, b.GetBankNumber())
+	log.Request(message, config.Get().URLBBRegisterBoleto, req.Header)
 
 	resp, errResp := client.Do(req)
 	if errResp != nil {
@@ -119,7 +119,7 @@ func (b bankBB) registerBoletoRequest(message string, token auth.Token) (string,
 
 	sData := string(data)
 
-	log.Response(sData, b.GetBankNumber())
+	log.Response(sData)
 
 	return sData, resp.StatusCode, nil
 }

@@ -11,9 +11,6 @@ func InstallRestAPI() {
 	router := gin.New()
 	router.Use(gin.Recovery())
 	router.Use(ReturnHeaders())
-	if config.Get().EnableRequestLog {
-		router.Use(RequestLogger())
-	}
 	if config.Get().EnablePrintRequest {
 		router.Use(gin.Logger())
 	}
