@@ -1,14 +1,20 @@
 package log
 
 import (
+	"net/http"
+
+	"fmt"
+
 	"bitbucket.org/mundipagg/boletoapi/config"
+	"bitbucket.org/mundipagg/boletoapi/models"
 	"github.com/mundipagg/goseq"
 )
 
 var logger *goseq.Logger
 var messageType string
+
+// Operation a operacao usada na API
 var Operation string
-var Recipient string
 
 //Install instala o "servico" de log do SEQ
 func Install() error {
@@ -26,16 +32,35 @@ func Install() error {
 }
 
 func formatter(message string) string {
-	return "[" + config.Get().ApplicationName + ": " + Operation + "] - " + messageType + " " + message
+	return "[{Application}: {Operation}] - {MessageType} " + message
 }
 
-func Request(content string) {
+// Request loga o request para algum banco
+func Request(content, url string, headers http.Header, bankNumber models.BankNumber) {
 	messageType = "Request"
 	props := goseq.NewProperties()
 	props.AddProperty("MessageType", messageType)
 	props.AddProperty("Content", content)
+	props.AddProperty("BankName", bankNumber.BankName())
+	props.AddProperty("Headers", formatHeaders(headers))
+	props.AddProperty("Operation", Operation)
+	props.AddProperty("URL", url)
 
-	msg := formatter("to BancoDoBrasil (http://example.com)")
+	msg := formatter("to {BankName} ({URL})")
+
+	logger.Information(msg, props)
+}
+
+// Response loga o response para algum banco
+func Response(content string, bankNumber models.BankNumber) {
+	messageType = "Response"
+	props := goseq.NewProperties()
+	props.AddProperty("MessageType", messageType)
+	props.AddProperty("Content", content)
+	props.AddProperty("BankName", bankNumber.BankName())
+	props.AddProperty("Operation", Operation)
+
+	msg := formatter("from {BankName}")
 
 	logger.Information(msg, props)
 }
@@ -58,4 +83,14 @@ func Fatal(msg string) {
 //Close fecha a conexao com o SEQ
 func Close() {
 	logger.Close()
+}
+
+func formatHeaders(headers http.Header) string {
+	s := ""
+	for name, headers := range headers {
+		for _, h := range headers {
+			s += fmt.Sprintf("%v: %v\n", name, h)
+		}
+	}
+	return s
 }
