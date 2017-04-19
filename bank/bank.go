@@ -23,7 +23,7 @@ func InstallBanks() {
 	bankRouter[models.BancoDoBrasil] = bankBB{}
 }
 
-//Get retornaa estrategia de acordo com o banco ou erro caso o banco não exista
+//Get retorna estrategia de acordo com o banco ou erro caso o banco não exista
 func Get(number models.BankNumber) (Bank, error) {
 	bank, ok := bankRouter[number]
 	if !ok {
