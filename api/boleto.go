@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 
 	"time"
@@ -43,7 +42,6 @@ func registerBoleto(c *gin.Context) {
 		c.Data(http.StatusBadRequest, "application/json", []byte(resp))
 		return
 	}
-	fmt.Println(lg)
 	lg.Response(resp)
 
 	c.Data(http.StatusOK, "application/json", []byte(resp))

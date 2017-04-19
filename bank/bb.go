@@ -3,7 +3,6 @@ package bank
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -84,7 +83,7 @@ func (b bankBB) RegisterBoleto(boleto models.BoletoRequest) (string, error) {
 	value, _ := parser.ExtractValues(response, letters.GetRegisterBoletoReponseTranslator())
 	j, errJSON := builder.From(value).To(letters.GetRegisterBoletoBBApiResponseTmpl()).Transform()
 	if errJSON != nil {
-		fmt.Println(errJSON.Error())
+		return "", errJSON
 	}
 	return j, nil
 }
