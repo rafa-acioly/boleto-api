@@ -15,19 +15,12 @@ type Bank interface {
 	GetBankNumber() models.BankNumber
 }
 
-var bankRouter map[models.BankNumber]Bank
-
-//InstallBanks instala os bancos configurados no "roteador" de bancos
-func InstallBanks() {
-	bankRouter = make(map[models.BankNumber]Bank)
-	bankRouter[models.BancoDoBrasil] = bankBB{}
-}
-
 //Get retorna estrategia de acordo com o banco ou erro caso o banco não exista
 func Get(number models.BankNumber) (Bank, error) {
-	bank, ok := bankRouter[number]
-	if !ok {
+	switch number {
+	case models.BancoDoBrasil:
+		return bankBB{}, nil
+	default:
 		return nil, fmt.Errorf("Banco %d não existe", number)
 	}
-	return bank, nil
 }

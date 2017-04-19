@@ -12,7 +12,6 @@ import (
 	"os"
 
 	"bitbucket.org/mundipagg/boletoapi/api"
-	"bitbucket.org/mundipagg/boletoapi/bank"
 	"bitbucket.org/mundipagg/boletoapi/config"
 	"bitbucket.org/mundipagg/boletoapi/log"
 )
@@ -62,7 +61,6 @@ func main() {
 	configFlags()
 	logo1()
 	installLog()
-	bank.InstallBanks()
 	api.InstallRestAPI()
 }
 
