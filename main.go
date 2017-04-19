@@ -34,6 +34,7 @@ func init() {
 
 func handleSignal(c chan os.Signal) {
 	<-c
+	log.Close()
 	log.Info("Quiting BoletoApi")
 	os.Exit(1)
 }
@@ -59,7 +60,6 @@ func configFlags() {
 func main() {
 	flag.Parse()
 	configFlags()
-	defer log.Close()
 	logo1()
 	installLog()
 	bank.InstallBanks()
