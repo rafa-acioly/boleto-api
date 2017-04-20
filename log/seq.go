@@ -70,7 +70,7 @@ func (l Log) Request(content interface{}, url string, headers http.Header) {
 }
 
 // Response loga o response para algum banco
-func (l Log) Response(content interface{}) {
+func (l Log) Response(content interface{}, url string) {
 	go (func() {
 		messageType = "Response"
 		props := goseq.NewProperties()
@@ -79,7 +79,8 @@ func (l Log) Response(content interface{}) {
 		props.AddProperty("Recipient", l.Recipient)
 		props.AddProperty("Operation", l.Operation)
 		props.AddProperty("NossoNumero", l.NossoNumero)
-		msg := formatter("from {Recipient}")
+		props.AddProperty("URL", url)
+		msg := formatter("from {Recipient} ({URL})")
 		l.logger.Information(msg, props)
 	})()
 }

@@ -31,9 +31,21 @@ func (b bankBB) Login(user, password, body string) (auth.Token, error) {
 	if err != nil {
 		return auth.Token{}, err
 	}
+
 	req.SetBasicAuth(user, password)
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Add("Cache-Control", "no-cache")
+
+	b.log.Request(struct {
+		Username string
+		Password string
+		Body     string
+	}{
+		Username: user,
+		Password: password,
+		Body:     body,
+	}, config.Get().URLBBToken, req.Header)
+
 	resp, errResp := client.Do(req)
 	if errResp != nil {
 		return auth.Token{}, errResp
@@ -49,6 +61,9 @@ func (b bankBB) Login(user, password, body string) (auth.Token, error) {
 	if errParser != nil {
 		return auth.Token{}, errParser
 	}
+
+	b.log.Response(tok, config.Get().URLBBToken)
+
 	if tok.Status != http.StatusOK {
 		return tok, errors.New(tok.ErrorDescription)
 	}
@@ -81,7 +96,7 @@ func (b bankBB) RegisterBoleto(boleto models.BoletoRequest) (string, error) {
 		return string(j), errRegister
 	}
 	value, _ := parser.ExtractValues(response, letters.GetRegisterBoletoReponseTranslator())
-	j, errJSON := builder.From(value).To(letters.GetRegisterBoletoBBApiResponseTmpl()).Transform()
+	j, errJSON := builder.From(value).To(letters.GetRegisterBoletoAPIResponseTmpl()).Transform()
 	if errJSON != nil {
 		return "", errJSON
 	}
@@ -122,7 +137,7 @@ func (b bankBB) registerBoletoRequest(message string, token auth.Token) (string,
 	}
 
 	sData := string(data)
-	b.log.Response(sData)
+	b.log.Response(sData, config.Get().URLBBRegisterBoleto)
 
 	return sData, resp.StatusCode, nil
 }
