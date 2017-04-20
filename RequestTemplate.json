@@ -41,10 +41,13 @@
         }
     },
     "BoletoResponse": {
+        "Url": "http://mundipagg.com/v1/boleto?hue=br&bank=1&type=pdf",
+        "DigitableLine": "00190000090101405100500066673179971340000010000",
+        "BarCodeNumber": "00199713400000100000000001014051000006667317",
         "Errors": [
             {
-                "Code": 200,
-                "Message": "Mensagem do erro"
+                "Code": "CBRSR005",
+                "Message": "?CPF do pagador nao encontrado na base."
             }
         ]
     }
