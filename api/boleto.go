@@ -30,6 +30,7 @@ func registerBoleto(c *gin.Context) {
 	bank, err := bank.Get(boleto.BankNumber)
 	lg := bank.Log()
 	lg.Operation = "RegisterBoleto"
+	lg.NossoNumero = boleto.Title.OurNumber
 	if err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse{Code: "001", Message: err.Error()})
 		return

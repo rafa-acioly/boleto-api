@@ -16,10 +16,12 @@ var Operation string
 // Recipient o nome do banco
 var Recipient string
 
+// Log struct com os elemtos do log
 type Log struct {
-	Operation string
-	Recipient string
-	logger    *goseq.Logger
+	Operation   string
+	Recipient   string
+	NossoNumero int
+	logger      *goseq.Logger
 }
 
 //Install instala o "servico" de log do SEQ
@@ -58,6 +60,7 @@ func (l Log) Request(content interface{}, url string, headers http.Header) {
 		props.AddProperty("Recipient", l.Recipient)
 		props.AddProperty("Headers", headers)
 		props.AddProperty("Operation", l.Operation)
+		props.AddProperty("NossoNumero", l.NossoNumero)
 		props.AddProperty("URL", url)
 
 		msg := formatter("to {Recipient} ({URL})")
@@ -75,6 +78,7 @@ func (l Log) Response(content interface{}) {
 		props.AddProperty("Content", content)
 		props.AddProperty("Recipient", l.Recipient)
 		props.AddProperty("Operation", l.Operation)
+		props.AddProperty("NossoNumero", l.NossoNumero)
 		msg := formatter("from {Recipient}")
 		l.logger.Information(msg, props)
 	})()
