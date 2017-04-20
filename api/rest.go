@@ -1,7 +1,10 @@
 package api
 
 import (
+	"net/http"
+
 	"bitbucket.org/mundipagg/boletoapi/config"
+	"bitbucket.org/mundipagg/boletoapi/models"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
@@ -11,6 +14,7 @@ func InstallRestAPI() {
 	router := gin.New()
 	router.Use(gin.Recovery())
 	router.Use(ReturnHeaders())
+	router.Use(ParseBoleto())
 	if config.Get().EnablePrintRequest {
 		router.Use(gin.Logger())
 	}
@@ -18,7 +22,13 @@ func InstallRestAPI() {
 	router.Run(config.Get().APIPort)
 }
 
-type errorResponse struct {
-	Code    string
-	Message string
+func checkError(c *gin.Context, err error) bool {
+	if err != nil {
+		errResp := models.BoletoResponse{
+			Errors: models.NewSingleErrorCollection("MP400", err.Error()),
+		}
+		c.JSON(http.StatusOK, errResp)
+		return true
+	}
+	return false
 }
