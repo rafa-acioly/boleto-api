@@ -52,8 +52,8 @@ func configFlags() {
 		os.Setenv("SEQ_API_KEY", "4jZzTybZ9bUHtJiPdh6")      //4jZzTybZ9bUHtJiPdh6
 		os.Setenv("ENABLE_REQUEST_LOG", "false")
 		os.Setenv("ENABLE_PRINT_REQUEST", "true")
-		os.Setenv("URL_BB_REGISTER_BOLETO", "https://cobranca.desenv.bb.com.br:7101/registrarBoleto")
-		os.Setenv("URL_BB_TOKEN", "https://oauth.desenv.bb.com.br:43000/oauth/token")
+		os.Setenv("URL_BB_REGISTER_BOLETO", "https://cobranca.homologa.bb.com.br:7101/registrarBoleto")
+		os.Setenv("URL_BB_TOKEN", "https://oauth.hm.bb.com.br:43000/oauth/token")
 	}
 }
 func main() {
