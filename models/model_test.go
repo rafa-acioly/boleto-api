@@ -104,7 +104,12 @@ func TestShouldReturnBankNumberIsValid(t *testing.T) {
 }
 
 func TestShouldAppendCollectionOfErrrors(t *testing.T) {
-	e := NewErrorCollection(ErrorResponse{Code: 200, Message: "Hue2"})
-	e.Append(ErrorResponse{Code: 100, Message: "Hue"})
+	e := NewErrorCollection(ErrorResponse{Code: "200", Message: "Hue2"})
+	e.Append(ErrorResponse{Code: "100", Message: "Hue"})
 	test.ExpectTrue(len(e) == 2, t)
+}
+
+func TestShouldCreateNewSingleErrorCollection(t *testing.T) {
+	e := NewSingleErrorCollection("200", "Hue2")
+	test.ExpectTrue(len(e) == 1, t)
 }
