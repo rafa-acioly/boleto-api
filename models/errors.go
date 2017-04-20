@@ -2,7 +2,7 @@ package models
 
 // ErrorResponse objeto de erro
 type ErrorResponse struct {
-	Code    int
+	Code    string
 	Message string
 }
 
@@ -22,6 +22,19 @@ func NewErrorCollection(errorResponse ErrorResponse) Errors {
 // NewEmptyErrorCollection cria nova coleção de erros vazia
 func NewEmptyErrorCollection() Errors {
 	return []ErrorResponse{}
+}
+
+//NewErrorResponse retorna um ErrorResponse
+func NewErrorResponse(code, message string) ErrorResponse {
+	return ErrorResponse{
+		Code:    code,
+		Message: message,
+	}
+}
+
+//NewSingleErrorCollection retorna colecao com um erro apenas
+func NewSingleErrorCollection(code, message string) Errors {
+	return NewErrorCollection(NewErrorResponse(code, message))
 }
 
 // Append adiciona mais um erro na coleção

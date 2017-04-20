@@ -74,26 +74,29 @@ func (b bankBB) RegisterBoleto(boleto models.BoletoRequest) (string, error) {
 	body := "grant_type=client_credentials&scope=cobranca.registro-boletos"
 	token, err := b.Login(boleto.Authentication.Username, boleto.Authentication.Password, body)
 	if err != nil {
-		j, _ := json.Marshal(models.BoletoResponse{StatusCode: token.Status, Error: token.Error, ErrorDescription: token.ErrorDescription})
-		return string(j), err
+		return "", err
 	}
 	builder := tmpl.New()
 	soap, err := builder.From(boleto).To(letters.GetRegisterBoletoBBTmpl()).XML().Transform()
+
 	if err != nil {
-		j, _ := json.Marshal(models.BoletoResponse{StatusCode: http.StatusInternalServerError, ErrorDescription: err.Error()})
-		return string(j), err
+		return "", err
 	}
 
 	response, status, errRegister := b.registerBoletoRequest(soap, token)
 
 	if errRegister != nil {
-		j, _ := json.Marshal(models.BoletoResponse{StatusCode: http.StatusInternalServerError, ErrorDescription: errRegister.Error()})
-		return string(j), errRegister
+		return "", errRegister
 	}
 	if status != http.StatusOK {
 		value, _ := parser.ExtractValues(response, letters.GetRegisterBoletoError())
-		j, _ := json.Marshal(models.BoletoResponse{StatusCode: http.StatusBadRequest, ErrorDescription: value["messageString"], Error: value["faultCode"]})
-		return string(j), errRegister
+		j, _ := json.Marshal(
+			models.BoletoResponse{
+				StatusCode: http.StatusBadRequest,
+				Errors:     models.NewSingleErrorCollection(value["faultCode"], value["messageString"]),
+			},
+		)
+		return string(j), nil
 	}
 	value, _ := parser.ExtractValues(response, letters.GetRegisterBoletoReponseTranslator())
 	j, errJSON := builder.From(value).To(letters.GetRegisterBoletoAPIResponseTmpl()).Transform()
