@@ -145,7 +145,7 @@ func GetRegisterBoletoBBTmpl() string {
 func GetRegisterBoletoReponseTranslator() *parser.TranslatorMap {
 	translator := parser.NewTranslatorMap()
 	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:codigoRetornoPrograma", MapKey: "returnCode"})
-	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:nomeProgramaErro", MapKey: "programError"})
+	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:nomeProgramaErro", MapKey: "errorCode"})
 	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:textoMensagemErro", MapKey: "errorMessage"})
 	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:numeroPosicaoErroPrograma", MapKey: "positionNumberErrorProgram"})
 	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:codigoTipoRetornoPrograma", MapKey: "returnTypeCodeProgram"})
@@ -194,7 +194,7 @@ const bbRegisterBoletoResponse = `{
 	"beneficiaryCityCode": "{{trim .beneficiaryCityCode}}",
 	"beneficiaryIndicatorEvidence": "{{trim .beneficiaryIndicatorEvidence}}",
 	"returnCode": "{{trim .returnCode}}",
-	"programError": "{{trim .programError}}",
+	"programError": "{{trim .errorCode}}",
 	"positionNumberErrorProgram": "{{trim .positionNumberErrorProgram}}",
 	"returnTypeCodeProgram": "{{trim .returnTypeCodeProgram}}",
 	"chargingContractNumber": "{{trim .chargingContractNumber}}",
