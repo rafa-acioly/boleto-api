@@ -11,7 +11,7 @@ import (
 //Bank é a interface que vai oferecer os serviços em comum entre os bancos
 type Bank interface {
 	Login(string, string, string) (auth.Token, error)
-	RegisterBoleto(models.BoletoRequest) (string, error)
+	RegisterBoleto(models.BoletoRequest) (models.BoletoResponse, error)
 	ValidateBoleto(models.BoletoRequest) []string
 	GetBankNumber() models.BankNumber
 	Log() *log.Log

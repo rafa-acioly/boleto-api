@@ -69,41 +69,45 @@ func (b bankBB) Login(user, password, body string) (auth.Token, error) {
 	}
 	return tok, nil
 }
-func (b bankBB) RegisterBoleto(boleto models.BoletoRequest) (string, error) {
+func (b bankBB) RegisterBoleto(boleto models.BoletoRequest) (models.BoletoResponse, error) {
 	//Body do request necessário para pegar o token do registrar boleto
 	body := "grant_type=client_credentials&scope=cobranca.registro-boletos"
 	token, err := b.Login(boleto.Authentication.Username, boleto.Authentication.Password, body)
 	if err != nil {
-		return "", err
+		return models.BoletoResponse{}, err
 	}
 	builder := tmpl.New()
 	soap, err := builder.From(boleto).To(letters.GetRegisterBoletoBBTmpl()).XML().Transform()
 
 	if err != nil {
-		return "", err
+		return models.BoletoResponse{}, err
 	}
 
 	response, status, errRegister := b.registerBoletoRequest(soap, token)
 
 	if errRegister != nil {
-		return "", errRegister
+		return models.BoletoResponse{}, errRegister
 	}
 	if status != http.StatusOK {
 		value, _ := parser.ExtractValues(response, letters.GetRegisterBoletoError())
-		j, _ := json.Marshal(
-			models.BoletoResponse{
-				StatusCode: http.StatusBadRequest,
-				Errors:     models.NewSingleErrorCollection(value["faultCode"], value["messageString"]),
-			},
-		)
-		return string(j), nil
+		j := models.BoletoResponse{
+			StatusCode: http.StatusBadRequest,
+			Errors:     models.NewSingleErrorCollection(value["faultCode"], value["messageString"]),
+		}
+
+		return j, nil
 	}
 	value, _ := parser.ExtractValues(response, letters.GetRegisterBoletoReponseTranslator())
 	j, errJSON := builder.From(value).To(letters.GetRegisterBoletoAPIResponseTmpl()).Transform()
 	if errJSON != nil {
-		return "", errJSON
+		return models.BoletoResponse{}, errJSON
 	}
-	return j, nil
+	resp := models.BoletoResponse{}
+	errParse := json.Unmarshal([]byte(j), &resp)
+	if errParse != nil {
+		return models.BoletoResponse{}, errParse
+	}
+	return resp, nil
 }
 
 func (b bankBB) ValidateBoleto(boleto models.BoletoRequest) []string {

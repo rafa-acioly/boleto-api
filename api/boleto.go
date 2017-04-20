@@ -5,8 +5,6 @@ import (
 
 	"time"
 
-	"encoding/json"
-
 	"bitbucket.org/mundipagg/boletoapi/bank"
 	"bitbucket.org/mundipagg/boletoapi/boleto"
 	"bitbucket.org/mundipagg/boletoapi/models"
@@ -48,15 +46,16 @@ func registerBoleto(c *gin.Context) {
 		errResp := models.BoletoResponse{
 			Errors: models.NewSingleErrorCollection("MP400", err.Error()),
 		}
-
-		j, _ := json.Marshal(errResp)
-		c.Data(http.StatusBadRequest, "application/json", j)
+		c.JSON(http.StatusBadRequest, errResp)
 		return
 	}
 
 	lg.Response(resp, c.Request.URL.RequestURI())
-
-	c.Data(http.StatusOK, "application/json", []byte(resp))
+	st := http.StatusOK
+	if len(resp.Errors) > 0 {
+		st = http.StatusBadRequest
+	}
+	c.JSON(st, resp)
 }
 
 func getBoleto(c *gin.Context) {

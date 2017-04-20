@@ -17,8 +17,8 @@ func (b bankCaixa) Log() *log.Log {
 func (b bankCaixa) Login(user, password, body string) (auth.Token, error) {
 	return auth.Token{Status: 200}, nil
 }
-func (b bankCaixa) RegisterBoleto(boleto models.BoletoRequest) (string, error) {
-	return "Mock Caixa", nil
+func (b bankCaixa) RegisterBoleto(boleto models.BoletoRequest) (models.BoletoResponse, error) {
+	return models.BoletoResponse{}, nil
 }
 
 func (b bankCaixa) ValidateBoleto(boleto models.BoletoRequest) []string {
