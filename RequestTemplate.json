@@ -7,8 +7,28 @@
         },
         "Agreement": {
             "AgreementNumber": 10,
-            // "Wallet": 17, // Talvez não usemos
-            "WalletVariation": 32
+            "Wallet": 17, // Talvez não usemos
+            "WalletVariation": 32,
+            "Agency": 1234,
+            "AgencyDigit": 1, // Pode ser nulo e nós vamos ter que calcular
+            "Account": 12345,
+            "AccountDigit": 2 // Pode ser nulo e nós vamos ter que calcular
+        },
+        "Recipient": {
+            "Name": "Nome da loja",
+            "Document": {
+                "Type": "CPF", // CPF ou CNPJ
+                "Number": "12345678901" // Número do CPF/CNPJ que será validado
+            },
+            "Address": {
+                "Street": "R. Conde de Bonfim",
+                "Number": "123",
+                "Complement": "Apto",
+                "ZipCode": "20520051",
+                "City": "Rio de Janeiro",
+                "District": "Tijuca",
+                "StateCode": "RJ"
+            }
         },
         "Title": {
             // "ModalityCode": 1, // 1 – Carteira Simples; 4 – Vinculada 6 – Descontada; 8 – Vendor
