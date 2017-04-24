@@ -19,7 +19,8 @@ import (
 var (
 	processID  = os.Getpid()
 	totalProcs = runtime.NumCPU()
-	devMode    = flag.Bool("dev", true, "-dev To run in dev mode")
+	devMode    = flag.Bool("dev", false, "-dev To run in dev mode")
+	mockMode   = flag.Bool("mock", false, "-mock To run mock requests")
 )
 
 func init() {
@@ -55,6 +56,8 @@ func configFlags() {
 		os.Setenv("URL_BB_REGISTER_BOLETO", "https://cobranca.desenv.bb.com.br:7101/registrarBoleto")
 		os.Setenv("URL_BB_TOKEN", "https://oauth.desenv.bb.com.br:43000/oauth/token")
 	}
+	fmt.Println(*mockMode)
+	config.Install(*mockMode)
 }
 func main() {
 	flag.Parse()

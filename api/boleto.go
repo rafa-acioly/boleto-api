@@ -14,14 +14,16 @@ func registerBoleto(c *gin.Context) {
 	_boleto, _ := c.Get("boleto")
 	boleto := _boleto.(models.BoletoRequest)
 	bank, err := bank.Get(boleto.BankNumber)
-	lg := bank.Log()
-	lg.Operation = "RegisterBoleto"
-	lg.NossoNumero = boleto.Title.OurNumber
 	if checkError(c, err) {
 		return
 	}
+	lg := bank.Log()
+	lg.Operation = "RegisterBoleto"
+	lg.NossoNumero = boleto.Title.OurNumber
+
 	lg.Recipient = bank.GetBankNumber().BankName()
 	lg.Request(boleto, c.Request.URL.RequestURI(), c.Request.Header)
+
 	resp, errR := bank.RegisterBoleto(boleto)
 	if checkError(c, errR) {
 		return

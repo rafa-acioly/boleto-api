@@ -26,6 +26,11 @@ func (b bankBB) Log() *log.Log {
 	return b.log
 }
 func (b bankBB) Login(user, password, body string) (auth.Token, error) {
+	if config.Get().MockMode {
+		return auth.Token{
+			AccessToken: "1111111111",
+		}, nil
+	}
 	client := util.DefaultHTTPClient()
 	req, err := http.NewRequest("POST", config.Get().URLBBToken, strings.NewReader(body))
 	if err != nil {
@@ -121,6 +126,14 @@ func (b bankBB) GetBankNumber() models.BankNumber {
 
 //registerBoletoRequest faz a requisição no serviço do banco para registro de boleto
 func (b bankBB) registerBoletoRequest(message string, token auth.Token) (string, int, error) {
+	if config.Get().MockMode {
+		return b.doMockSuccess(message, token)
+	}
+	return b.doRequest(message, token)
+}
+
+//registerBoletoRequest faz a requisição no serviço do banco para registro de boleto
+func (b bankBB) doRequest(message string, token auth.Token) (string, int, error) {
 	client := util.DefaultHTTPClient()
 	body := strings.NewReader(message)
 	req, err := http.NewRequest("POST", config.Get().URLBBRegisterBoleto, body)
@@ -145,6 +158,78 @@ func (b bankBB) registerBoletoRequest(message string, token auth.Token) (string,
 
 	sData := string(data)
 	b.log.Response(sData, config.Get().URLBBRegisterBoleto)
-
 	return sData, resp.StatusCode, nil
+}
+
+func (b bankBB) doMockSuccess(message string, token auth.Token) (string, int, error) {
+	errMock := `
+		<?xml version="1.0" encoding="UTF-8"?>
+		<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+		<SOAP-ENV:Body>
+			<ns0:resposta xmlns:ns0="http://www.tibco.com/schemas/bws_registro_cbr/Recursos/XSD/Schema.xsd">
+				<ns0:siglaSistemaMensagem />
+				<ns0:codigoRetornoPrograma>5</ns0:codigoRetornoPrograma>
+				<ns0:nomeProgramaErro>CBRSR005</ns0:nomeProgramaErro>
+				<ns0:textoMensagemErro>?CPF do pagador nao encontrado na base.</ns0:textoMensagemErro>
+				<ns0:numeroPosicaoErroPrograma>5</ns0:numeroPosicaoErroPrograma>
+				<ns0:codigoTipoRetornoPrograma>0</ns0:codigoTipoRetornoPrograma>
+				<ns0:textoNumeroTituloCobrancaBb />
+				<ns0:numeroCarteiraCobranca>17</ns0:numeroCarteiraCobranca>
+				<ns0:numeroVariacaoCarteiraCobranca>19</ns0:numeroVariacaoCarteiraCobranca>
+				<ns0:codigoPrefixoDependenciaBeneficiario>3851</ns0:codigoPrefixoDependenciaBeneficiario>
+				<ns0:numeroContaCorrenteBeneficiario>8570</ns0:numeroContaCorrenteBeneficiario>
+				<ns0:codigoCliente>932131545</ns0:codigoCliente>
+				<ns0:linhaDigitavel />
+				<ns0:codigoBarraNumerico />
+				<ns0:codigoTipoEnderecoBeneficiario>0</ns0:codigoTipoEnderecoBeneficiario>
+				<ns0:nomeLogradouroBeneficiario />
+				<ns0:nomeBairroBeneficiario />
+				<ns0:nomeMunicipioBeneficiario />
+				<ns0:codigoMunicipioBeneficiario>0</ns0:codigoMunicipioBeneficiario>
+				<ns0:siglaUfBeneficiario />
+				<ns0:codigoCepBeneficiario>0</ns0:codigoCepBeneficiario>
+				<ns0:indicadorComprovacaoBeneficiario />
+				<ns0:numeroContratoCobranca>17414296</ns0:numeroContratoCobranca>
+			</ns0:resposta>
+		</SOAP-ENV:Body>
+		</SOAP-ENV:Envelope>
+	`
+
+	sData := `
+		<?xml version="1.0" encoding="UTF-8"?>
+		<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+		<SOAP-ENV:Body>
+			<ns0:resposta xmlns:ns0="http://www.tibco.com/schemas/bws_registro_cbr/Recursos/XSD/Schema.xsd">
+				<ns0:siglaSistemaMensagem />
+				<ns0:codigoRetornoPrograma>0</ns0:codigoRetornoPrograma>
+				<ns0:nomeProgramaErro />
+				<ns0:textoMensagemErro />
+				<ns0:numeroPosicaoErroPrograma>0</ns0:numeroPosicaoErroPrograma>
+				<ns0:codigoTipoRetornoPrograma>0</ns0:codigoTipoRetornoPrograma>
+				<ns0:textoNumeroTituloCobrancaBb>00010140510000066673</ns0:textoNumeroTituloCobrancaBb>
+				<ns0:numeroCarteiraCobranca>17</ns0:numeroCarteiraCobranca>
+				<ns0:numeroVariacaoCarteiraCobranca>19</ns0:numeroVariacaoCarteiraCobranca>
+				<ns0:codigoPrefixoDependenciaBeneficiario>3851</ns0:codigoPrefixoDependenciaBeneficiario>
+				<ns0:numeroContaCorrenteBeneficiario>8570</ns0:numeroContaCorrenteBeneficiario>
+				<ns0:codigoCliente>932131545</ns0:codigoCliente>
+				<ns0:linhaDigitavel>00190000090101405100500066673179971340000010000</ns0:linhaDigitavel>
+				<ns0:codigoBarraNumerico>00199713400000100000000001014051000006667317</ns0:codigoBarraNumerico>
+				<ns0:codigoTipoEnderecoBeneficiario>0</ns0:codigoTipoEnderecoBeneficiario>
+				<ns0:nomeLogradouroBeneficiario>Cliente nao informado.</ns0:nomeLogradouroBeneficiario>
+				<ns0:nomeBairroBeneficiario />
+				<ns0:nomeMunicipioBeneficiario />
+				<ns0:codigoMunicipioBeneficiario>0</ns0:codigoMunicipioBeneficiario>
+				<ns0:siglaUfBeneficiario />
+				<ns0:codigoCepBeneficiario>0</ns0:codigoCepBeneficiario>
+				<ns0:indicadorComprovacaoBeneficiario />
+				<ns0:numeroContratoCobranca>17414296</ns0:numeroContratoCobranca>
+			</ns0:resposta>
+		</SOAP-ENV:Body>
+		</SOAP-ENV:Envelope>
+	`
+	s := sData
+	if strings.Contains(message, "<sch:valorOriginalTitulo>100</sch:valorOriginalTitulo>") {
+		s = errMock
+	}
+	return s, 200, nil
 }

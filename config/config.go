@@ -1,6 +1,7 @@
 package config
 
 import "os"
+import "sync"
 
 //Config é a estrutura que tem todas as configurações da aplicação
 type Config struct {
@@ -15,12 +16,18 @@ type Config struct {
 	ApplicationName     string
 	URLBBRegisterBoleto string
 	URLBBToken          string
+	MockMode            bool
 }
+
+var cnf Config
+var scnf sync.Once
 
 //Get retorna o objeto de configurações da aplicação
 func Get() Config {
-
-	cnf := Config{
+	return cnf
+}
+func Install(mockMode bool) {
+	cnf = Config{
 		APIPort:             ":" + os.Getenv("API_PORT"),
 		Version:             os.Getenv("API_VERSION"),
 		SEQUrl:              os.Getenv("SEQ_URL"),                        //Pegar o SEQ de dev
@@ -32,6 +39,6 @@ func Get() Config {
 		ApplicationName:     "BoletoOnline",
 		URLBBRegisterBoleto: os.Getenv("URL_BB_REGISTER_BOLETO"),
 		URLBBToken:          os.Getenv("URL_BB_TOKEN"),
+		MockMode:            mockMode,
 	}
-	return cnf
 }

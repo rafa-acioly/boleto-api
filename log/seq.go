@@ -8,7 +8,6 @@ import (
 )
 
 var logger *goseq.Logger
-var messageType string
 
 // Operation a operacao usada na API
 var Operation string
@@ -53,9 +52,8 @@ func CreateLog() *Log {
 // Request loga o request para algum banco
 func (l Log) Request(content interface{}, url string, headers http.Header) {
 	go (func() {
-		messageType = "Request"
 		props := goseq.NewProperties()
-		props.AddProperty("MessageType", messageType)
+		props.AddProperty("MessageType", "Request")
 		props.AddProperty("Content", content)
 		props.AddProperty("Recipient", l.Recipient)
 		props.AddProperty("Headers", headers)
@@ -72,15 +70,15 @@ func (l Log) Request(content interface{}, url string, headers http.Header) {
 // Response loga o response para algum banco
 func (l Log) Response(content interface{}, url string) {
 	go (func() {
-		messageType = "Response"
 		props := goseq.NewProperties()
-		props.AddProperty("MessageType", messageType)
+		props.AddProperty("MessageType", "Response")
 		props.AddProperty("Content", content)
 		props.AddProperty("Recipient", l.Recipient)
 		props.AddProperty("Operation", l.Operation)
 		props.AddProperty("NossoNumero", l.NossoNumero)
 		props.AddProperty("URL", url)
 		msg := formatter("from {Recipient} ({URL})")
+
 		l.logger.Information(msg, props)
 	})()
 }
