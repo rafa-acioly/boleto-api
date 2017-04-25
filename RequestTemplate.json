@@ -9,10 +9,10 @@
             "AgreementNumber": 10,
             "Wallet": 17, // Talvez não usemos
             "WalletVariation": 32,
-            "Agency": 1234,
-            "AgencyDigit": 1, // Pode ser nulo e nós vamos ter que calcular
-            "Account": 12345,
-            "AccountDigit": 2 // Pode ser nulo e nós vamos ter que calcular
+            "Agency": "1234",
+            "AgencyDigit": "1", // Pode ser nulo e nós vamos ter que calcular
+            "Account": "12345",
+            "AccountDigit": "2" // Pode ser nulo e nós vamos ter que calcular
         },
         "Recipient": {
             "Name": "Nome da loja",
@@ -31,14 +31,6 @@
             }
         },
         "Title": {
-            // "ModalityCode": 1, // 1 – Carteira Simples; 4 – Vinculada 6 – Descontada; 8 – Vendor
-            // "CreateDate": "DateTime.Br.Now()", // A gente que define!
-            // "DiscountType": "NoDiscount", // ByValue, ByPercentage futuramente tendo desconto podemos aplicar isso aqui por padrão no XML será 0
-            // "InterestType": "NoInterest", // ByValue, ByPercentage futuramente tendo multas podemos aplicar isso aqui por padrão no XML será 0
-            // "FineType": "NoFine", // ByValue, ByPercentage futuramente tendo multas podemos aplicar isso aqui por padrão no XML será 0
-            // "AcceptCode": "A", // Sempre será A ficará chumbado no XML
-            // "BoletoType": "Check", // 1 – Cheque; 2 – Duplicata Mercantil; 4 – Duplicata Serviço; 6 Duplicata Rural; 7 – Letra de Câmbio; 12 – NotaPromissória; 13 – Nota Promissória Rural; 17 – Recibo; 19 – Nota de Débito; 23 – Dívida Ativa União; 24 – Dívida Ativa Estado; 25 – Dívida Ativa, temos que descobrir qual usar
-            // "indicadorPermissaoRecebimentoParcial": false, // Vamos mandar no XML sempre "N"
             "ExpireDate": "2017-04-15", // Pode ser nulo, setamos 5 dias de expire se não for passado
             "AmountInCents": 100,
             "OurNumber": 1234567890 // Nosso Número -- Número sequencial: 3 primeiras posições: zeros; 7 posições seguintes, o número do convênio; 10 posições restantes, numéricas, com zeros a esquerda (controle empresa)
