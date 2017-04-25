@@ -9,7 +9,7 @@ import (
 type Builder interface {
 	From(interface{}) Builder
 	To(string) Builder
-	Transform() (string, error)
+	Transform(...string) (string, error)
 	XML() Builder
 }
 
@@ -33,9 +33,12 @@ func (b msgBuilder) XML() Builder {
 	return b
 }
 
-func (b msgBuilder) Transform() (string, error) {
+func (b msgBuilder) Transform(partials ...string) (string, error) {
 	buf := bytes.NewBuffer(nil)
 	t := template.Must(template.New("transform").Funcs(funcMap).Parse(b.template))
+	for _, p := range partials {
+		t, _ = t.Parse(p)
+	}
 	err := t.ExecuteTemplate(buf, "transform", b.from)
 	if err != nil {
 		return "", err
