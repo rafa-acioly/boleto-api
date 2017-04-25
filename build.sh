@@ -1,7 +1,5 @@
 curl https://glide.sh/get | sh
 
-git clone --branch="master" --depth 50 https://phsantiago@bitbucket.org/mundipagg/boletoapi.git
-
 cd boletoapi
 
 glide install
