@@ -39,5 +39,5 @@ func registerBoleto(c *gin.Context) {
 func getBoleto(c *gin.Context) {
 	c.Status(200)
 	c.Header("Content-Type", "text/html")
-	boleto.HTML(c.Writer, nil)
+	boleto.HTML(c.Writer, models.BoletoRequest{})
 }
