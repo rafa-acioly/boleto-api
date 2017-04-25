@@ -1,6 +1,14 @@
 curl https://glide.sh/get | sh
 
-cd boletoapi
+PROJECTPATH=$GOPATH/src/bitbucket.org/mundipagg
+
+mkdir $PROJECTPATH
+
+mv ~/myagent/_work/1/s -t $PROJECTPATH
+
+mv $PROJECTPATH/s $PROJECTPATH/boletoapi
+
+cd $PROJECTPATH/boletoapi
 
 glide install
 
