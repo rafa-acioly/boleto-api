@@ -19,19 +19,29 @@ type Agreement struct {
 }
 
 // IsAgencyValid retorna se é uma agência válida
-func IsAgencyValid(a *Agreement) bool {
+func (a *Agreement) IsAgencyValid() error {
 	re := regexp.MustCompile("(\\D+)")
-	a.Agency = re.ReplaceAllString(a.Agency, "")
-	a.Agency = util.PadLeft(a.Agency, "0", 4)
-	return len(a.Agency) < 5
+	ag := util.PadLeft(re.ReplaceAllString(a.Agency, ""), "0", 4)
+	if len(ag) < 5 {
+		a.Agency = ag
+		return nil
+	}
+	return NewErrorResponse("MPAgency", "Agência inválida, deve conter até 4 dígitos")
 }
 
-// IsAgencyDigitValid retorna se o dígito da agência é válido
-func IsAgencyDigitValid(a *Agreement) bool {
+// CalculateAgencyDigit calcula dígito da agência
+func (a *Agreement) CalculateAgencyDigit(digitCalculator func(agency string) string) {
 	re := regexp.MustCompile("(\\D+)")
-	a.AgencyDigit = re.ReplaceAllString(a.AgencyDigit, "")
-	l := len(a.AgencyDigit)
-	return l < 2 && l > 0
+	ad := re.ReplaceAllString(a.AgencyDigit, "")
+	l := len(ad)
+	if l < 2 && l > 0 {
+		a.AccountDigit = ad
+		fmt.Println(a.AccountDigit)
+	} else {
+		fmt.Println("hue")
+		a.AccountDigit = digitCalculator(a.Agency)
+		fmt.Println(a.AccountDigit)
+	}
 }
 
 // IsAccountValid retorna se é uma conta válida

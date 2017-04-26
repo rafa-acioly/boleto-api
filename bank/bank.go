@@ -22,11 +22,13 @@ func Get(number models.BankNumber) (Bank, error) {
 	switch number {
 	case models.BancoDoBrasil:
 		return bankBB{
-			log: log.CreateLog(),
+			validate: models.NewValidator(),
+			log:      log.CreateLog(),
 		}, nil
 	case models.Caixa:
 		return bankCaixa{
-			log: log.CreateLog(),
+			validate: models.NewValidator(),
+			log:      log.CreateLog(),
 		}, nil
 	default:
 		return nil, fmt.Errorf("Banco %d não existe", number)
