@@ -125,7 +125,22 @@ func (b bankBB) ValidateBoleto(boleto *models.BoletoRequest) models.Errors {
 	} else {
 		err.Append("MPBB001", "Agência inválida")
 	}
-	return nil
+
+	account, e := boleto.Agreement.IsAccountValid(8)
+	if e != nil {
+		ex, _ := e.(models.ErrorInterface)
+		err.Append(ex.ErrorCode(), ex.Error())
+	} else {
+		boleto.Agreement.Account = account
+		if ad, ed := boleto.Agreement.IsAccountDigitValid(); ed == nil {
+			boleto.Agreement.AccountDigit = ad
+		} else {
+			// TODO: Fazer lógica para calcular dígito da conta
+			ex, _ := e.(models.ErrorInterface)
+			err.Append(ex.ErrorCode(), ex.Error())
+		}
+	}
+	return err
 }
 
 func agencyDigitCalculator(agency string) string {
