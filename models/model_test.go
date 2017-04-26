@@ -4,6 +4,8 @@ import (
 	"testing"
 	"time"
 
+	"fmt"
+
 	"bitbucket.org/mundipagg/boletoapi/test"
 )
 
@@ -105,11 +107,78 @@ func TestShouldReturnBankNumberIsValid(t *testing.T) {
 
 func TestShouldAppendCollectionOfErrrors(t *testing.T) {
 	e := NewErrorCollection(ErrorResponse{Code: "200", Message: "Hue2"})
-	e.Append(ErrorResponse{Code: "100", Message: "Hue"})
+	e.Append("100", "Hue")
 	test.ExpectTrue(len(e) == 2, t)
 }
 
 func TestShouldCreateNewSingleErrorCollection(t *testing.T) {
 	e := NewSingleErrorCollection("200", "Hue2")
 	test.ExpectTrue(len(e) == 1, t)
+}
+
+func TestIsAgencyValid(t *testing.T) {
+	a := Agreement{
+		Agency: "234-2a",
+	}
+	test.ExpectTrue(IsAgencyValid(&a), t)
+	test.ExpectTrue(a.Agency == "2342", t)
+}
+
+func TestIsAgencyValidWithLessThan4Digits(t *testing.T) {
+	a := Agreement{
+		Agency: "321",
+	}
+	test.ExpectTrue(IsAgencyValid(&a), t)
+	test.ExpectTrue(a.Agency == "0321", t)
+}
+
+func TestIsAgencyDigitValid(t *testing.T) {
+	a := Agreement{
+		AgencyDigit: "1",
+	}
+	test.ExpectTrue(IsAgencyDigitValid(&a), t)
+	test.ExpectTrue(a.AgencyDigit == "1", t)
+}
+
+func TestIsAgencyDigitInValid(t *testing.T) {
+	a := Agreement{
+		AgencyDigit: "",
+	}
+	test.ExpectFalse(IsAgencyDigitValid(&a), t)
+}
+
+func TestIsAccountDigitInValid(t *testing.T) {
+	a := Agreement{
+		AccountDigit: "",
+	}
+	_, err := a.IsAccountDigitValid()
+	test.ExpectError(err, t)
+}
+
+func TestIsAccountDigitValid(t *testing.T) {
+	a := Agreement{
+		AccountDigit: "1sss",
+	}
+	s, err := a.IsAccountDigitValid()
+	test.ExpectNoError(err, t)
+	test.ExpectTrue(s == "1", t)
+}
+
+func TestIsAccountValid(t *testing.T) {
+	a := Agreement{
+		Account: "1234fff",
+	}
+	s, err := a.IsAccountValid(8)
+	fmt.Println(s)
+	fmt.Println(err.Error())
+	test.ExpectNoError(err, t)
+	test.ExpectTrue(s == "00001234", t)
+}
+
+func TestIsAccountInValid(t *testing.T) {
+	a := Agreement{
+		Account: "123456789",
+	}
+	_, err := a.IsAccountValid(8)
+	test.ExpectError(err, t)
 }

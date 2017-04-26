@@ -9,6 +9,13 @@ func ExpectNoError(e error, t *testing.T) {
 	}
 }
 
+// ExpectError falha o teste se e == nil
+func ExpectError(e error, t *testing.T) {
+	if e == nil {
+		t.Fail()
+	}
+}
+
 // ExpectTrue falha o teste caso a condição não seja verdadeira
 func ExpectTrue(condition bool, t *testing.T) {
 	if !condition {

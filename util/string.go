@@ -1,6 +1,8 @@
 package util
 
 import (
+	"fmt"
+	"strconv"
 	"unicode"
 
 	"golang.org/x/text/transform"
@@ -16,4 +18,10 @@ func RemoveDiacritics(s string) string {
 	t := transform.Chain(norm.NFD, transform.RemoveFunc(isMn), norm.NFC)
 	result, _, _ := transform.String(t, s)
 	return result
+}
+
+// PadLeft insere um caractere a esquerda de um texto
+func PadLeft(value, char string, total uint) string {
+	s := "%" + char + strconv.Itoa(int(total)) + "s"
+	return fmt.Sprintf(s, value)
 }
