@@ -1,17 +1,17 @@
-curl https://glide.sh/get | sh
+PROJECTPATH=$GOPATH/src/bitbucket.org/mundipagg/boletoapi
 
-PROJECTPATH=$GOPATH/src/bitbucket.org/mundipagg
+rm -rf PROJECTPATH -v
 
 mkdir $PROJECTPATH
 
-mv ~/myagent/_work/1/s -t $PROJECTPATH
+mv -v ~/myagent/_work/1/s/* -t $PROJECTPATH 
 
-mv $PROJECTPATH/s $PROJECTPATH/boletoapi
+mv $PROJECTPATH/s $PROJECTPATH/boletoapi -v
 
-cd $PROJECTPATH/boletoapi
+cd $PROJECTPATH
 
 glide install
 
 go build -v
 
-go test $(go list ./... | grep -v /vendor/)
+go test $(go list ./... | grep -v /vendor/) -v
