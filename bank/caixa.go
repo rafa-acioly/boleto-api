@@ -7,7 +7,8 @@ import (
 )
 
 type bankCaixa struct {
-	log *log.Log
+	validate *models.Validator
+	log      *log.Log
 }
 
 //Log retorna a referencia do log

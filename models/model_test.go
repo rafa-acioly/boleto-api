@@ -4,6 +4,8 @@ import (
 	"testing"
 	"time"
 
+	"fmt"
+
 	"bitbucket.org/mundipagg/boletoapi/test"
 )
 
@@ -118,31 +120,51 @@ func TestIsAgencyValid(t *testing.T) {
 	a := Agreement{
 		Agency: "234-2a",
 	}
-	test.ExpectTrue(IsAgencyValid(&a), t)
+	err := a.IsAgencyValid()
+	test.ExpectNoError(err, t)
 	test.ExpectTrue(a.Agency == "2342", t)
+}
+
+func TestIsAgencyInValid(t *testing.T) {
+	a := Agreement{
+		Agency: "234-2222a",
+	}
+	err := a.IsAgencyValid()
+	test.ExpectError(err, t)
 }
 
 func TestIsAgencyValidWithLessThan4Digits(t *testing.T) {
 	a := Agreement{
 		Agency: "321",
 	}
-	test.ExpectTrue(IsAgencyValid(&a), t)
+	err := a.IsAgencyValid()
+	test.ExpectNoError(err, t)
 	test.ExpectTrue(a.Agency == "0321", t)
 }
 
-func TestIsAgencyDigitValid(t *testing.T) {
+func TestCalculateAgencyDigit(t *testing.T) {
 	a := Agreement{
-		AgencyDigit: "1",
+		AgencyDigit: "1ssss",
 	}
-	test.ExpectTrue(IsAgencyDigitValid(&a), t)
+	c := func(s string) string {
+		return "1"
+	}
+	a.CalculateAgencyDigit(c)
+	fmt.Println(a.AgencyDigit)
+	fmt.Println("ASDADS")
 	test.ExpectTrue(a.AgencyDigit == "1", t)
 }
 
-func TestIsAgencyDigitInValid(t *testing.T) {
+func TestCalculateAgencyDigitWithInvalidDigit(t *testing.T) {
 	a := Agreement{
 		AgencyDigit: "",
 	}
-	test.ExpectFalse(IsAgencyDigitValid(&a), t)
+	c := func(s string) string {
+		return "1"
+	}
+	a.CalculateAgencyDigit(c)
+	fmt.Println(a.AgencyDigit)
+	test.ExpectTrue(a.AgencyDigit == "1", t)
 }
 
 func TestIsAccountDigitInValid(t *testing.T) {
