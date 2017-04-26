@@ -1,6 +1,7 @@
 package models
 
-type errorResponse interface {
+// ErrorInterface interface para implementar Error
+type ErrorInterface interface {
 	Error() string
 	ErrorCode() string
 }
