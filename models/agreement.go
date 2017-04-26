@@ -35,31 +35,21 @@ func (a *Agreement) CalculateAgencyDigit(digitCalculator func(agency string) str
 	ad := re.ReplaceAllString(a.AgencyDigit, "")
 	l := len(ad)
 	if l < 2 && l > 0 {
-		a.AccountDigit = ad
-		fmt.Println(a.AccountDigit)
+		a.AgencyDigit = ad
 	} else {
-		fmt.Println("hue")
-		a.AccountDigit = digitCalculator(a.Agency)
-		fmt.Println(a.AccountDigit)
+		a.AgencyDigit = digitCalculator(a.Agency)
 	}
 }
 
 // IsAccountValid retorna se é uma conta válida
-func IsAccountValid(a *Agreement, accountLength uint) bool {
-	re := regexp.MustCompile("(\\D+)")
-	a.Account = re.ReplaceAllString(a.Account, "")
-	a.Account = util.PadLeft(a.Account, "0", accountLength)
-	return len(a.Account) < int(accountLength)
-}
-
-// IsAccountValid retorna se é uma conta válida
-func (a Agreement) IsAccountValid(accountLength int) (string, error) {
+func (a *Agreement) IsAccountValid(accountLength int) error {
 	re := regexp.MustCompile("(\\D+)")
 	ac := util.PadLeft(re.ReplaceAllString(a.Account, ""), "0", uint(accountLength))
 	if len(ac) < accountLength+1 {
-		return ac, nil
+		a.Account = ac
+		return nil
 	}
-	return "", NewErrorResponse("MPAccount", fmt.Sprintf("Conta inválida, deve conter até %d dígitos", accountLength))
+	return NewErrorResponse("MPAccount", fmt.Sprintf("Conta inválida, deve conter até %d dígitos", accountLength))
 }
 
 // IsAccountDigitValid retorna se o dígito da conta é válido
@@ -71,4 +61,15 @@ func (a Agreement) IsAccountDigitValid() (string, error) {
 		return ad, nil
 	}
 	return "", NewErrorResponse("MPAccountDigit", "Dígito da conta inválido. Deve conter apenas um dígito.")
+}
+
+//CalculateAccountDigit calcula dígito da conta
+func (a *Agreement) CalculateAccountDigit(digitCalculator func(agency, account string) string) {
+	re := regexp.MustCompile("(\\D+)")
+	ad := re.ReplaceAllString(a.AccountDigit, "")
+	l := len(ad)
+	if l < 2 && l > 0 {
+		a.AccountDigit = ad
+	}
+	a.AccountDigit = digitCalculator(a.Agency, a.Account)
 }
