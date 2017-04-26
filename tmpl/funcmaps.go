@@ -6,11 +6,10 @@ import (
 	"strings"
 	"time"
 
-	"fmt"
-
 	"strconv"
 
 	"bitbucket.org/mundipagg/boletoapi/models"
+	"bitbucket.org/mundipagg/boletoapi/util"
 )
 
 var funcMap = template.FuncMap{
@@ -19,7 +18,7 @@ var funcMap = template.FuncMap{
 	"replace":          replace,
 	"docType":          docType,
 	"trim":             trim,
-	"padLeft":          padLeft,
+	"padLeft":          util.PadLeft,
 	"toString":         toString,
 	"fmtDigitableLine": fmtDigitableLine,
 	"fmtCNPJ":          fmtCNPJ,
@@ -31,11 +30,6 @@ var funcMap = template.FuncMap{
 
 func toString(number int) string {
 	return strconv.Itoa(number)
-}
-
-func padLeft(value, char string, total uint) string {
-	s := "%" + char + strconv.Itoa(int(total)) + "s"
-	return fmt.Sprintf(s, value)
 }
 
 func today() time.Time {
