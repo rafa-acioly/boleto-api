@@ -5,6 +5,7 @@ type BoletoRequest struct {
 	Authentication Authentication
 	Agreement      Agreement
 	Title          Title
+	Recipient      Recipient
 	Buyer          Buyer
 	BankNumber     BankNumber
 }
