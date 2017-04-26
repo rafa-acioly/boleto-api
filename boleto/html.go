@@ -1,7 +1,15 @@
 package boleto
 
 import (
+	"bytes"
+	"encoding/base64"
+	"fmt"
 	"html/template"
+
+	"github.com/boombuler/barcode"
+	"github.com/boombuler/barcode/twooffive"
+
+	"image/jpeg"
 
 	"bitbucket.org/mundipagg/boletoapi/models"
 	"bitbucket.org/mundipagg/boletoapi/tmpl"
@@ -14,6 +22,15 @@ const templateBoleto = `
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 <style>
+
+	@media print
+	{    
+		.no-print, .no-print *
+		{
+			display: none !important;
+		}
+	}
+
     body {
         font-family: "Arial";
 		background-color: #fff;
@@ -34,9 +51,7 @@ const templateBoleto = `
         border-collapse: collapse;
     }
 
-    .bankLogo {
-        width: 28%;
-    }
+    
     
     .boletoNumber {
         width: 62%;
@@ -84,6 +99,8 @@ const templateBoleto = `
         size: 1;
         border: 1px dashed;
 		width: 216mm;
+		margin-top: 9mm;
+    	margin-bottom: 9mm;
     }
 
     br {
@@ -96,9 +113,10 @@ const templateBoleto = `
 
 <body>
     {{template "boletoForm" .}}
+
 	<hr/>
 	{{template "boletoForm" .}}	
-	<center><input type="button" onclick="window.print()" value="Imprimir"></center>
+	<center><input class="no-print" type="button" onclick="window.print()" value="Imprimir"></center>
     </div>	
 </body>
 
@@ -113,8 +131,8 @@ const boletoForm = `
                 <td class="bankLogo">
                     {{.BankLogo}}					
                 </td>
-                <td class="sideBorders center"><span style="font-size:24px;font-weight:bold;">341-7</span></td>
-                <td class="boletoNumber center"><span>34191.12345 67890.101112 13141.516171 8 12345678901112</span></td>
+                <td class="sideBorders center"><span style="font-weight:bold;">{{.BankNumber}}</span></td>
+                <td class="boletoNumber center"><span>{{fmtDigitableLine .DigitableLine}}</span></td>
             </tr>
         </table>
         <table cellspacing="0" cellpadding="0" border="1">
@@ -128,7 +146,7 @@ const boletoForm = `
                     <span class="title">Data de Vencimento</span>
                     <br/>
                     <br/>
-                    <p class="content right text" style="font-weight:bold;">01/01/2016</p>
+                    <p class="content right text" style="font-weight:bold;">{{.Boleto.Title.ExpireDateTime | brdate}}</p>
                 </td>
             </tr>
             <tr>
@@ -137,18 +155,24 @@ const boletoForm = `
                     <br/>
                     <table border="0" style="border:none">
                         <tr>
-                            <td width="60%"><span class="text">Simulação</span></td>
-                            <td><span class="text">CNPJ 01.000.000/0001-00</span></td>
+                            <td width="60%"><span class="text">{{.Boleto.Recipient.Name}}</span></td>
+                            <td><span class="text">CNPJ {{fmtDoc .Boleto.Recipient.Document}}</span></td>
                         </tr>
                     </table>
                     <br/>
-                    <span class="text">Rua Simulação, 1 - Jardim Simulação - São Paulo - SP - 10000-000</span>
+                    <span class="text">{{.Boleto.Recipient.Address.Street}}, 
+					{{.Boleto.Recipient.Address.Number}} - 
+					{{.Boleto.Recipient.Address.Complement}} - 
+					{{.Boleto.Recipient.Address.District}} - 
+					{{.Boleto.Recipient.Address.City}} - 
+					{{.Boleto.Recipient.Address.StateCode}} - 
+					{{.Boleto.Recipient.Address.ZipCode}}</span>
                 </td>
                 <td width="30%">
                     <span class="title">Agência/Código Beneficiário</span>
                     <br/>
                     <br/>
-                    <p class="content right">1234/12345-1</p>
+                    <p class="content right">{{.Boleto.Agreement.Agency}}/{{.Boleto.Agreement.Account}}-{{.Boleto.Agreement.AccountDigit}}</p>
                 </td>
             </tr>
 
@@ -156,7 +180,7 @@ const boletoForm = `
                 <td width="15%">
                     <span class="title">Data do Documento</span>
                     <br/>
-                    <p class="content center">01/07/2015</p>
+                    <p class="content center">{{today | brdate}}</p>
                 </td>
                 <td width="17%" colspan="2">
                     <span class="title">Num. do Documento</span>
@@ -176,13 +200,13 @@ const boletoForm = `
                 <td>
                     <span class="title">Data Processamento</span>
                     <br/>
-                    <p class="content center">01/07/2015</p>
+                    <p class="content center">{{today | brdate}}</p>
                 </td>
                 <td width="30%">
                     <span class="title">Carteira/Nosso Número</span>
                     <br/>
                     <br/>
-                    <p class="content right">157/12345678-9</p>
+                    <p class="content right">{{.Boleto.Agreement.Wallet}}/{{.Boleto.Title.OurNumber}}</p>
                 </td>
             </tr>
 
@@ -195,7 +219,7 @@ const boletoForm = `
                 <td width="10%">
                     <span class="title">Carteira</span>
                     <br/>
-                    <p class="content center">157</p>
+                    <p class="content center">{{.Boleto.Agreement.Wallet}}</p>
                 </td>
                 <td width="10%">
                     <span class="title">Espécie</span>
@@ -210,13 +234,13 @@ const boletoForm = `
                 <td>
                     <span class="title">Valor</span>
                     <br/>
-                    <p class="content center">10,00</p>
+                    <p class="content center">{{fmtNumber .Boleto.Title.AmountInCents}}</p>
                 </td>
                 <td width="30%">
                     <span class="title">(=) Valor do Documento</span>
                     <br/>
                     <br/>
-                    <p class="content right">10,00</p>
+                    <p class="content right">{{fmtNumber .Boleto.Title.AmountInCents}}</p>
                 </td>
             </tr>
             <tr>
@@ -249,11 +273,11 @@ const boletoForm = `
                 <td colspan="7">
                     <table border="0" style="border:none">
                         <tr>
-                            <td width="60%"><span class="text"><b>Nome do Pagador: </b> Pagador ABC</span></td>
-                            <td><span class="text"><b>CNPJ/CPF: </b> 123.121.001-00</span></td>
+                            <td width="60%"><span class="text"><b>Nome do Pagador: </b>&nbsp;{{.Boleto.Buyer.Name}}</span></td>
+                            <td><span class="text"><b>CNPJ/CPF: </b>&nbsp;{{fmtDoc .Boleto.Buyer.Document}}</span></td>
                         </tr>
                         <tr>
-                            <td><span class="text"><b>Endereço: </b> Avenida Brasil 1234 - Jardim Brasil - São Paulo - SP - 9999999-999</span></td>
+                            <td><span class="text"><b>Endereço: </b>&nbsp;{{.Boleto.Buyer.Address.Street}}&nbsp;{{.Boleto.Buyer.Address.Number}} - {{.Boleto.Buyer.Address.District}} - {{.Boleto.Buyer.Address.City}} - {{.Boleto.Buyer.Address.StateCode}} - {{.Boleto.Buyer.Address.ZipCode}}</span></td>
                             <td>&nbsp;</td>
                         </tr>
                         <tr>
@@ -268,25 +292,40 @@ const boletoForm = `
         </table>
 		<br/>
 		<div class="left">
-		<img src="data:image/png;base64,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" alt="">
+		<img style="margin-left:5mm;" src="data:image/jpg;base64,{{.Barcode64}}" alt="">
 		<br/>		
 		</div>
     </div>
-		
+
 	{{end}}
 `
 
 func HTML(w gin.ResponseWriter, boleto models.BoletoRequest) {
 	b := tmpl.New()
-	type Teste struct {
-		BankLogo template.HTML
-		Boleto   models.BoletoRequest
-	}
-	m := Teste{
+
+	m := models.BoletoView{
 		BankLogo: template.HTML(logoBB),
 		Boleto:   boleto,
 	}
+	m.BankNumber = boleto.BankNumber.GetBoletoBankNumberAndDigit()
+	m.DigitableLine = "00199713400000100000000001014051000006667317"
+	//m.DigitableLine = "MONEDA"
+	a, errCode := twooffive.Encode(m.DigitableLine, true)
+	if errCode != nil {
+		fmt.Println(errCode)
+		return
+	}
+	orgBounds := a.Bounds()
+	orgWidth := orgBounds.Max.X - orgBounds.Min.X
+	c, _ := barcode.Scale(a, orgWidth, 50)
 
-	s, _ := b.From(m).To(templateBoleto).Transform(boletoForm)
+	buf := new(bytes.Buffer)
+	err := jpeg.Encode(buf, c, nil)
+	m.Barcode64 = base64.StdEncoding.EncodeToString(buf.Bytes())
+
+	s, err := b.From(m).To(templateBoleto).Transform(boletoForm)
+	if err != nil {
+		fmt.Println(err)
+	}
 	w.WriteString(s)
 }
