@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"bitbucket.org/mundipagg/boletoapi/auth"
@@ -115,8 +116,39 @@ func (b bankBB) RegisterBoleto(boleto models.BoletoRequest) (models.BoletoRespon
 	return resp, nil
 }
 
-func (b bankBB) ValidateBoleto(boleto models.BoletoRequest) []string {
+func (b bankBB) ValidateBoleto(boleto *models.BoletoRequest) models.Errors {
+	err := models.NewEmptyErrorCollection()
+	if models.IsAgencyValid(&boleto.Agreement) {
+		if !models.IsAgencyDigitValid(&boleto.Agreement) {
+			boleto.Agreement.AgencyDigit = agencyDigitCalculator(boleto.Agreement.Agency)
+		}
+	} else {
+		err.Append("MPBB001", "Agência inválida")
+	}
 	return nil
+}
+
+func agencyDigitCalculator(agency string) string {
+	multiplier := [4]int{5, 4, 3, 2}
+	sum := 0
+
+	for idx, c := range agency {
+		i, _ := strconv.Atoi(string(c))
+
+		sum += i * multiplier[idx]
+	}
+
+	digit := 11 - sum%11
+
+	if digit == 10 {
+		return "X"
+	}
+
+	if digit == 11 {
+		return "0"
+	}
+
+	return strconv.Itoa(digit)
 }
 
 //GetBankNumber retorna o codigo do banco

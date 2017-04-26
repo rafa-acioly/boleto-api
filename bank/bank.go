@@ -12,7 +12,7 @@ import (
 type Bank interface {
 	Login(string, string, string) (auth.Token, error)
 	RegisterBoleto(models.BoletoRequest) (models.BoletoResponse, error)
-	ValidateBoleto(models.BoletoRequest) []string
+	ValidateBoleto(*models.BoletoRequest) models.Errors
 	GetBankNumber() models.BankNumber
 	Log() *log.Log
 }

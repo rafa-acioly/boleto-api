@@ -21,7 +21,7 @@ func (b bankCaixa) RegisterBoleto(boleto models.BoletoRequest) (models.BoletoRes
 	return models.BoletoResponse{}, nil
 }
 
-func (b bankCaixa) ValidateBoleto(boleto models.BoletoRequest) []string {
+func (b bankCaixa) ValidateBoleto(boleto *models.BoletoRequest) models.Errors {
 	return nil
 }
 
