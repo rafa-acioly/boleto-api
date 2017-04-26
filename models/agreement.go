@@ -46,11 +46,9 @@ func IsAccountValid(a *Agreement, accountLength uint) bool {
 func (a Agreement) IsAccountValid(accountLength int) (string, error) {
 	re := regexp.MustCompile("(\\D+)")
 	ac := util.PadLeft(re.ReplaceAllString(a.Account, ""), "0", uint(accountLength))
-
 	if len(ac) < accountLength+1 {
 		return ac, nil
 	}
-	fmt.Println(len(ac))
 	return "", NewErrorResponse("MPAccount", fmt.Sprintf("Conta inválida, deve conter até %d dígitos", accountLength))
 }
 

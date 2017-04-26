@@ -4,8 +4,6 @@ import (
 	"testing"
 	"time"
 
-	"fmt"
-
 	"bitbucket.org/mundipagg/boletoapi/test"
 )
 
@@ -169,8 +167,6 @@ func TestIsAccountValid(t *testing.T) {
 		Account: "1234fff",
 	}
 	s, err := a.IsAccountValid(8)
-	fmt.Println(s)
-	fmt.Println(err.Error())
 	test.ExpectNoError(err, t)
 	test.ExpectTrue(s == "00001234", t)
 }
