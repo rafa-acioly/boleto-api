@@ -1,5 +1,12 @@
 package models
 
+import (
+	"encoding/json"
+	"html/template"
+
+	"bitbucket.org/mundipagg/boletoapi/util"
+)
+
 // BoletoRequest entidade de entrada para o boleto
 type BoletoRequest struct {
 	Authentication Authentication
@@ -19,6 +26,34 @@ type BoletoResponse struct {
 	BarCodeNumber string `json:",omitempty"`
 }
 
+// BoletoView contem as informações que serão preenchidas no boleto
+type BoletoView struct {
+	BankLogo      template.HTML
+	Boleto        BoletoRequest
+	BankID        BankNumber
+	BankNumber    string
+	DigitableLine string
+	Barcode       string
+	Barcode64     string
+}
+
+// NewBoletoView cria um novo objeto view de boleto a partir de um boleto request, codigo de barras e linha digitavel
+func NewBoletoView(boleto BoletoRequest, barcode string, digitableLine string) BoletoView {
+	view := BoletoView{
+		BankID:        boleto.BankNumber,
+		Boleto:        boleto,
+		Barcode:       barcode,
+		DigitableLine: digitableLine,
+	}
+	return view
+}
+
+//EncodeURL tranforma o boleto view na forma que será escrito na url
+func (b BoletoView) EncodeURL() string {
+	d, _ := json.Marshal(b)
+	return util.Encrypt(string(d))
+}
+
 // BankNumber número de identificação do banco
 type BankNumber int
 
@@ -29,6 +64,23 @@ func (b BankNumber) IsBankNumberValid() bool {
 		return true
 	default:
 		return false
+	}
+}
+
+func (b BankNumber) GetBoletoBankNumberAndDigit() string {
+	switch b {
+	case BancoDoBrasil:
+		return "001-9"
+	case Caixa:
+		return "104-0"
+	case Santander:
+		return "033-7"
+	case Itau:
+		return "341-7"
+	case Bradesco:
+		return "237-2"
+	default:
+		return ""
 	}
 }
 

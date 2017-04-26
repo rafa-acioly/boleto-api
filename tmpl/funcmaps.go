@@ -8,6 +8,8 @@ import (
 
 	"strconv"
 
+	"fmt"
+
 	"bitbucket.org/mundipagg/boletoapi/models"
 	"bitbucket.org/mundipagg/boletoapi/util"
 )
@@ -23,9 +25,21 @@ var funcMap = template.FuncMap{
 	"fmtDigitableLine": fmtDigitableLine,
 	"fmtCNPJ":          fmtCNPJ,
 	"fmtCPF":           fmtCPF,
-	"attr": func(s string) template.HTMLAttr {
-		return template.HTMLAttr(s)
-	},
+	"fmtDoc":           fmtDoc,
+	"fmtNumber":        fmtNumber,
+}
+
+func fmtNumber(n int64) string {
+	real := n / 100
+	cents := n % 100
+	return fmt.Sprintf("%d,%02d", real, cents)
+}
+
+func fmtDoc(doc models.Document) string {
+	if doc.Number.IsCpf() {
+		return fmtCPF(string(doc.Number))
+	}
+	return fmtCNPJ(string(doc.Number))
 }
 
 func toString(number int) string {

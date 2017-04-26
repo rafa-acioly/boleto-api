@@ -35,12 +35,13 @@ func (a *Agreement) CalculateAgencyDigit(digitCalculator func(agency string) str
 	ad := re.ReplaceAllString(a.AgencyDigit, "")
 	l := len(ad)
 	if l < 2 && l > 0 {
-		a.AccountDigit = ad
-		fmt.Println(a.AccountDigit)
+		a.AgencyDigit = ad
+		fmt.Println(a.AgencyDigit)
 	} else {
 		fmt.Println("hue")
-		a.AccountDigit = digitCalculator(a.Agency)
-		fmt.Println(a.AccountDigit)
+		s := digitCalculator(a.AgencyDigit)
+		a.AgencyDigit = s
+		fmt.Println(a.AgencyDigit)
 	}
 }
 
