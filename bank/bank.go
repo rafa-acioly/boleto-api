@@ -21,16 +21,10 @@ type Bank interface {
 func Get(number models.BankNumber) (Bank, error) {
 	switch number {
 	case models.BancoDoBrasil:
-		return bankBB{
-			validate: models.NewValidator(),
-			log:      log.CreateLog(),
-		}, nil
+		return newBB(), nil
 	case models.Caixa:
-		return bankCaixa{
-			validate: models.NewValidator(),
-			log:      log.CreateLog(),
-		}, nil
+		return newCaixa(), nil
 	default:
-		return nil, fmt.Errorf("Banco %d não existe", number)
+		return nil, models.ErrorResponse{Code: "MPBankNumber", Message: fmt.Sprintf("Banco %d não existe", number)}
 	}
 }

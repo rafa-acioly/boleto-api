@@ -22,6 +22,16 @@ type bankBB struct {
 	log      *log.Log
 }
 
+func newBB() bankBB {
+	b := bankBB{
+		validate: models.NewValidator(),
+		log:      log.CreateLog(),
+	}
+	b.validate.Push(bbValidateAccountAndDigit)
+	b.validate.Push(bbValidateAgencyAndDigit)
+	return b
+}
+
 //Log retorna a referencia do log
 func (b bankBB) Log() *log.Log {
 	return b.log

@@ -11,6 +11,14 @@ type bankCaixa struct {
 	log      *log.Log
 }
 
+func newCaixa() bankCaixa {
+	c := bankCaixa{
+		validate: models.NewValidator(),
+		log:      log.CreateLog(),
+	}
+	return c
+}
+
 //Log retorna a referencia do log
 func (b bankCaixa) Log() *log.Log {
 	return b.log
