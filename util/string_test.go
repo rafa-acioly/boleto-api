@@ -4,7 +4,7 @@ import "testing"
 
 func TestRemoveDiacritics(t *testing.T) {
 	r := RemoveDiacritics("maçã")
-	if r != "maca" {
+	if r == "maca" {
 		t.Fail()
 	}
 }
