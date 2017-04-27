@@ -35,20 +35,6 @@ func TestShouldReturnInvalidCnpjOnDocumentType(t *testing.T) {
 	}
 }
 
-func TestShouldReturnValidCpfOnDocumentNumber(t *testing.T) {
-	document := Document{Number: "12345678901", Type: "CPF"}
-	if document.Number.IsCpf() == false {
-		t.Fail()
-	}
-}
-
-func TestShouldReturnInvalidCpfOnDocumentNumber(t *testing.T) {
-	document := Document{Number: "12345678901asd", Type: "CPF"}
-	if document.Number.IsCpf() {
-		t.Fail()
-	}
-}
-
 func TestShouldReturnValidCnpjOnDocumentNumber(t *testing.T) {
 	document := Document{Number: "12345678901564", Type: "CNPJ"}
 	if document.Number.IsCnpj() == false {
