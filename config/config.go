@@ -17,6 +17,7 @@ type Config struct {
 	URLBBRegisterBoleto string
 	URLBBToken          string
 	MockMode            bool
+	AppURL              string
 }
 
 var cnf Config
@@ -40,5 +41,6 @@ func Install(mockMode bool) {
 		URLBBRegisterBoleto: os.Getenv("URL_BB_REGISTER_BOLETO"),
 		URLBBToken:          os.Getenv("URL_BB_TOKEN"),
 		MockMode:            mockMode,
+		AppURL:              os.Getenv("APP_URL"),
 	}
 }

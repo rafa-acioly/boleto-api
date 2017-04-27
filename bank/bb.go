@@ -113,7 +113,7 @@ func (b bankBB) RegisterBoleto(boleto models.BoletoRequest) (models.BoletoRespon
 	if errParse != nil {
 		return models.BoletoResponse{}, errParse
 	}
-	resp.URL = models.NewBoletoView(boleto, resp.BarCodeNumber, resp.DigitableLine).EncodeURL()
+
 	return resp, nil
 }
 

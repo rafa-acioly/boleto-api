@@ -300,30 +300,17 @@ const boletoForm = `
 	{{end}}
 `
 
-func HTML(w gin.ResponseWriter, boleto models.BoletoRequest) {
+func HTML(w gin.ResponseWriter, boleto models.BoletoView) {
 	b := tmpl.New()
-
-	m := models.BoletoView{
-		BankLogo: template.HTML(logoBB),
-		Boleto:   boleto,
-	}
-	m.BankNumber = boleto.BankNumber.GetBoletoBankNumberAndDigit()
-	m.DigitableLine = "00199713400000100000000001014051000006667317"
-	//m.DigitableLine = "MONEDA"
-	a, errCode := twooffive.Encode(m.DigitableLine, true)
-	if errCode != nil {
-		fmt.Println(errCode)
-		return
-	}
-	orgBounds := a.Bounds()
+	boleto.BankLogo = template.HTML(logoBB)
+	bcode, _ := twooffive.Encode(boleto.Barcode, true)
+	orgBounds := bcode.Bounds()
 	orgWidth := orgBounds.Max.X - orgBounds.Min.X
-	c, _ := barcode.Scale(a, orgWidth, 50)
-
+	img, _ := barcode.Scale(bcode, orgWidth, 50)
 	buf := new(bytes.Buffer)
-	err := jpeg.Encode(buf, c, nil)
-	m.Barcode64 = base64.StdEncoding.EncodeToString(buf.Bytes())
-
-	s, err := b.From(m).To(templateBoleto).Transform(boletoForm)
+	err := jpeg.Encode(buf, img, nil)
+	boleto.Barcode64 = base64.StdEncoding.EncodeToString(buf.Bytes())
+	s, err := b.From(boleto).To(templateBoleto).Transform(boletoForm)
 	if err != nil {
 		fmt.Println(err)
 	}

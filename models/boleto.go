@@ -1,10 +1,15 @@
 package models
 
 import (
-	"encoding/json"
 	"html/template"
 
-	"bitbucket.org/mundipagg/boletoapi/util"
+	"github.com/google/uuid"
+
+	"fmt"
+
+	"encoding/json"
+
+	"bitbucket.org/mundipagg/boletoapi/config"
 )
 
 // BoletoRequest entidade de entrada para o boleto
@@ -44,14 +49,22 @@ func NewBoletoView(boleto BoletoRequest, barcode string, digitableLine string) B
 		Boleto:        boleto,
 		Barcode:       barcode,
 		DigitableLine: digitableLine,
+		BankNumber:    boleto.BankNumber.GetBoletoBankNumberAndDigit(),
 	}
 	return view
 }
 
 //EncodeURL tranforma o boleto view na forma que será escrito na url
-func (b BoletoView) EncodeURL() string {
-	d, _ := json.Marshal(b)
-	return util.Encrypt(string(d))
+func (b BoletoView) EncodeURL() (string, string) {
+	id, _ := uuid.NewUUID()
+	url := fmt.Sprintf("%s?fmt=html&id=%s", config.Get().AppURL, id)
+	return url, id.String()
+}
+
+//ToJSON tranforma o boleto view em json
+func (b BoletoView) ToJSON() string {
+	json, _ := json.Marshal(b)
+	return string(json)
 }
 
 // BankNumber número de identificação do banco

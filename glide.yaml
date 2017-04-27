@@ -9,3 +9,5 @@ import:
 - package: github.com/Pallinder/go-randomdata
 - package: github.com/jung-kurt/gofpdf
 - package: github.com/boombuler/barcode
+- package: github.com/google/uuid
+  version: "0.2"
