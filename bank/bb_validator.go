@@ -47,11 +47,6 @@ func validateAgencyAndDigit(b *models.BoletoRequest) error {
 	return nil
 }
 
-func validateAccount(b *models.BoletoRequest) error {
-	err := b.Agreement.IsAccountValid(8)
-	return err
-}
-
 func validateAccountAndDigit(b *models.BoletoRequest) error {
 	err := b.Agreement.IsAccountValid(8)
 	if err != nil {
