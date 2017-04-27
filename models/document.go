@@ -1,6 +1,7 @@
 package models
 
 import (
+	"regexp"
 	"strings"
 )
 
@@ -26,9 +27,15 @@ func (d DocumentType) IsCnpj() bool {
 // DocumentNumber o número do documento, poder ser um CPF ou CNPJ
 type DocumentNumber string
 
-// IsCpf verifica se é um Cpf válido
-func (d DocumentNumber) IsCpf() bool {
-	return len(d) == 11
+// ValidateCPF verifica se é um CPF válido
+func (d *Document) ValidateCPF() error {
+	re := regexp.MustCompile("(\\D+)")
+	cpf := re.ReplaceAllString(string(d.Number), "")
+	if len(cpf) == 11 {
+		d.Number = DocumentNumber(cpf)
+		return nil
+	}
+	return ErrorResponse{Code: "MPDocumentNumber", Message: "CPF inválido"}
 }
 
 // IsCnpj verifica se é um Cnpj válido

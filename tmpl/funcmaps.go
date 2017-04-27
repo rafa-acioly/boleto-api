@@ -40,7 +40,7 @@ func fmtNumber(n int64) string {
 }
 
 func fmtDoc(doc models.Document) string {
-	if doc.Number.IsCpf() {
+	if e := doc.ValidateCPF(); e == nil {
 		return fmtCPF(string(doc.Number))
 	}
 	return fmtCNPJ(string(doc.Number))
