@@ -1,9 +1,30 @@
 package models
 
-// ErrorInterface interface para implementar Error
-type ErrorInterface interface {
+// IErrorResponse interface para implementar Error
+type IErrorResponse interface {
 	Error() string
 	ErrorCode() string
+}
+
+//IErrorHTTP interface para retorno de status code
+type IErrorHTTP interface {
+	Error() string
+	StatusCode() int
+}
+
+//ErrorStatusHTTP tipo de erro para forçar o status code http
+type ErrorStatusHTTP struct {
+	Code    int
+	Message string
+}
+
+func (e ErrorStatusHTTP) Error() string {
+	return e.Message
+}
+
+//StatusCode retorna o status code para forçar na volta da requisição
+func (e ErrorStatusHTTP) StatusCode() int {
+	return e.Code
 }
 
 // ErrorResponse objeto de erro

@@ -25,9 +25,19 @@ func InstallRestAPI() {
 func checkError(c *gin.Context, err error) bool {
 	if err != nil {
 		errResp := models.BoletoResponse{
-			Errors: models.NewSingleErrorCollection("MP400", err.Error()),
+			Errors: models.NewEmptyErrorCollection(),
 		}
-		c.JSON(http.StatusOK, errResp)
+		if e, ok := err.(models.IErrorResponse); ok {
+			errResp.Errors.Append(e.ErrorCode(), e.Error())
+			c.JSON(http.StatusBadRequest, errResp)
+		} else if e, ok := err.(models.IErrorHTTP); ok {
+			errResp.Errors.Append("MP500", e.Error())
+			c.JSON(e.StatusCode(), errResp)
+		} else {
+			e := models.ErrorStatusHTTP{Code: 500, Message: err.Error()}
+			errResp.Errors.Append("MP500", e.Error())
+			c.JSON(e.StatusCode(), errResp)
+		}
 		return true
 	}
 	return false
