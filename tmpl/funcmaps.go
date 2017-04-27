@@ -20,13 +20,17 @@ var funcMap = template.FuncMap{
 	"replace":          replace,
 	"docType":          docType,
 	"trim":             trim,
-	"padLeft":          util.PadLeft,
+	"padLeft":          padLeft,
 	"toString":         toString,
 	"fmtDigitableLine": fmtDigitableLine,
 	"fmtCNPJ":          fmtCNPJ,
 	"fmtCPF":           fmtCPF,
 	"fmtDoc":           fmtDoc,
 	"fmtNumber":        fmtNumber,
+}
+
+func padLeft(value, char string, total uint) string {
+	return util.PadLeft(value, char, total)
 }
 
 func fmtNumber(n int64) string {
