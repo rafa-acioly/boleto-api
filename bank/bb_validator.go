@@ -28,30 +28,40 @@ func modElevenCalculator(a string, m []int) string {
 	return strconv.Itoa(digit)
 }
 
-func agencyDigitCalculator(agency string) string {
+func bbAgencyDigitCalculator(agency string) string {
 	multiplier := []int{5, 4, 3, 2}
 	return modElevenCalculator(agency, multiplier)
 }
 
-func accountDigitCalculator(agency, account string) string {
+func bbAccountDigitCalculator(agency, account string) string {
 	multiplier := []int{9, 8, 7, 6, 5, 4, 3, 2}
 	return modElevenCalculator(account, multiplier)
 }
 
-func validateAgencyAndDigit(b *models.BoletoRequest) error {
-	err := b.Agreement.IsAgencyValid()
-	if err != nil {
-		return err
+func bbValidateAgencyAndDigit(b interface{}) error {
+	switch t := b.(type) {
+	case models.BoletoRequest:
+		err := t.Agreement.IsAgencyValid()
+		if err != nil {
+			return err
+		}
+		t.Agreement.CalculateAgencyDigit(bbAgencyDigitCalculator)
+		return nil
+	default:
+		return models.ErrorStatusHTTP{Code: 500, Message: "Tipo inválido"}
 	}
-	b.Agreement.CalculateAgencyDigit(agencyDigitCalculator)
-	return nil
 }
 
-func validateAccountAndDigit(b *models.BoletoRequest) error {
-	err := b.Agreement.IsAccountValid(8)
-	if err != nil {
-		return err
+func bbValidateAccountAndDigit(b interface{}) error {
+	switch t := b.(type) {
+	case models.BoletoRequest:
+		err := t.Agreement.IsAccountValid(8)
+		if err != nil {
+			return err
+		}
+		t.Agreement.CalculateAccountDigit(bbAccountDigitCalculator)
+		return nil
+	default:
+		return models.ErrorStatusHTTP{Code: 500, Message: "Tipo inválido"}
 	}
-	b.Agreement.CalculateAccountDigit(accountDigitCalculator)
-	return nil
 }
