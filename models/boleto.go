@@ -2,6 +2,7 @@ package models
 
 import (
 	"html/template"
+	"time"
 
 	"github.com/google/uuid"
 
@@ -36,6 +37,7 @@ type BoletoView struct {
 	BankLogo      template.HTML
 	Boleto        BoletoRequest
 	BankID        BankNumber
+	CreateDate    time.Time
 	BankNumber    string
 	DigitableLine string
 	Barcode       string
@@ -44,12 +46,14 @@ type BoletoView struct {
 
 // NewBoletoView cria um novo objeto view de boleto a partir de um boleto request, codigo de barras e linha digitavel
 func NewBoletoView(boleto BoletoRequest, barcode string, digitableLine string) BoletoView {
+	boleto.Authentication = Authentication{}
 	view := BoletoView{
 		BankID:        boleto.BankNumber,
 		Boleto:        boleto,
 		Barcode:       barcode,
 		DigitableLine: digitableLine,
 		BankNumber:    boleto.BankNumber.GetBoletoBankNumberAndDigit(),
+		CreateDate:    boleto.Title.GetCreateDate(),
 	}
 	return view
 }
@@ -80,7 +84,7 @@ func (b BankNumber) IsBankNumberValid() bool {
 	}
 }
 
-//GetBoletoBankNumberAndDigit retorna o número do banco com o dígito
+//GetBoletoBankNumberAndDigit Retorna o numero da conta do banco do boleto
 func (b BankNumber) GetBoletoBankNumberAndDigit() string {
 	switch b {
 	case BancoDoBrasil:

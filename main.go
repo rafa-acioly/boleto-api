@@ -56,6 +56,7 @@ func configFlags() {
 		os.Setenv("URL_BB_REGISTER_BOLETO", "https://cobranca.homologa.bb.com.br:7101/registrarBoleto")
 		os.Setenv("URL_BB_TOKEN", "https://oauth.hm.bb.com.br:43000/oauth/token")
 		os.Setenv("APP_URL", "http://localhost:3000/boleto")
+		os.Setenv("ELASTIC_URL", "http://localhost:9200")
 	}
 	fmt.Println(*mockMode)
 	config.Install(*mockMode)
