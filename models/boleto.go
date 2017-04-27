@@ -4,13 +4,14 @@ import (
 	"html/template"
 	"time"
 
+	"bitbucket.org/mundipagg/boletoapi/config"
+	"bitbucket.org/mundipagg/boletoapi/util"
+
 	"github.com/google/uuid"
 
 	"fmt"
 
 	"encoding/json"
-
-	"bitbucket.org/mundipagg/boletoapi/config"
 )
 
 // BoletoRequest entidade de entrada para o boleto
@@ -53,16 +54,17 @@ func NewBoletoView(boleto BoletoRequest, barcode string, digitableLine string) B
 		Barcode:       barcode,
 		DigitableLine: digitableLine,
 		BankNumber:    boleto.BankNumber.GetBoletoBankNumberAndDigit(),
-		CreateDate:    boleto.Title.GetCreateDate(),
+		CreateDate:    time.Now(),
 	}
 	return view
 }
 
 //EncodeURL tranforma o boleto view na forma que será escrito na url
 func (b BoletoView) EncodeURL() (string, string) {
-	id, _ := uuid.NewUUID()
+	uid, _ := uuid.NewUUID()
+	id := util.Encrypt(uid.String())
 	url := fmt.Sprintf("%s?fmt=html&id=%s", config.Get().AppURL, id)
-	return url, id.String()
+	return url, id
 }
 
 //ToJSON tranforma o boleto view em json

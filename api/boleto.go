@@ -48,7 +48,7 @@ func getBoleto(c *gin.Context) {
 	//format := c.Param("fmt")
 	id := c.Query("id")
 	bleto, err := db.GetDB().GetBoletoByID(id)
-	if err != nil {
+	if err == nil {
 		boleto.HTML(c.Writer, bleto)
 	} else {
 		checkError(c, errors.New("Boleto não encontrado na base de dados"))

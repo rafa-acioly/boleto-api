@@ -49,6 +49,7 @@ func (e *elasticDb) GetBoletoByID(id string) (models.BoletoView, error) {
 	defer resp.Body.Close()
 
 	data, _ := ioutil.ReadAll(resp.Body)
+
 	elasticData := struct {
 		Source models.BoletoView `json:"_source"`
 	}{}

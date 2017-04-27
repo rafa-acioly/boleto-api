@@ -2,15 +2,21 @@ package util
 
 import (
 	"crypto/tls"
+	"net"
 	"net/http"
+	"time"
 )
+
+var DefaultDialer = &net.Dialer{Timeout: 16 * time.Second, KeepAlive: 16 * time.Second}
 
 var cfg *tls.Config = &tls.Config{
 	InsecureSkipVerify: true,
 }
 var client *http.Client = &http.Client{
 	Transport: &http.Transport{
-		TLSClientConfig: cfg,
+		TLSClientConfig:     cfg,
+		Dial:                DefaultDialer.Dial,
+		TLSHandshakeTimeout: 16 * time.Second,
 	},
 }
 
