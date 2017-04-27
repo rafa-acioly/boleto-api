@@ -18,6 +18,7 @@ type Config struct {
 	URLBBToken          string
 	MockMode            bool
 	AppURL              string
+	ElasticURL          string
 }
 
 var cnf Config
@@ -42,5 +43,6 @@ func Install(mockMode bool) {
 		URLBBToken:          os.Getenv("URL_BB_TOKEN"),
 		MockMode:            mockMode,
 		AppURL:              os.Getenv("APP_URL"),
+		ElasticURL:          os.Getenv("ELASTIC_URL"),
 	}
 }

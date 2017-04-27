@@ -3,13 +3,11 @@ package api
 import (
 	"net/http"
 
-	"encoding/json"
-
 	"errors"
 
 	"bitbucket.org/mundipagg/boletoapi/bank"
 	"bitbucket.org/mundipagg/boletoapi/boleto"
-	"bitbucket.org/mundipagg/boletoapi/cache"
+	"bitbucket.org/mundipagg/boletoapi/db"
 	"bitbucket.org/mundipagg/boletoapi/models"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
@@ -40,7 +38,7 @@ func registerBoleto(c *gin.Context) {
 	var id string
 	boView := models.NewBoletoView(boleto, resp.BarCodeNumber, resp.DigitableLine)
 	resp.URL, id = boView.EncodeURL()
-	cache.Set(id, boView.ToJSON())
+	db.GetDB().SaveBoleto(id, boView)
 	c.JSON(st, resp)
 }
 
@@ -49,10 +47,8 @@ func getBoleto(c *gin.Context) {
 	c.Header("Content-Type", "text/html; charset=utf-8")
 	//format := c.Param("fmt")
 	id := c.Query("id")
-	data := cache.Get(id)
-	if data != nil {
-		bleto := models.BoletoView{}
-		json.Unmarshal([]byte(data.(string)), &bleto)
+	bleto, err := db.GetDB().GetBoletoByID(id)
+	if err != nil {
 		boleto.HTML(c.Writer, bleto)
 	} else {
 		checkError(c, errors.New("Boleto não encontrado na base de dados"))
