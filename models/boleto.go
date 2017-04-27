@@ -80,6 +80,7 @@ func (b BankNumber) IsBankNumberValid() bool {
 	}
 }
 
+//GetBoletoBankNumberAndDigit retorna o número do banco com o dígito
 func (b BankNumber) GetBoletoBankNumberAndDigit() string {
 	switch b {
 	case BancoDoBrasil:
