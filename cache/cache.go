@@ -1,6 +1,11 @@
 package cache
 
+import (
+	"sync"
+)
+
 var memcache map[string]interface{}
+var mutex sync.Mutex
 
 //Inicia o cache em memoria antes de executar a main
 func init() {
@@ -14,5 +19,7 @@ func Get(key string) interface{} {
 
 //Set item no cache
 func Set(key string, obj interface{}) {
+	mutex.Lock()
+	defer mutex.Unlock()
 	memcache[key] = obj
 }

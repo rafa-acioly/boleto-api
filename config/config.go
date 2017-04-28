@@ -1,7 +1,10 @@
 package config
 
-import "os"
-import "sync"
+import (
+	"os"
+	"sync"
+	"sync/atomic"
+)
 
 //Config é a estrutura que tem todas as configurações da aplicação
 type Config struct {
@@ -23,12 +26,15 @@ type Config struct {
 
 var cnf Config
 var scnf sync.Once
+var running uint64
+var mutex sync.Mutex
 
 //Get retorna o objeto de configurações da aplicação
 func Get() Config {
 	return cnf
 }
 func Install(mockMode bool) {
+	atomic.StoreUint64(&running, 0)
 	cnf = Config{
 		APIPort:             ":" + os.Getenv("API_PORT"),
 		Version:             os.Getenv("API_VERSION"),
@@ -45,4 +51,14 @@ func Install(mockMode bool) {
 		AppURL:              os.Getenv("APP_URL"),
 		ElasticURL:          os.Getenv("ELASTIC_URL"),
 	}
+}
+
+//IsRunning verifica se a aplicação tem que aceitar requisições
+func IsRunning() bool {
+	return atomic.LoadUint64(&running) > 0
+}
+
+//Stop faz a aplicação parar de receber requisições
+func Stop() {
+	atomic.StoreUint64(&running, 1)
 }

@@ -13,13 +13,14 @@ func InstallRestAPI() {
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
 	router.Use(gin.Recovery())
-
+	router.Use(executionController())
 	if config.Get().EnablePrintRequest {
-		router.Use(gin.Logger())
+		//router.Use(gin.Logger())
 	}
 	InstallV1(router)
 	router.GET("/boleto", getBoleto)
 	router.Run(config.Get().APIPort)
+
 }
 
 func checkError(c *gin.Context, err error) bool {
