@@ -6,6 +6,7 @@ if [[ "$1" != "" ]]; then
     cd $PROJECTPATH
 
     echo "Installing dependencies with glide"
+    pwd
     glide install
 
     echo "Starting build"
