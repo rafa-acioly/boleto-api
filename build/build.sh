@@ -1,6 +1,6 @@
 echo "Deletando arquivos do repositório no GOPATH"
 PROJECTPATH=$GOPATH/src/bitbucket.org/mundipagg/boletoapi
-rm -rf PROJECTPATH/ -v
+rm -rdfv PROJECTPATH/*
 
 echo "Criando diretório do repositório no GOPATH"
 mkdir -p $PROJECTPATH
