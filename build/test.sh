@@ -1,9 +1,9 @@
 #!/bin/bash
 echo "Starting tests"
 
-PROJECTPATH=$GOPATH/src/bitbucket.org/mundipagg/boletoapi
+# PROJECTPATH=$GOPATH/src/bitbucket.org/mundipagg/boletoapi
 
-cd $PROJECTPATH
+# cd $PROJECTPATH
 
 pwd
 

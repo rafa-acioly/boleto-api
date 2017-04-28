@@ -1,8 +1,9 @@
-echo "Deletando arquivos do repositório no GOPATH"
-PROJECTPATH=$GOPATH/src/bitbucket.org/mundipagg/boletoapi
+#!/bin/bash
 
-echo "Mudando para o diretório no repositório no GOPATH"
-cd $PROJECTPATH
+# PROJECTPATH=$GOPATH/src/bitbucket.org/mundipagg/boletoapi
+
+# echo "Mudando para o diretório no repositório no GOPATH"
+# cd $PROJECTPATH
 
 pwd
 
