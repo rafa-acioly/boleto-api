@@ -1,5 +1,5 @@
 #!/bin/bash
-export GOPATH="/home/mundipagg/go"
+#export GOPATH="/home/mundipagg/go"
 PROJECTPATH="$GOPATH/src/bitbucket.org/mundipagg/boletoapi"
 echo "Changing directory to path $PROJECTPATH"
 ls -la $PROJECTPATH
