@@ -11,4 +11,4 @@ echo "Instalando dependências com o glide"
 glide install
 
 echo "Fazendo o build do projeto"
-go build
+go build -v
