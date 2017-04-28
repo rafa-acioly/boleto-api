@@ -5,6 +5,6 @@ PROJECTPATH=$GOPATH/src/bitbucket.org/mundipagg/boletoapi
 
 cd $PROJECTPATH
 
-glide install
+pwd
 
 go test $(go list ./... | grep -v /vendor/) -v
