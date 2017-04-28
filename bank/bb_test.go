@@ -17,12 +17,11 @@ func TestShouldCalculateAgencyDigitFromBb(t *testing.T) {
 }
 
 func TestShouldCalculateAccountDigitFromBb(t *testing.T) {
-	// test.ExpectTrue(bbAccountDigitCalculator("", "00006685") == "0", t)
+	test.ExpectTrue(bbAccountDigitCalculator("", "00006685") == "0", t)
 
-	// test.ExpectTrue(bbAccountDigitCalculator("", "00025619") == "6", t)
+	test.ExpectTrue(bbAccountDigitCalculator("", "00025619") == "6", t)
 
-	// test.ExpectTrue(bbAccountDigitCalculator("", "00006842") == "X", t)
+	test.ExpectTrue(bbAccountDigitCalculator("", "00006842") == "X", t)
 
-	// test.ExpectTrue(bbAccountDigitCalculator("", "00000787") == "0", t)
-	t.Fail()
+	test.ExpectTrue(bbAccountDigitCalculator("", "00000787") == "0", t)
 }
