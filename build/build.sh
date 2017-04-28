@@ -1,4 +1,5 @@
 #!/bin/bash
+echo "O usuario que esta executando o script: $USER"
 #export GOPATH="/home/mundipagg/go"
 PROJECTPATH="$GOPATH/src/bitbucket.org/mundipagg/boletoapi"
 echo "Changing directory to path $PROJECTPATH"
