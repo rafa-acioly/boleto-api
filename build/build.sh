@@ -5,6 +5,7 @@ echo "Changing directory to path $PROJECTPATH"
 ls -la $PROJECTPATH
 cd $PROJECTPATH
 echo "Installing dependencies with glide"
-glide install
+go get
+go run main.go
 echo "Starting build"
 go build -v
