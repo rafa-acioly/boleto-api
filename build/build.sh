@@ -11,8 +11,6 @@ if [[ "$1" != "" ]]; then
 
     echo "Starting build"
     go build -v
-
-    exit 0
 else
     echo "[ERROR] Expecting build directory as argument"
     exit 1

@@ -7,8 +7,6 @@ if [[ "$1" != "" ]]; then
 
     echo "Starting tests"
     go test $(go list ./... | grep -v /vendor/) -v
-
-    exit 0
 else
     echo "[ERROR] Expecting build directory as argument"
     exit 1
