@@ -22,7 +22,6 @@ func CreateMongo() DB {
 	if err != nil {
 		panic(err)
 	}
-	db.session.SetMode(mgo.Monotonic, true)
 	return db
 }
 
