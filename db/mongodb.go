@@ -28,7 +28,6 @@ func CreateMongo() DB {
 //SaveBoleto salva um boleto no mongoDB
 func (e *mongoDb) SaveBoleto(boleto models.BoletoView) error {
 	var err error
-
 	e.m.Lock()
 	defer e.m.Unlock()
 	c := e.session.DB("boletoapi").C("boletos")
