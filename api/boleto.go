@@ -26,7 +26,7 @@ func registerBoleto(c *gin.Context) {
 	lg.Recipient = bank.GetBankNumber().BankName()
 	lg.Request(boleto, c.Request.URL.RequestURI(), c.Request.Header)
 
-	resp, errR := bank.RegisterBoleto(boleto)
+	resp, errR := bank.ProcessBoleto(boleto)
 	if checkError(c, errR) {
 		return
 	}
@@ -34,17 +34,17 @@ func registerBoleto(c *gin.Context) {
 	st := http.StatusOK
 	if len(resp.Errors) > 0 {
 		st = http.StatusBadRequest
+	} else {
+		boView := models.NewBoletoView(boleto, resp.BarCodeNumber, resp.DigitableLine)
+		resp.URL = boView.EncodeURL()
+		db.GetDB().SaveBoleto(boView)
 	}
-	boView := models.NewBoletoView(boleto, resp.BarCodeNumber, resp.DigitableLine)
-	resp.URL = boView.EncodeURL()
-	db.GetDB().SaveBoleto(boView)
 	c.JSON(st, resp)
 }
 
 func getBoleto(c *gin.Context) {
 	c.Status(200)
 	c.Header("Content-Type", "text/html; charset=utf-8")
-	//format := c.Param("fmt")
 	id := c.Query("id")
 	bleto, err := db.GetDB().GetBoletoByID(id)
 	if err == nil {

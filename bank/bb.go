@@ -20,8 +20,10 @@ import (
 type bankBB struct {
 	validate *models.Validator
 	log      *log.Log
+	token    auth.Token
 }
 
+//Cria uma nova instância do objeto que implementa os serviços do Banco do Brasil e configura os validadores que serão utilizados
 func newBB() bankBB {
 	b := bankBB{
 		validate: models.NewValidator(),
@@ -36,22 +38,19 @@ func newBB() bankBB {
 func (b bankBB) Log() *log.Log {
 	return b.log
 }
-func (b bankBB) Login(user, password, body string) (auth.Token, error) {
+func (b *bankBB) login(user, password string) (auth.Token, error) {
 	if config.Get().MockMode {
-		return auth.Token{
-			AccessToken: "1111111111",
-		}, nil
+		return auth.Token{AccessToken: "1111111111"}, nil
 	}
+	body := "grant_type=client_credentials&scope=cobranca.registro-boletos"
 	client := util.DefaultHTTPClient()
 	req, err := http.NewRequest("POST", config.Get().URLBBToken, strings.NewReader(body))
 	if err != nil {
 		return auth.Token{}, err
 	}
-
 	req.SetBasicAuth(user, password)
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Add("Cache-Control", "no-cache")
-
 	b.log.Request(struct {
 		Username string
 		Password string
@@ -83,24 +82,30 @@ func (b bankBB) Login(user, password, body string) (auth.Token, error) {
 	if tok.Status != http.StatusOK {
 		return tok, errors.New(tok.ErrorDescription)
 	}
+	b.token = tok
 	return tok, nil
 }
-func (b bankBB) RegisterBoleto(boleto models.BoletoRequest) (models.BoletoResponse, error) {
-	//Body do request necessário para pegar o token do registrar boleto
-	body := "grant_type=client_credentials&scope=cobranca.registro-boletos"
-	token, err := b.Login(boleto.Authentication.Username, boleto.Authentication.Password, body)
+
+//ProcessBoleto faz o processamento de registro de boleto
+func (b bankBB) ProcessBoleto(boleto models.BoletoRequest) (models.BoletoResponse, error) {
+	errs := b.ValidateBoleto(&boleto)
+	if len(errs) > 0 {
+		return models.BoletoResponse{Errors: errs}, nil
+	}
+	_, err := b.login(boleto.Authentication.Username, boleto.Authentication.Password)
 	if err != nil {
 		return models.BoletoResponse{}, err
 	}
+	return b.RegisterBoleto(boleto)
+}
+
+func (b bankBB) RegisterBoleto(boleto models.BoletoRequest) (models.BoletoResponse, error) {
 	builder := tmpl.New()
 	soap, err := builder.From(boleto).To(letters.GetRegisterBoletoBBTmpl()).XML().Transform()
-
 	if err != nil {
 		return models.BoletoResponse{}, err
 	}
-
-	response, status, errRegister := b.registerBoletoRequest(soap, token)
-
+	response, status, errRegister := b.registerBoletoRequest(soap, b.token)
 	if errRegister != nil {
 		return models.BoletoResponse{}, errRegister
 	}
@@ -110,9 +115,9 @@ func (b bankBB) RegisterBoleto(boleto models.BoletoRequest) (models.BoletoRespon
 			StatusCode: http.StatusBadRequest,
 			Errors:     models.NewSingleErrorCollection(value["faultCode"], value["messageString"]),
 		}
-
 		return j, nil
 	}
+
 	value, _ := parser.ExtractValues(response, letters.GetRegisterBoletoReponseTranslator())
 	j, errJSON := builder.From(value).To(letters.GetRegisterBoletoAPIResponseTmpl()).Transform()
 	if errJSON != nil {
@@ -123,12 +128,11 @@ func (b bankBB) RegisterBoleto(boleto models.BoletoRequest) (models.BoletoRespon
 	if errParse != nil {
 		return models.BoletoResponse{}, errParse
 	}
-
 	return resp, nil
 }
 
 func (b bankBB) ValidateBoleto(boleto *models.BoletoRequest) models.Errors {
-	return nil
+	return models.Errors(b.validate.Assert(boleto))
 }
 
 //GetBankNumber retorna o codigo do banco

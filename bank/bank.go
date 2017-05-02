@@ -3,14 +3,13 @@ package bank
 import (
 	"fmt"
 
-	"bitbucket.org/mundipagg/boletoapi/auth"
 	"bitbucket.org/mundipagg/boletoapi/log"
 	"bitbucket.org/mundipagg/boletoapi/models"
 )
 
 //Bank é a interface que vai oferecer os serviços em comum entre os bancos
 type Bank interface {
-	Login(string, string, string) (auth.Token, error)
+	ProcessBoleto(models.BoletoRequest) (models.BoletoResponse, error)
 	RegisterBoleto(models.BoletoRequest) (models.BoletoResponse, error)
 	ValidateBoleto(*models.BoletoRequest) models.Errors
 	GetBankNumber() models.BankNumber

@@ -29,6 +29,9 @@ func (b bankCaixa) Login(user, password, body string) (auth.Token, error) {
 func (b bankCaixa) RegisterBoleto(boleto models.BoletoRequest) (models.BoletoResponse, error) {
 	return models.BoletoResponse{}, nil
 }
+func (b bankCaixa) ProcessBoleto(boleto models.BoletoRequest) (models.BoletoResponse, error) {
+	return models.BoletoResponse{}, nil
+}
 
 func (b bankCaixa) ValidateBoleto(boleto *models.BoletoRequest) models.Errors {
 	return nil
