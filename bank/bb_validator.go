@@ -40,7 +40,7 @@ func bbAccountDigitCalculator(agency, account string) string {
 
 func bbValidateAgencyAndDigit(b interface{}) error {
 	switch t := b.(type) {
-	case models.BoletoRequest:
+	case *models.BoletoRequest:
 		err := t.Agreement.IsAgencyValid()
 		if err != nil {
 			return err
@@ -54,7 +54,7 @@ func bbValidateAgencyAndDigit(b interface{}) error {
 
 func bbValidateAccountAndDigit(b interface{}) error {
 	switch t := b.(type) {
-	case models.BoletoRequest:
+	case *models.BoletoRequest:
 		err := t.Agreement.IsAccountValid(8)
 		if err != nil {
 			return err
