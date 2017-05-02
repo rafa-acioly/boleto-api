@@ -6,6 +6,8 @@ import (
 	"bitbucket.org/mundipagg/boletoapi/models"
 )
 
+var bb bankBB
+
 func modElevenCalculator(a string, m []int) string {
 	sum := 0
 
@@ -60,6 +62,18 @@ func bbValidateAccountAndDigit(b interface{}) error {
 			return err
 		}
 		t.Agreement.CalculateAccountDigit(bbAccountDigitCalculator)
+		return nil
+	default:
+		return models.ErrorStatusHTTP{Code: 500, Message: "Tipo inválido"}
+	}
+}
+
+func bbValidateOurNumber(b interface{}) error {
+	switch t := b.(type) {
+	case models.BoletoRequest:
+		if t.Title.OurNumber > 9999999999 {
+			return models.ErrorResponse{Code: "", Message: "Nosso número inválido"}
+		}
 		return nil
 	default:
 		return models.ErrorStatusHTTP{Code: 500, Message: "Tipo inválido"}
