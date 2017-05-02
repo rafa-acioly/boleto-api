@@ -22,6 +22,7 @@ type Config struct {
 	MockMode            bool
 	AppURL              string
 	ElasticURL          string
+	MongoURL            string
 }
 
 var cnf Config
@@ -50,6 +51,7 @@ func Install(mockMode bool) {
 		MockMode:            mockMode,
 		AppURL:              os.Getenv("APP_URL"),
 		ElasticURL:          os.Getenv("ELASTIC_URL"),
+		MongoURL:            os.Getenv("MONGODB_URL"),
 	}
 }
 

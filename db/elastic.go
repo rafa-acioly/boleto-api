@@ -18,9 +18,9 @@ import (
 type elasticDb struct{}
 
 //SaveBoleto salva um boleto no elasticsearch
-func (e *elasticDb) SaveBoleto(id string, boleto models.BoletoView) error {
+func (e *elasticDb) SaveBoleto(boleto models.BoletoView) error {
 	client := util.DefaultHTTPClient()
-	url := fmt.Sprintf("%s/boletoapi/boleto/%s", config.Get().ElasticURL, id)
+	url := fmt.Sprintf("%s/boletoapi/boleto/%s", config.Get().ElasticURL, boleto.ID)
 	req, err := http.NewRequest("POST", url, strings.NewReader(boleto.ToJSON()))
 	if err != nil {
 		return err
@@ -56,3 +56,5 @@ func (e *elasticDb) GetBoletoByID(id string) (models.BoletoView, error) {
 	json.Unmarshal(data, &elasticData)
 	return elasticData.Source, nil
 }
+
+func (e *elasticDb) Close() {}

@@ -35,10 +35,9 @@ func registerBoleto(c *gin.Context) {
 	if len(resp.Errors) > 0 {
 		st = http.StatusBadRequest
 	}
-	var id string
 	boView := models.NewBoletoView(boleto, resp.BarCodeNumber, resp.DigitableLine)
-	resp.URL, id = boView.EncodeURL()
-	db.GetDB().SaveBoleto(id, boView)
+	resp.URL = boView.EncodeURL()
+	db.GetDB().SaveBoleto(boView)
 	c.JSON(st, resp)
 }
 

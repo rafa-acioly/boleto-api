@@ -35,20 +35,24 @@ type BoletoResponse struct {
 
 // BoletoView contem as informações que serão preenchidas no boleto
 type BoletoView struct {
-	BankLogo      template.HTML
-	Boleto        BoletoRequest
-	BankID        BankNumber
-	CreateDate    time.Time
-	BankNumber    string
-	DigitableLine string
-	Barcode       string
-	Barcode64     string
+	ID            string
+	BankLogo      template.HTML `json:",omitempty"`
+	Boleto        BoletoRequest `json:",omitempty"`
+	BankID        BankNumber    `json:",omitempty"`
+	CreateDate    time.Time     `json:",omitempty"`
+	BankNumber    string        `json:",omitempty"`
+	DigitableLine string        `json:",omitempty"`
+	Barcode       string        `json:",omitempty"`
+	Barcode64     string        `json:",omitempty"`
 }
 
 // NewBoletoView cria um novo objeto view de boleto a partir de um boleto request, codigo de barras e linha digitavel
 func NewBoletoView(boleto BoletoRequest, barcode string, digitableLine string) BoletoView {
 	boleto.Authentication = Authentication{}
+	uid, _ := uuid.NewUUID()
+	id := util.Encrypt(uid.String())
 	view := BoletoView{
+		ID:            id,
 		BankID:        boleto.BankNumber,
 		Boleto:        boleto,
 		Barcode:       barcode,
@@ -60,11 +64,9 @@ func NewBoletoView(boleto BoletoRequest, barcode string, digitableLine string) B
 }
 
 //EncodeURL tranforma o boleto view na forma que será escrito na url
-func (b BoletoView) EncodeURL() (string, string) {
-	uid, _ := uuid.NewUUID()
-	id := util.Encrypt(uid.String())
-	url := fmt.Sprintf("%s?fmt=html&id=%s", config.Get().AppURL, id)
-	return url, id
+func (b *BoletoView) EncodeURL() string {
+	url := fmt.Sprintf("%s?fmt=html&id=%s", config.Get().AppURL, b.ID)
+	return url
 }
 
 //ToJSON tranforma o boleto view em json

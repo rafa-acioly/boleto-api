@@ -6,8 +6,8 @@ import "bitbucket.org/mundipagg/boletoapi/cache"
 type mock struct{}
 
 //SaveBoleto salva o boleto num cache local em memoria
-func (m *mock) SaveBoleto(id string, boleto models.BoletoView) error {
-	cache.Set(id, boleto)
+func (m *mock) SaveBoleto(boleto models.BoletoView) error {
+	cache.Set(boleto.ID, boleto)
 	return nil
 }
 
@@ -15,3 +15,5 @@ func (m *mock) SaveBoleto(id string, boleto models.BoletoView) error {
 func (m *mock) GetBoletoByID(id string) (models.BoletoView, error) {
 	return cache.Get(id).(models.BoletoView), nil
 }
+
+func (m *mock) Close() {}

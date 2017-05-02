@@ -11,3 +11,4 @@ import:
 - package: github.com/boombuler/barcode
 - package: github.com/google/uuid
   version: "0.2"
+- package: gopkg.in/mgo.v2

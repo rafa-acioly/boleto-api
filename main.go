@@ -13,6 +13,7 @@ import (
 
 	"bitbucket.org/mundipagg/boletoapi/api"
 	"bitbucket.org/mundipagg/boletoapi/config"
+	"bitbucket.org/mundipagg/boletoapi/db"
 	"bitbucket.org/mundipagg/boletoapi/log"
 )
 
@@ -35,8 +36,9 @@ func init() {
 func handleSignal(c chan os.Signal) {
 	<-c
 	config.Stop()
-	log.Close()
 	log.Info("Quiting BoletoApi")
+	log.Close()
+	db.GetDB().Close()
 	os.Exit(1)
 }
 
@@ -58,8 +60,8 @@ func configFlags() {
 		os.Setenv("URL_BB_TOKEN", "https://oauth.hm.bb.com.br:43000/oauth/token")
 		os.Setenv("APP_URL", "http://localhost:3000/boleto")
 		os.Setenv("ELASTIC_URL", "http://localhost:9200")
+		os.Setenv("MONGODB_URL", "localhost:27017")
 	}
-	fmt.Println(*mockMode)
 	config.Install(*mockMode)
 }
 func main() {
