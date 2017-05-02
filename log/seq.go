@@ -1,6 +1,7 @@
 package log
 
 import (
+	"fmt"
 	"net/http"
 
 	"bitbucket.org/mundipagg/boletoapi/config"
@@ -100,5 +101,6 @@ func Fatal(msg string) {
 
 //Close fecha a conexao com o SEQ
 func Close() {
+	fmt.Println("Closing SEQ Connection")
 	logger.Close()
 }

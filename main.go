@@ -13,7 +13,6 @@ import (
 
 	"bitbucket.org/mundipagg/boletoapi/api"
 	"bitbucket.org/mundipagg/boletoapi/config"
-	"bitbucket.org/mundipagg/boletoapi/db"
 	"bitbucket.org/mundipagg/boletoapi/log"
 )
 
@@ -38,7 +37,8 @@ func handleSignal(c chan os.Signal) {
 	config.Stop()
 	log.Info("Quiting BoletoApi")
 	log.Close()
-	db.GetDB().Close()
+	//db.GetDB().Close()
+	fmt.Println("Done")
 	os.Exit(1)
 }
 

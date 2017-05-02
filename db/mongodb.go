@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"sync"
 
 	"bitbucket.org/mundipagg/boletoapi/config"
@@ -47,5 +48,6 @@ func (e *mongoDb) GetBoletoByID(id string) (models.BoletoView, error) {
 }
 
 func (e *mongoDb) Close() {
+	fmt.Println("Close Database Connection")
 	e.session.Close()
 }
