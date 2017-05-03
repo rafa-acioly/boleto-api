@@ -6,25 +6,36 @@ type IErrorResponse interface {
 	ErrorCode() string
 }
 
-//IErrorHTTP interface para retorno de status code
-type IErrorHTTP interface {
+// IServerError interface para implementar Error
+type IServerError interface {
 	Error() string
-	StatusCode() int
+	Message() string
 }
 
-//ErrorStatusHTTP tipo de erro para forçar o status code http
-type ErrorStatusHTTP struct {
-	Code    int
-	Message string
+// InternalServerError objeto para erros internos da aplicação: ex banco de dados
+type InternalServerError struct {
+	Err string
+	Msg string
 }
 
-func (e ErrorStatusHTTP) Error() string {
-	return e.Message
+// Message retorna a mensagem final para o usuário
+func (e InternalServerError) Message() string {
+	return e.Msg
 }
 
-//StatusCode retorna o status code para forçar na volta da requisição
-func (e ErrorStatusHTTP) StatusCode() int {
-	return e.Code
+// Error retorna o erro original
+func (e InternalServerError) Error() string {
+	return e.Err
+}
+
+//NewInternalServerError cria um novo objeto InternalServerError a partir de uma mensagem original e final
+func NewInternalServerError(err, msg string) InternalServerError {
+	return InternalServerError{Err: err, Msg: msg}
+}
+
+//NewErrorResponse cria um novo objeto de ErrorReponse com código e mensagem
+func NewErrorResponse(code, msg string) ErrorResponse {
+	return ErrorResponse{Code: code, Message: msg}
 }
 
 // ErrorResponse objeto de erro
@@ -47,34 +58,20 @@ type Errors []ErrorResponse
 
 // NewErrorCollection cria nova coleção de erros
 func NewErrorCollection(errorResponse ErrorResponse) Errors {
-	return []ErrorResponse{
-		ErrorResponse{
-			Code:    errorResponse.Code,
-			Message: errorResponse.Message,
-		},
-	}
+	return []ErrorResponse{errorResponse}
 }
 
-// NewEmptyErrorCollection cria nova coleção de erros vazia
-func NewEmptyErrorCollection() Errors {
+// NewSingleErrorCollection cria nova coleção de erros com 1 item
+func NewSingleErrorCollection(code, msg string) Errors {
+	return NewErrorCollection(NewErrorResponse(code, msg))
+}
+
+// NewErrors cria nova coleção de erros vazia
+func NewErrors() Errors {
 	return []ErrorResponse{}
-}
-
-//NewErrorResponse retorna um ErrorResponse
-func NewErrorResponse(code, message string) ErrorResponse {
-	return ErrorResponse{
-		Code:    code,
-		Message: message,
-	}
-}
-
-//NewSingleErrorCollection retorna colecao com um erro apenas
-func NewSingleErrorCollection(code, message string) Errors {
-	return NewErrorCollection(NewErrorResponse(code, message))
 }
 
 // Append adiciona mais um erro na coleção
 func (e *Errors) Append(code, message string) {
-	er := NewErrorResponse(code, message)
-	*e = append(*e, er)
+	*e = append(*e, ErrorResponse{Code: code, Message: message})
 }

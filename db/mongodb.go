@@ -16,14 +16,14 @@ type mongoDb struct {
 }
 
 //CreateMongo cria uma nova intancia de conexão com o mongodb
-func CreateMongo() DB {
+func CreateMongo() (DB, error) {
 	db := new(mongoDb)
 	var err error
 	db.session, err = mgo.Dial(config.Get().MongoURL)
 	if err != nil {
-		panic(err)
+		return nil, models.NewInternalServerError(err.Error(), "Falha ao conectar com o banco de dados")
 	}
-	return db
+	return db, nil
 }
 
 //SaveBoleto salva um boleto no mongoDB

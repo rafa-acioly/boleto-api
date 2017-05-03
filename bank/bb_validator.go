@@ -50,8 +50,14 @@ func bbValidateAgencyAndDigit(b interface{}) error {
 		t.Agreement.CalculateAgencyDigit(bbAgencyDigitCalculator)
 		return nil
 	default:
-		return models.ErrorStatusHTTP{Code: 500, Message: "Tipo inválido"}
+		return invalidType(t)
 	}
+}
+
+func invalidType(t interface{}) error {
+	//tp := reflect.TypeOf(t)
+	//fmt.Println("O tipo vindo do request não é models.BoletoRequest mas sim: " + tp.String())
+	return models.NewErrorResponse("MP500", "Tipo inválido")
 }
 
 func bbValidateAccountAndDigit(b interface{}) error {
@@ -64,18 +70,18 @@ func bbValidateAccountAndDigit(b interface{}) error {
 		t.Agreement.CalculateAccountDigit(bbAccountDigitCalculator)
 		return nil
 	default:
-		return models.ErrorStatusHTTP{Code: 500, Message: "Tipo inválido"}
+		return invalidType(t)
 	}
 }
 
 func bbValidateOurNumber(b interface{}) error {
 	switch t := b.(type) {
-	case models.BoletoRequest:
+	case *models.BoletoRequest:
 		if t.Title.OurNumber > 9999999999 {
-			return models.ErrorResponse{Code: "", Message: "Nosso número inválido"}
+			return models.NewErrorResponse("MPOurNumber", "Nosso número inválido")
 		}
 		return nil
 	default:
-		return models.ErrorStatusHTTP{Code: 500, Message: "Tipo inválido"}
+		return invalidType(t)
 	}
 }

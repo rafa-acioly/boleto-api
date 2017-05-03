@@ -14,8 +14,8 @@ func (v *Validator) Push(r Rule) {
 }
 
 //Assert aplica todas as validações no objeto passado como parâmetro
-func (v *Validator) Assert(o interface{}) []ErrorResponse {
-	errs := make([]ErrorResponse, 0, 0)
+func (v *Validator) Assert(o interface{}) Errors {
+	errs := NewErrors()
 	for _, assert := range v.Rules {
 		err := assert(o)
 		switch t := err.(type) {
@@ -23,7 +23,7 @@ func (v *Validator) Assert(o interface{}) []ErrorResponse {
 			errs = append(errs, t)
 		default:
 			if err != nil {
-				errs = append(errs, ErrorResponse{Code: "ERR:4002", Message: err.Error()})
+				errs.Append(err.Error(), "Erro interno")
 			}
 		}
 	}

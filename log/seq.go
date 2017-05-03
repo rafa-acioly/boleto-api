@@ -94,9 +94,19 @@ func Warn(msg string) {
 	go logger.Warning(msg, goseq.NewProperties())
 }
 
-//Fatal loga mensagem do leve fatal
-func Fatal(msg string) {
-	go logger.Fatal(msg, goseq.NewProperties())
+// Fatal loga erros da aplicação
+func (l Log) Fatal(content interface{}, m string) {
+	go (func() {
+		props := goseq.NewProperties()
+		props.AddProperty("MessageType", "Error")
+		props.AddProperty("Content", content)
+		props.AddProperty("Recipient", l.Recipient)
+		props.AddProperty("Operation", l.Operation)
+		props.AddProperty("NossoNumero", l.NossoNumero)
+		msg := formatter(m)
+
+		l.logger.Fatal(msg, props)
+	})()
 }
 
 //Close fecha a conexao com o SEQ

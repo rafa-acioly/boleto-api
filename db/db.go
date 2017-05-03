@@ -18,12 +18,14 @@ var db DB
 var _createOnce sync.Once
 
 //GetDB retorna o objeto concreto que implementa as funções de persistência
-func GetDB() DB {
+func GetDB() (DB, error) {
+	var err error
 	_createOnce.Do(func() {
 		if config.Get().MockMode {
 			db = new(mock)
 		}
-		db = CreateMongo()
+
+		db, err = CreateMongo()
 	})
-	return db
+	return db, err
 }

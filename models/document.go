@@ -35,7 +35,7 @@ func (d *Document) ValidateCPF() error {
 		d.Number = DocumentNumber(cpf)
 		return nil
 	}
-	return ErrorResponse{Code: "MPDocumentNumber", Message: "CPF inválido"}
+	return NewErrorResponse("MPDocumentNumber", "CPF inválido")
 }
 
 // IsCnpj verifica se é um Cnpj válido

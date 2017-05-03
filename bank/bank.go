@@ -24,6 +24,6 @@ func Get(number models.BankNumber) (Bank, error) {
 	case models.Caixa:
 		return newCaixa(), nil
 	default:
-		return nil, models.ErrorResponse{Code: "MPBankNumber", Message: fmt.Sprintf("Banco %d não existe", number)}
+		return nil, models.NewErrorResponse("MPBankNumber", fmt.Sprintf("Banco %d não existe", number))
 	}
 }

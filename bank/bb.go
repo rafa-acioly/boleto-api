@@ -95,7 +95,7 @@ func (b bankBB) ProcessBoleto(boleto models.BoletoRequest) (models.BoletoRespons
 	}
 	_, err := b.login(boleto.Authentication.Username, boleto.Authentication.Password)
 	if err != nil {
-		return models.BoletoResponse{}, err
+		return models.BoletoResponse{}, models.NewErrorResponse("MP500", err.Error())
 	}
 	return b.RegisterBoleto(boleto)
 }
