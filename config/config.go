@@ -20,6 +20,7 @@ type Config struct {
 	URLBBRegisterBoleto string
 	URLBBToken          string
 	MockMode            bool
+	DevMode             bool
 	AppURL              string
 	ElasticURL          string
 	MongoURL            string
@@ -34,7 +35,7 @@ var mutex sync.Mutex
 func Get() Config {
 	return cnf
 }
-func Install(mockMode bool) {
+func Install(mockMode, devMode bool) {
 	atomic.StoreUint64(&running, 0)
 	cnf = Config{
 		APIPort:             ":" + os.Getenv("API_PORT"),
@@ -51,6 +52,7 @@ func Install(mockMode bool) {
 		MockMode:            mockMode,
 		AppURL:              os.Getenv("APP_URL"),
 		ElasticURL:          os.Getenv("ELASTIC_URL"),
+		DevMode:             devMode,
 		MongoURL:            os.Getenv("MONGODB_URL"),
 	}
 }
