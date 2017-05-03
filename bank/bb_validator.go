@@ -55,8 +55,6 @@ func bbValidateAgencyAndDigit(b interface{}) error {
 }
 
 func invalidType(t interface{}) error {
-	//tp := reflect.TypeOf(t)
-	//fmt.Println("O tipo vindo do request não é models.BoletoRequest mas sim: " + tp.String())
 	return models.NewErrorResponse("MP500", "Tipo inválido")
 }
 
