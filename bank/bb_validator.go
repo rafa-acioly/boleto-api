@@ -95,3 +95,21 @@ func bbValidateWalletVariation(b interface{}) error {
 		return invalidType(t)
 	}
 }
+
+func bbValidateAmountInCents(b interface{}) error {
+	switch t := b.(type) {
+	case *models.BoletoRequest:
+		return t.Title.IsAmountInCentsValid()
+	default:
+		return invalidType(t)
+	}
+}
+
+func bbValidateExpireDate(b interface{}) error {
+	switch t := b.(type) {
+	case *models.BoletoRequest:
+		return t.Title.IsExpireDateValid()
+	default:
+		return invalidType(t)
+	}
+}
