@@ -12,6 +12,20 @@ type IServerError interface {
 	Message() string
 }
 
+// IFormatError interface para implementar Error
+type IFormatError interface {
+	Error() string
+}
+
+// FormatError objeto para erros de input no request da API
+type FormatError struct {
+	Err string
+}
+
+func (e FormatError) Error() string {
+	return e.Err
+}
+
 // InternalServerError objeto para erros internos da aplicação: ex banco de dados
 type InternalServerError struct {
 	Err string
@@ -36,6 +50,11 @@ func NewInternalServerError(err, msg string) InternalServerError {
 //NewErrorResponse cria um novo objeto de ErrorReponse com código e mensagem
 func NewErrorResponse(code, msg string) ErrorResponse {
 	return ErrorResponse{Code: code, Message: msg}
+}
+
+//NewFormatError cria um novo objeto de FormatError com descrição do erro
+func NewFormatError(e string) FormatError {
+	return FormatError{Err: e}
 }
 
 // ErrorResponse objeto de erro
