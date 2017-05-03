@@ -1,16 +1,18 @@
 version: "2"
 services:
-  boletoapi:
+  api:
     build: .
     ports:
      - "8080:3000"
     environment:
      - API_PORT=3000
      - API_VERSION=0.0.1
-     - ENVIRONMENT=Production
+     - ENVIRONMENT=Development
      - SEQ_URL=http://stglog.mundipagg.com/
      - SEQ_API_KEY=4jZzTybZ9bUHtJiPdh6
      - ENABLE_REQUEST_LOG=false
-     - ENABLE_PRINT_REQUEST=false
+     - ENABLE_PRINT_REQUEST=true
      - URL_BB_REGISTER_BOLETO=https://cobranca.desenv.bb.com.br:7101/registrarBoleto
      - URL_BB_TOKEN=https://oauth.desenv.bb.com.br:43000/oauth/token
+     - MONGODB_URL=192.168.8.119:27017
+     - APP_URL=http://192.168.8.119:8080/boleto
