@@ -62,7 +62,7 @@ func configFlags() {
 		os.Setenv("ELASTIC_URL", "http://localhost:9200")
 		os.Setenv("MONGODB_URL", "localhost:27017")
 	}
-	config.Install(*mockMode)
+	config.Install(*mockMode, *devMode)
 }
 func main() {
 	flag.Parse()
