@@ -9,9 +9,9 @@ import (
 
 // Agreement afiliação do cliente com o bano
 type Agreement struct {
-	AgreementNumber int
-	Wallet          int16
-	WalletVariation int16
+	AgreementNumber uint
+	Wallet          uint16
+	WalletVariation uint16
 	Agency          string
 	AgencyDigit     string
 	Account         string

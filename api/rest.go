@@ -3,9 +3,8 @@ package api
 import (
 	"net/http"
 
-	"bitbucket.org/mundipagg/boletoapi/log"
-
 	"bitbucket.org/mundipagg/boletoapi/config"
+	"bitbucket.org/mundipagg/boletoapi/log"
 
 	"bitbucket.org/mundipagg/boletoapi/models"
 	gin "gopkg.in/gin-gonic/gin.v1"
@@ -26,7 +25,7 @@ func InstallRestAPI() {
 
 }
 
-func checkError(c *gin.Context, err error, log *log.Log) bool {
+func checkError(c *gin.Context, err error, l *log.Log) bool {
 	if err != nil {
 		errResp := models.BoletoResponse{
 			Errors: models.NewErrors(),
@@ -34,13 +33,15 @@ func checkError(c *gin.Context, err error, log *log.Log) bool {
 		if e, ok := err.(models.IErrorResponse); ok {
 			errResp.Errors.Append(e.ErrorCode(), e.Error())
 			c.JSON(http.StatusBadRequest, errResp)
+		} else if e, ok := err.(models.IFormatError); ok {
+			errResp.Errors.Append("MP400", e.Error())
+			c.JSON(http.StatusBadRequest, errResp)
 		} else if e, ok := err.(models.IServerError); ok {
 			errResp.Errors.Append("MP500", "Erro interno")
-			errResp.StatusCode = http.StatusInternalServerError
-			log.Fatal(e.Error(), e.Message())
+			l.Fatal(e.Error(), e.Message())
 			c.JSON(http.StatusInternalServerError, errResp)
 		} else {
-			log.Fatal(err.Error(), "")
+			l.Fatal(err.Error(), "")
 			errResp.Errors.Append("MP500", "Erro interno")
 			c.JSON(http.StatusInternalServerError, errResp)
 		}

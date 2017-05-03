@@ -23,9 +23,9 @@ func GetDB() (DB, error) {
 	_createOnce.Do(func() {
 		if config.Get().MockMode {
 			db = new(mock)
+		} else {
+			db, err = CreateMongo()
 		}
-
-		db, err = CreateMongo()
 	})
 	return db, err
 }

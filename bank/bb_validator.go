@@ -55,8 +55,6 @@ func bbValidateAgencyAndDigit(b interface{}) error {
 }
 
 func invalidType(t interface{}) error {
-	//tp := reflect.TypeOf(t)
-	//fmt.Println("O tipo vindo do request não é models.BoletoRequest mas sim: " + tp.String())
 	return models.NewErrorResponse("MP500", "Tipo inválido")
 }
 
@@ -81,6 +79,36 @@ func bbValidateOurNumber(b interface{}) error {
 			return models.NewErrorResponse("MPOurNumber", "Nosso número inválido")
 		}
 		return nil
+	default:
+		return invalidType(t)
+	}
+}
+
+func bbValidateWalletVariation(b interface{}) error {
+	switch t := b.(type) {
+	case *models.BoletoRequest:
+		if t.Agreement.WalletVariation < 1 {
+			return models.NewErrorResponse("MPWalletVariation", "Variação da carteira inválida")
+		}
+		return nil
+	default:
+		return invalidType(t)
+	}
+}
+
+func bbValidateAmountInCents(b interface{}) error {
+	switch t := b.(type) {
+	case *models.BoletoRequest:
+		return t.Title.IsAmountInCentsValid()
+	default:
+		return invalidType(t)
+	}
+}
+
+func bbValidateExpireDate(b interface{}) error {
+	switch t := b.(type) {
+	case *models.BoletoRequest:
+		return t.Title.IsExpireDateValid()
 	default:
 		return invalidType(t)
 	}

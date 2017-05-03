@@ -206,7 +206,7 @@ const boletoForm = `
                     <span class="title">Carteira/Nosso Número</span>
                     <br/>
                     <br/>
-                    <p class="content right">{{.Boleto.Agreement.Wallet}}/{{.Boleto.Title.OurNumber}}</p>
+                    <p class="content right">17/{{.Boleto.Title.OurNumber}}</p>
                 </td>
             </tr>
 
@@ -219,7 +219,7 @@ const boletoForm = `
                 <td width="10%">
                     <span class="title">Carteira</span>
                     <br/>
-                    <p class="content center">{{.Boleto.Agreement.Wallet}}</p>
+                    <p class="content center">17</p>
                 </td>
                 <td width="10%">
                     <span class="title">Espécie</span>
