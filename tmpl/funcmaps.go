@@ -33,7 +33,7 @@ func padLeft(value, char string, total uint) string {
 	return util.PadLeft(value, char, total)
 }
 
-func fmtNumber(n int64) string {
+func fmtNumber(n uint64) string {
 	real := n / 100
 	cents := n % 100
 	return fmt.Sprintf("%d,%02d", real, cents)
@@ -46,8 +46,8 @@ func fmtDoc(doc models.Document) string {
 	return fmtCNPJ(string(doc.Number))
 }
 
-func toString(number int) string {
-	return strconv.Itoa(number)
+func toString(number uint) string {
+	return strconv.FormatInt(int64(number), 10)
 }
 
 func today() time.Time {
