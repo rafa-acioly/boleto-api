@@ -83,3 +83,15 @@ func bbValidateOurNumber(b interface{}) error {
 		return invalidType(t)
 	}
 }
+
+func bbValidateWalletVariation(b interface{}) error {
+	switch t := b.(type) {
+	case *models.BoletoRequest:
+		if t.Agreement.WalletVariation < 1 {
+			return models.NewErrorResponse("MPWalletVariation", "Variação da carteira inválida")
+		}
+		return nil
+	default:
+		return invalidType(t)
+	}
+}

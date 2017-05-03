@@ -32,6 +32,7 @@ func newBB() bankBB {
 	b.validate.Push(bbValidateAccountAndDigit)
 	b.validate.Push(bbValidateAgencyAndDigit)
 	b.validate.Push(bbValidateOurNumber)
+	b.validate.Push(bbValidateWalletVariation)
 	return b
 }
 
