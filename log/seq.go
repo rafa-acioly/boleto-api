@@ -20,7 +20,7 @@ var Recipient string
 type Log struct {
 	Operation   string
 	Recipient   string
-	NossoNumero int
+	NossoNumero uint
 	logger      *goseq.Logger
 }
 

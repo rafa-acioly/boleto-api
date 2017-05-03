@@ -10,12 +10,12 @@ type Title struct {
 	CreateDate     time.Time
 	ExpireDateTime time.Time
 	ExpireDate     string
-	AmountInCents  int64
-	OurNumber      int
+	AmountInCents  uint64
+	OurNumber      uint
 }
 
 // NewTitle instancia um novo título
-func NewTitle(expDate string, amountInCents int64, ourNumber int) (*Title, error) {
+func NewTitle(expDate string, amountInCents uint64, ourNumber uint) (*Title, error) {
 	eDate, err := parseDate(expDate)
 	if err != nil {
 		return nil, err
