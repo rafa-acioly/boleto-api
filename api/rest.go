@@ -36,7 +36,6 @@ func checkError(c *gin.Context, err error, log *log.Log) bool {
 			c.JSON(http.StatusBadRequest, errResp)
 		} else if e, ok := err.(models.IServerError); ok {
 			errResp.Errors.Append("MP500", "Erro interno")
-			errResp.StatusCode = http.StatusInternalServerError
 			log.Fatal(e.Error(), e.Message())
 			c.JSON(http.StatusInternalServerError, errResp)
 		} else {
