@@ -1,7 +1,7 @@
 package models
 
 import (
-	"errors"
+	"fmt"
 	"time"
 )
 
@@ -15,31 +15,46 @@ type Title struct {
 }
 
 // NewTitle instancia um novo título
-func NewTitle(expDate string, amountInCents uint64, ourNumber uint) (*Title, error) {
+func (t *Title) NewTitle(expDate string, amountInCents uint64, ourNumber uint) error {
 	eDate, err := parseDate(expDate)
 	if err != nil {
-		return nil, err
+		return NewErrorResponse("MPExpireDate", fmt.Sprintf("Data em um formato inválido, esperamos AAAA-MM-DD e recebemos %s", expDate))
 	}
 
-	cDate, err := parseDate(time.Now().Format("2006-01-02"))
+	cDate, _ := parseDate(time.Now().Format("2006-01-02"))
+
+	t.AmountInCents = amountInCents
+	t.ExpireDateTime = eDate
+	t.OurNumber = ourNumber
+	t.CreateDate = cDate
+	if t.CreateDate.After(t.ExpireDateTime) {
+		return NewErrorResponse("MPExpireDate", "Data de expiração não pode ser menor que a data de hoje")
+	}
+
+	return nil
+}
+
+//IsExpireDateValid retorna um erro se a data de expiração for inválida
+func (t *Title) IsExpireDateValid() error {
+	d, err := parseDate(t.ExpireDate)
 	if err != nil {
-		return nil, err
+		return NewErrorResponse("MPExpireDate", fmt.Sprintf("Data em um formato inválido, esperamos AAAA-MM-DD e recebemos %s", t.ExpireDate))
 	}
-
-	if amountInCents < 1 {
-		return nil, errors.New("Valor não pode ser menor do que 1 centavo")
+	n, _ := parseDate(time.Now().Format("2006-01-02"))
+	t.CreateDate = n
+	t.ExpireDateTime = d
+	if t.CreateDate.After(t.ExpireDateTime) {
+		return NewErrorResponse("MPExpireDate", "Data de expiração não pode ser menor que a data de hoje")
 	}
+	return nil
+}
 
-	title := Title{}
-	title.AmountInCents = amountInCents
-	title.ExpireDateTime = eDate
-	title.OurNumber = ourNumber
-	title.CreateDate = cDate
-	if title.CreateDate.After(title.ExpireDateTime) {
-		return nil, errors.New("Data de expiração não pode ser menor que a data de hoje")
+//IsAmountInCentsValid retorna um erro se o valor em centavos for inválido
+func (t *Title) IsAmountInCentsValid() error {
+	if t.AmountInCents < 1 {
+		return NewErrorResponse("MPAmountInCents", "Valor não pode ser menor do que 1 centavo")
 	}
-
-	return &title, nil
+	return nil
 }
 
 // GetCreateDate Retorna a data de crição do título
