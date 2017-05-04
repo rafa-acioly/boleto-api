@@ -156,17 +156,15 @@ const boletoForm = `
                     <table border="0" style="border:none">
                         <tr>
                             <td width="60%"><span class="text">{{.Boleto.Recipient.Name}}</span></td>
-                            <td><span class="text">CNPJ {{fmtDoc .Boleto.Recipient.Document}}</span></td>
+                            <td><span class="text"><b>{{.Boleto.Recipient.Document.Type}}</b> {{fmtDoc .Boleto.Recipient.Document}}</span></td>
                         </tr>
                     </table>
                     <br/>
                     <span class="text">{{.Boleto.Recipient.Address.Street}}, 
-					{{.Boleto.Recipient.Address.Number}} - 
-					{{.Boleto.Recipient.Address.Complement}} - 
-					{{.Boleto.Recipient.Address.District}} - 
-					{{.Boleto.Recipient.Address.City}} - 
-					{{.Boleto.Recipient.Address.StateCode}} - 
-					{{.Boleto.Recipient.Address.ZipCode}}</span>
+                    {{.Boleto.Recipient.Address.Number}} - 
+                    {{.Boleto.Recipient.Address.District}}, 
+                    {{.Boleto.Recipient.Address.StateCode}} - 
+                    {{.Boleto.Recipient.Address.ZipCode}}</span>
                 </td>
                 <td width="30%">
                     <span class="title">Agência/Código Beneficiário</span>
@@ -246,6 +244,7 @@ const boletoForm = `
             <tr>
                 <td colspan="6" rowspan="4">
                     <span class="title">Instruções de responsabilidade do BENEFICIÁRIO. Qualquer dúvida sobre este boleto contate o beneficiário.</span>
+                    <p class="content">{{.Boleto.Title.Instructions}}</p>
                 </td>
             </tr>
             <tr>
@@ -277,7 +276,7 @@ const boletoForm = `
                             <td><span class="text"><b>CNPJ/CPF: </b>&nbsp;{{fmtDoc .Boleto.Buyer.Document}}</span></td>
                         </tr>
                         <tr>
-                            <td><span class="text"><b>Endereço: </b>&nbsp;{{.Boleto.Buyer.Address.Street}}&nbsp;{{.Boleto.Buyer.Address.Number}} - {{.Boleto.Buyer.Address.District}} - {{.Boleto.Buyer.Address.City}} - {{.Boleto.Buyer.Address.StateCode}} - {{.Boleto.Buyer.Address.ZipCode}}</span></td>
+                            <td><span class="text"><b>Endereço: </b>&nbsp;{{.Boleto.Buyer.Address.Street}}&nbsp;{{.Boleto.Buyer.Address.Number}}, {{.Boleto.Buyer.Address.District}} - {{.Boleto.Buyer.Address.City}}, {{.Boleto.Buyer.Address.StateCode}} - {{.Boleto.Buyer.Address.ZipCode}}</span></td>
                             <td>&nbsp;</td>
                         </tr>
                         <tr>
@@ -300,6 +299,7 @@ const boletoForm = `
 	{{end}}
 `
 
+//HTML renderiza HTML do boleto
 func HTML(w gin.ResponseWriter, boleto models.BoletoView) {
 	b := tmpl.New()
 	boleto.BankLogo = template.HTML(logoBB)

@@ -77,6 +77,7 @@ func drawPaymentDate(pdf *gofpdf.Fpdf) {
 
 const fontSize float64 = 12
 
+//Boleto asd
 func Boleto(w gin.ResponseWriter) {
 	pdf := gofpdf.New("P", "mm", "A4", "") // A4 210.0 x 297.0
 
@@ -109,6 +110,7 @@ func Boleto(w gin.ResponseWriter) {
 	pdf.Output(w)
 }
 
+//A wtf
 func A(w gin.ResponseWriter) {
 	pdf := gofpdf.New("P", "mm", "A4", "") // A4 210.0 x 297.0
 	var fontSize float64 = 12
@@ -127,7 +129,7 @@ func A(w gin.ResponseWriter) {
 	pdf.Output(w)
 }
 
-//Carta na manga
+//B Carta na manga
 func B(w gin.ResponseWriter) {
 	pdf := gofpdf.New("L", "mm", "A4", "")
 	pdf.SetFont("Helvetica", "", 12)
@@ -149,6 +151,7 @@ func createPdf() (pdf *gofpdf.Fpdf) {
 	return
 }
 
+//BarCode faz encode de barcode
 func BarCode(w gin.ResponseWriter) {
 	pdf := createPdf()
 	code := "12345678909876543212345678909876543212345678909"

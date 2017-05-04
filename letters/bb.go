@@ -121,7 +121,7 @@ xmlns:sch="http://www.tibco.com/schemas/bws_registro_cbr/Recursos/XSD/Schema.xsd
  <sch:textoNumeroTituloBeneficiario></sch:textoNumeroTituloBeneficiario>
  <sch:textoNumeroTituloCliente>000{{padLeft (toString .Agreement.AgreementNumber) "0" 7}}{{padLeft (toString .Title.OurNumber) "0" 10}}</sch:textoNumeroTituloCliente>
  <sch:textoMensagemBloquetoOcorrencia>Pagamento disponível até a data de vencimento</sch:textoMensagemBloquetoOcorrencia>
- <sch:codigoTipoInscricaoPagador>{{docType .Buyer.Document.Type}}</sch:codigoTipoInscricaoPagador>
+ <sch:codigoTipoInscricaoPagador>{{docType .Buyer.Document}}</sch:codigoTipoInscricaoPagador>
  <sch:numeroInscricaoPagador>{{.Buyer.Document.Number}}</sch:numeroInscricaoPagador>
  <sch:nomePagador>{{.Buyer.Name}}</sch:nomePagador>
  <sch:textoEnderecoPagador>{{.Buyer.Address.Street}}</sch:textoEnderecoPagador>
