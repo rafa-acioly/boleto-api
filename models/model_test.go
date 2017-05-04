@@ -35,15 +35,15 @@ func TestShouldReturnInvalidCnpjOnDocumentType(t *testing.T) {
 }
 
 func TestShouldReturnValidCnpjOnDocumentNumber(t *testing.T) {
-	document := Document{Number: "12345678901564", Type: "CNPJ"}
-	if document.Number.IsCnpj() == false {
+	document := Document{Number: "12345678901564fas", Type: "CNPJ"}
+	if err := document.ValidateCNPJ(); err != nil {
 		t.Fail()
 	}
 }
 
 func TestShouldReturnInvalidCnpjOnDocumentNumber(t *testing.T) {
-	document := Document{Number: "12345678901564asdf", Type: "CNPJ"}
-	if document.Number.IsCnpj() {
+	document := Document{Number: "12345678901564asdf22", Type: "CNPJ"}
+	if err := document.ValidateCNPJ(); err == nil {
 		t.Fail()
 	}
 }
