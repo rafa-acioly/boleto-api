@@ -41,9 +41,9 @@ func fmtNumber(n uint64) string {
 
 func fmtDoc(doc models.Document) string {
 	if e := doc.ValidateCPF(); e == nil {
-		return fmtCPF(string(doc.Number))
+		return fmtCPF(doc.Number)
 	}
-	return fmtCNPJ(string(doc.Number))
+	return fmtCNPJ(doc.Number)
 }
 
 func toString(number uint) string {
@@ -62,7 +62,7 @@ func replace(str, old, new string) string {
 	return strings.Replace(str, old, new, -1)
 }
 
-func docType(s models.DocumentType) int {
+func docType(s models.Document) int {
 	if s.IsCpf() {
 		return 1
 	}

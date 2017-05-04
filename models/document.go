@@ -7,32 +7,26 @@ import (
 
 // Document nó com o tipo de documento e número do documento
 type Document struct {
-	Type   DocumentType
-	Number DocumentNumber
+	Type   string
+	Number string
 }
 
-// DocumentType o tipo de documento pode ser CPF ou CNPJ
-type DocumentType string
-
 // IsCpf diz se o DocumentType é um CPF
-func (d DocumentType) IsCpf() bool {
-	return strings.ToUpper(string(d)) == "CPF"
+func (d Document) IsCpf() bool {
+	return strings.ToUpper(d.Type) == "CPF"
 }
 
 // IsCnpj diz se o DocumentType é um CNPJ
-func (d DocumentType) IsCnpj() bool {
-	return strings.ToUpper(string(d)) == "CNPJ"
+func (d Document) IsCnpj() bool {
+	return strings.ToUpper(d.Type) == "CNPJ"
 }
-
-// DocumentNumber o número do documento, poder ser um CPF ou CNPJ
-type DocumentNumber string
 
 // ValidateCPF verifica se é um CPF válido
 func (d *Document) ValidateCPF() error {
 	re := regexp.MustCompile("(\\D+)")
 	cpf := re.ReplaceAllString(string(d.Number), "")
 	if len(cpf) == 11 {
-		d.Number = DocumentNumber(cpf)
+		d.Number = cpf
 		return nil
 	}
 	return NewErrorResponse("MPDocumentNumber", "CPF inválido")
@@ -43,7 +37,7 @@ func (d *Document) ValidateCNPJ() error {
 	re := regexp.MustCompile("(\\D+)")
 	cnpj := re.ReplaceAllString(string(d.Number), "")
 	if len(cnpj) == 14 {
-		d.Number = DocumentNumber(cnpj)
+		d.Number = cnpj
 		return nil
 	}
 	return NewErrorResponse("MPDocumentNumber", "CNPJ inválido")

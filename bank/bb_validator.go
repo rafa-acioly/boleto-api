@@ -117,10 +117,10 @@ func bbValidateExpireDate(b interface{}) error {
 func bbValidateBuyerDocumentNumber(b interface{}) error {
 	switch t := b.(type) {
 	case *models.BoletoRequest:
-		if t.Buyer.Document.Type.IsCpf() {
+		if t.Buyer.Document.IsCpf() {
 			return t.Buyer.Document.ValidateCPF()
 		}
-		if t.Buyer.Document.Type.IsCnpj() {
+		if t.Buyer.Document.IsCnpj() {
 			return t.Buyer.Document.ValidateCNPJ()
 		}
 		return models.NewErrorResponse("MPBuyerDocumentType", "Tipo de Documento inválido")
@@ -132,13 +132,22 @@ func bbValidateBuyerDocumentNumber(b interface{}) error {
 func bbValidateRecipientDocumentNumber(b interface{}) error {
 	switch t := b.(type) {
 	case *models.BoletoRequest:
-		if t.Recipient.Document.Type.IsCpf() {
+		if t.Recipient.Document.IsCpf() {
 			return t.Recipient.Document.ValidateCPF()
 		}
-		if t.Recipient.Document.Type.IsCnpj() {
+		if t.Recipient.Document.IsCnpj() {
 			return t.Recipient.Document.ValidateCNPJ()
 		}
 		return models.NewErrorResponse("MPRecipientDocumentType", "Tipo de Documento inválido")
+	default:
+		return invalidType(t)
+	}
+}
+
+func bbValidateTitleInstructions(b interface{}) error {
+	switch t := b.(type) {
+	case *models.BoletoRequest:
+		return t.Title.ValidateInstructionsLength()
 	default:
 		return invalidType(t)
 	}
