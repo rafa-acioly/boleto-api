@@ -15,7 +15,7 @@ func TestShouldReturnValidCpfOnDocumentType(t *testing.T) {
 
 func TestShouldReturnInvalidCpfOnDocumentType(t *testing.T) {
 	document := Document{Number: "1234567890132", Type: "CNPJ"}
-	if document.IsCPF() {
+	if document.IsCNPJ() == false {
 		t.Fail()
 	}
 }
