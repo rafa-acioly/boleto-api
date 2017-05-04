@@ -3,3 +3,4 @@ glide.lock
 boletoapi
 *.pid
 *.exe
+debug
