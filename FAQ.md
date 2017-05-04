@@ -149,6 +149,8 @@ __R.__ Campo padrão não obrigatório. (__OBS:__ não vamos usar isso)
 O código de erro `CBRSR005` não consta no Manual.
 Eu preciso colocar zeros a esquerda do CPF?
 
+__R.__ Não vai ocorrer em produção
+
 #### Request
 
 ```xml
