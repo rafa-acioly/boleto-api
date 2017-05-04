@@ -64,9 +64,9 @@ __R.__ Campo padrão não obrigatório. (__OBS:__ não vamos usar isso)
 
 ### Os campos que possuem Numérico(algum número) é necessário completar o número com zeros a esquerda?
 
-### `codigoChaveUsuario` Campo para identificar usuário/sistema interno que solicitou o registro – controle empresa – Default: 1 pra que serve? Vocês tem uma API de consulta para verificar as requisições feitas?
-
 ### Por que quando eu envio um request passando um CPF para o pagador na API de homologação de vocês eu recebo um erro?
+
+__R.__ Eles possuem uma relação de testes no ambiente de homologação
 
 ### Por que vem "Cliente nao informado" no campo de resposta `nomeLogradouroBeneficiario`, estamos mandando o Request corretamente?
 
