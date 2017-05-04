@@ -11,13 +11,13 @@ type Document struct {
 	Number string
 }
 
-// IsCpf diz se o DocumentType é um CPF
-func (d Document) IsCpf() bool {
+// IsCPF diz se o DocumentType é um CPF
+func (d Document) IsCPF() bool {
 	return strings.ToUpper(d.Type) == "CPF"
 }
 
-// IsCnpj diz se o DocumentType é um CNPJ
-func (d Document) IsCnpj() bool {
+// IsCNPJ diz se o DocumentType é um CNPJ
+func (d Document) IsCNPJ() bool {
 	return strings.ToUpper(d.Type) == "CNPJ"
 }
 

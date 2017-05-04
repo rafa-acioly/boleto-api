@@ -8,28 +8,28 @@ import (
 
 func TestShouldReturnValidCpfOnDocumentType(t *testing.T) {
 	document := Document{Number: "12345678901", Type: "CPF"}
-	if document.Type.IsCpf() == false {
+	if document.IsCPF() == false {
 		t.Fail()
 	}
 }
 
 func TestShouldReturnInvalidCpfOnDocumentType(t *testing.T) {
 	document := Document{Number: "1234567890132", Type: "CNPJ"}
-	if document.Type.IsCpf() {
+	if document.IsCPF() {
 		t.Fail()
 	}
 }
 
 func TestShouldReturnValidCnpjOnDocumentType(t *testing.T) {
 	document := Document{Number: "1234567890132", Type: "CnpJ"}
-	if document.Type.IsCnpj() == false {
+	if document.IsCNPJ() == false {
 		t.Fail()
 	}
 }
 
 func TestShouldReturnInvalidCnpjOnDocumentType(t *testing.T) {
 	document := Document{Number: "12345678901", Type: "CPF"}
-	if document.Type.IsCnpj() {
+	if document.IsCNPJ() {
 		t.Fail()
 	}
 }
@@ -112,23 +112,6 @@ func WTestCalculateAgencyDigitWithInvalidDigit(t *testing.T) {
 	}
 	a.CalculateAgencyDigit(c)
 	test.ExpectTrue(a.AgencyDigit == "1", t)
-}
-
-func TestIsAccountDigitInValid(t *testing.T) {
-	a := Agreement{
-		AccountDigit: "",
-	}
-	_, err := a.IsAccountDigitValid()
-	test.ExpectError(err, t)
-}
-
-func TestIsAccountDigitValid(t *testing.T) {
-	a := Agreement{
-		AccountDigit: "1sss",
-	}
-	s, err := a.IsAccountDigitValid()
-	test.ExpectNoError(err, t)
-	test.ExpectTrue(s == "1", t)
 }
 
 func TestIsAccountValid(t *testing.T) {

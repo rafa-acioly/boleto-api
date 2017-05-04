@@ -63,7 +63,7 @@ func replace(str, old, new string) string {
 }
 
 func docType(s models.Document) int {
-	if s.IsCpf() {
+	if s.IsCPF() {
 		return 1
 	}
 	return 2
