@@ -30,7 +30,11 @@
 
 Qual código nós devemos enviar? Estamos mandando por padrão `19`
 
+__R.__ Este parâmetro é definido pela empresa.
+
 ### No campo `numeroCarteira` estamos mandando 17 por padrão, para eCommerce esta é a carteira ideal?
+
+__R.__ Somente será utilizada a 17.
 
 ### No campo `codigoModalidadeTITULO` estamos mandando por padrão 1
 
@@ -38,13 +42,23 @@ As opções são:
 
 1 – Carteira Simples; 4 – Vinculada 6 – Descontada; 8 – Vendor
 
+__R.__ Continuar utilizando 1
+
 ### `dataEmissaoTITULO` e `dataVencimentoTITULO` podemos mandar um boleto que vence no mesmo dia? Data de emissão e vencimento ser a mesma?
+
+__R.__ Pode.
 
 ### O que é `indicadorPermissaoRecebimentoParcial` Indicador de Recebimento Parcial, pra que serve? Estamos mandando sempre `N`
 
+__R.__ Serve para o boleto ser pago parcialmente, podem ser feitos vários pagamentos até a liquidação total. (__OBS:__ não vamos usar isso)
+
 ### `textoNumeroTITULOBeneficiario` seu número, porque usar este se temos o nosso número que é de controle da empresa também?
 
+__R.__ Campo padrão não obrigatório. (__OBS:__ não vamos usar isso)
+
 ### Por que existe o campo `textoMensagemBloquetoOcorrencia` se nós temos o trabalho de gerar o html do boleto?
+
+__R.__ Campo padrão não obrigatório. (__OBS:__ não vamos usar isso)
 
 ### Existe alguma API onde a gente só envia as informações do boleto e vocês retornam o layout pra gente preenchido?
 
