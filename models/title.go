@@ -12,25 +12,14 @@ type Title struct {
 	ExpireDate     string
 	AmountInCents  uint64
 	OurNumber      uint
+	Instructions   string
 }
 
-// NewTitle instancia um novo título
-func (t *Title) NewTitle(expDate string, amountInCents uint64, ourNumber uint) error {
-	eDate, err := parseDate(expDate)
-	if err != nil {
-		return NewErrorResponse("MPExpireDate", fmt.Sprintf("Data em um formato inválido, esperamos AAAA-MM-DD e recebemos %s", expDate))
+//ValidateInstructionsLength valida se texto das instruções possui quantidade de caracteres corretos
+func (t Title) ValidateInstructionsLength() error {
+	if len(t.Instructions) > 220 {
+		return NewErrorResponse("MPInstructions", "Instruções não podem passar de 220 caracteres")
 	}
-
-	cDate, _ := parseDate(time.Now().Format("2006-01-02"))
-
-	t.AmountInCents = amountInCents
-	t.ExpireDateTime = eDate
-	t.OurNumber = ourNumber
-	t.CreateDate = cDate
-	if t.CreateDate.After(t.ExpireDateTime) {
-		return NewErrorResponse("MPExpireDate", "Data de expiração não pode ser menor que a data de hoje")
-	}
-
 	return nil
 }
 
