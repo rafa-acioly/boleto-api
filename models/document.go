@@ -38,7 +38,13 @@ func (d *Document) ValidateCPF() error {
 	return NewErrorResponse("MPDocumentNumber", "CPF inválido")
 }
 
-// IsCnpj verifica se é um Cnpj válido
-func (d DocumentNumber) IsCnpj() bool {
-	return len(d) == 14
+// ValidateCNPJ verifica se é um CNPJ válido
+func (d *Document) ValidateCNPJ() error {
+	re := regexp.MustCompile("(\\D+)")
+	cnpj := re.ReplaceAllString(string(d.Number), "")
+	if len(cnpj) == 14 {
+		d.Number = DocumentNumber(cnpj)
+		return nil
+	}
+	return NewErrorResponse("MPDocumentNumber", "CNPJ inválido")
 }
