@@ -10,12 +10,12 @@ services:
      - ENVIRONMENT=Development
      - SEQ_URL=http://stglog.mundipagg.com/
      - SEQ_API_KEY=4jZzTybZ9bUHtJiPdh6
-     - ENABLE_REQUEST_LOG=false
+     - ENABLE_REQUEST_LOG=falsel
      - ENABLE_PRINT_REQUEST=true
      - URL_BB_REGISTER_BOLETO=https://cobranca.desenv.bb.com.br:7101/registrarBoleto
      - URL_BB_TOKEN=https://oauth.desenv.bb.com.br:43000/oauth/token
      - MONGODB_URL=10.0.2.15:27017
-     - APP_URL=http://192.168.8.119:8080/boleto
+     - APP_URL=http://localhost:8080/boleto
   mongodb:
         image: mongo:latest
         container_name: "mongodb"
@@ -23,8 +23,8 @@ services:
           - MONGO_DATA_DIR=/data/db
           - MONGO_LOG_DIR=/dev/null
         volumes:
-          - /home/philippe/go/src/bitbucket.org/mundipagg/boletoapi/volume_teste/db:/data/db
-          - /home/philippe/go/src/bitbucket.org/mundipagg/boletoapi/volume_teste/configdb:/data/configdb
+          - /tmp/boletodb/db:/data/db
+          - /tmp/boletodb/configdb:/data/configdb
         ports:
             - 27017:27017
         command: mongod --smallfiles --logpath=/dev/null
