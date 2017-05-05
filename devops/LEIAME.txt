@@ -28,8 +28,11 @@ Primeiros passos:
     - Este arquivo sobe os containers do boletoonline com a última versão das imagens
 - stop.sh
     - Este arquivo para e destrói os containers em execução do boleto online
-- doBackup.sh
-    - Você precisa editar este arquivo para configurar o path do volume mapeado no host
-    - Este arquivo faz o backup dos volumes do mongodb e zipa num arquivo bkp_mongo.tar
+- doBackup.sh    
+    - Este arquivo faz o backup dos volumes do mongodb
+    - Cria um arquivo no formato bck_boletoapi-YYYY-MM-DD.tar de acordo com a data gerada
 - doRestore.sh
-    - Volta o arquivo de backup bkp_mongo.tar
+    - Solicita ao usuário a data do arquivo que será recuperada
+    - A data deverá seguir o padrão YYYY-MM-DD (ex: 2017-04-30)
+    - O script vai descomprimir o arquivo tar e copiar para o diretório padrão $HOME/dump_boletodb
+    - A ferramenta mongorestore é chamada para restaurar os dados da base
