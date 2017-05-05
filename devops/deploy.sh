@@ -14,6 +14,7 @@ echo ""
 echo "Creating volume folder"
 mkdir -p ~/boletodb/db
 mkdir -p ~/boletodb/configdb
+mkdir -p ~/dump_boletodb
 echo "Compiling API";
 go build  -o ./devops/boletoapi;
 echo "API Compiled";
