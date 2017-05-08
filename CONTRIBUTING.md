@@ -8,9 +8,13 @@
 2. Caso sua feature seja aprovada pelo time do projeto utilize os seguintes procedimentos:
 
     a. Faça o [fork](https://confluence.atlassian.com/bitbucket/forking-a-repository-221449527.html) da API de Boleto no Bitbucket 
+    
     b. Crie uma branch (git checkout -b sua_feature_incrivel)
+    
     c. Envie para sua branch (git push origin sua_feature_incrivel)
+    
     d. Inicie um [Pull Request no Bitbucket](https://confluence.atlassian.com/bitbucket/create-a-pull-request-774243413.html)
+    
 
 # Como lidar com o problema de import path em Projetos Go
 
