@@ -18,7 +18,7 @@ func TestShouldValidateDocumentNumber(t *testing.T) {
 	h.ValidateDocumentNumber()
 	test.ExpectTrue(len(h.DocumentNumber) == 10, t)
 
-	h.DocumentNumber = "123"
+	h.DocumentNumber = "123x"
 	h.ValidateDocumentNumber()
 	test.ExpectTrue(len(h.DocumentNumber) == 10, t)
 }
