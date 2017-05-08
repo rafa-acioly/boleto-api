@@ -1,5 +1,5 @@
-hash: f93a256dde9e801b19db0fa360833bac94214b8543849b1b3ea0e586320ff846
-updated: 2017-05-04T17:44:00.108499284-03:00
+hash: 8ad15de40351b6b2f7c9f065b71abe182d6e035f595fad7727d15093e3ffc1aa
+updated: 2017-05-08T20:12:18.556521259-03:00
 imports:
 - name: github.com/beevik/etree
   version: abae5fc32af8862e420d52e686a7e6ec14111685
@@ -29,6 +29,8 @@ imports:
   version: 1cc9c18494a98432fe441990cd63bfe457a80597
 - name: github.com/Pallinder/go-randomdata
   version: 8c3362a5e6781e0d1046f1267b3c1f19b2cde334
+- name: github.com/SebastiaanKlippert/go-wkhtmltopdf
+  version: 476a1aaadffdb573c921d380cd43a956cef430d4
 - name: golang.org/x/net
   version: f315505cf3349909cdf013ea56690da34e96a451
   subpackages:
