@@ -13,7 +13,6 @@ import (
 
 	"bitbucket.org/mundipagg/boletoapi/models"
 	"bitbucket.org/mundipagg/boletoapi/tmpl"
-	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
 const templateBoleto = `
@@ -34,6 +33,7 @@ const templateBoleto = `
     body {
         font-family: "Arial";
 		background-color: #fff;
+        font-size:0.7em;
     }
     .left {
 		margin: auto;		
@@ -56,6 +56,7 @@ const templateBoleto = `
     .boletoNumber {
         width: 62%;
         font-weight: bold;
+        font-size:0.9em;
     }
 
     .center {
@@ -75,19 +76,19 @@ const templateBoleto = `
         position: absolute;
         left: 0px;
         top: 0px;
-        font-size: 12px;
+        font-size:0.65em;
         font-weight: bold;
     }
     
     .text {
-        font-size: 12px;
+         font-size:0.7em;
     }
     
     p.content {
         padding: 0px;
         width: 100%;
         margin: 0px;
-        font-size: 12px;
+        font-size:0.7em;
     }
     
     .sideBorders {
@@ -131,7 +132,7 @@ const boletoForm = `
                 <td class="bankLogo">
                     {{.BankLogo}}					
                 </td>
-                <td class="sideBorders center"><span style="font-weight:bold;">{{.BankNumber}}</span></td>
+                <td class="sideBorders center"><span style="font-weight:bold;font-size:0.9em;">{{.BankNumber}}</span></td>
                 <td class="boletoNumber center"><span>{{fmtDigitableLine .DigitableLine}}</span></td>
             </tr>
         </table>
@@ -300,7 +301,7 @@ const boletoForm = `
 `
 
 //HTML renderiza HTML do boleto
-func HTML(w gin.ResponseWriter, boleto models.BoletoView) {
+func HTML(boleto models.BoletoView) string {
 	b := tmpl.New()
 	boleto.BankLogo = template.HTML(logoBB)
 	bcode, _ := twooffive.Encode(boleto.Barcode, true)
@@ -314,5 +315,5 @@ func HTML(w gin.ResponseWriter, boleto models.BoletoView) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	w.WriteString(s)
+	return s
 }
