@@ -1,10 +1,10 @@
-O que é a Api de BoletoOnline?
+O que é a API de Registro de Boleto Online?
 --------------
 
-BoletoOnline é uma api para registro online de boleto junto ao banco e a geração do boleto para pagamento
+BoletoOnline é uma API para registro online de boleto junto ao banco e a geração do boleto para pagamento.
 
 
-Bancos suportados:
+Atualmente os bancos suportados são:
 
 * Banco do Brasil
 * Caixa(em breve)
@@ -13,32 +13,35 @@ Bancos suportados:
 * Bradesco (em breve)
 * Itau (em breve)
 
-A ordem de integração seguirá a lista superior mas pode haver modificação na prioridade dependendo do cliente
+A ordem de integração seguirá a lista acima mas poderá haver modificações na prioridade dependendo do cliente.
 
-Construindo a Api
+Construindo a API
 --------------
 
-A Api foi desenvolvida utilizando a linguagem GO e portanto é necessário instalar as ferramentas da linguagem caso queira compilar a aplicação
+A API foi desenvolvida utilizando a linguagem GO e portanto é necessário instalar as ferramentas da linguagem, caso queira compilar a aplicação a partir do fonte.
+
 O Go pode ser baixado [aqui](https://golang.org/dl/)
-Antes de fazer o clone do Projeto você deve criar o caminho de pastas dentro do $GOPATH
+
+Antes de fazer o clone do Projeto deve ser criado o caminho de pastas dentro do $GOPATH
 
 	% mkdir -p "$GOPATH/src/bitbucket.org/mundipagg"
 	% cd $GOPATH/src/bitbucket.org/mundipagg 
 	% git clone https://bitbucket.org/mundipagg/boletoapi
 
-Antes de compilar a aplicação você deve instalar o [Glide](http://glide.sh/). O Glide é o gerenciador de dependências da aplicação.
-Após a instalaçãoi do Glide você pode executar o comando para baixar todas as dependências da aplicação
+Antes de compilar a aplicação deve-se instalar o [Glide](http://glide.sh/) que é o gerenciador de dependências da aplicação.
+
+Após a instalação poderão ser instaladas todas as dependências da aplicação.
 
 	% glide install
 
-Para compilar a aplicação você deve executar o comando
+Para compilar a aplicação deve-se executar o comando:
 
 	% go build
 
-Rodando a aplicação
+Executando a aplicação
 -------------
 
-Para rodar a api com as configurações default
+Para executar a API com as configurações default
 
 Ex: 
 
@@ -50,15 +53,15 @@ Windows:
 
 	% boletoapi.exe
 
-Se você quiser rodar a api em modo dev, que irá carregar as variáveis de ambiente padrão você deve executar a aplicação da seguinte forma:
+Se você quiser rodar a API em modo dev, que irá carregar todas as variáveis de ambiente padrão, você deve executar a aplicação da seguinte forma:
 
 	% ./boletoapi -dev
 
-Se você quiser rodar a aplicação em modo mock para não realizar diretamente a integração com o banco e usar uma base de dados em memória você deve usar a opção mock:
+Caso queira executar a aplicação em modo mock, para não realizar diretamente a integração com o banco e usar uma base de dados em memória, deve-se usar a opção mock:
 
 	% ./boletoapi -mock
 
-Você também pode combinar as duas opções:
+Também pode-se combinar as duas opções:
 
 	% ./boletoapi -dev -mock
 	
@@ -66,7 +69,7 @@ Você também pode combinar as duas opções:
 Usando a API de boleto online
 ------------------
 
-Você pode usar o [Postman](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop) para criar chamar os serviços da api ou mesmo o curl
+Pode-ser usar o [Postman](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop) para criar chamar os serviços da API ou mesmo o curl
 
 ```
 % curl -X POST \
@@ -137,7 +140,7 @@ Resposta de sucesso da API
 }
 
 ```
-Caso aconteça algum erro no processo de registro online a resposta entregue pela api seguirá o seguinte padrão
+Caso aconteça algum erro no processo de registro online a resposta entregue pela API seguirá o seguinte padrão.
 ```
 {
   "Errors": [
@@ -152,8 +155,8 @@ Caso aconteça algum erro no processo de registro online a resposta entregue pel
 Instalando a API
 -----------------
 
-Para instalar o executável da API você precisa apenas compilar a aplicação e configurar as variáveis de ambiente necessárias
-para o seu ambiente.
+Para instalar o executável da API precisa-se apenas compilar a aplicação e configurar as variáveis de ambiente necessárias.
+
 Edite o arquivo $HOME/.bashrc.sh
 ```
     export API_PORT="3000"
@@ -170,18 +173,19 @@ Edite o arquivo $HOME/.bashrc.sh
 ```
     % go build && mv boletoapi /usr/local/bin
 
-Desta forma você irá instalar de forma local o executável da API
+Desta forma a aplicação será instalada de forma local na máquina.
 
 Instalando a API via Docker
 -----------------
 
-Antes de fazer o deploy você deve abrir o arquivo [docker-compose](/devops/docker-compose.yml) e configurar com as informações que sejam pertinentes ao seu ambiente. Após ajustar o docker-compose você pode instalar a aplicação usando o arquivo deploy.sh
+Antes de fazer o deploy deve-se abrir o arquivo [docker-compose](/devops/docker-compose.yml) e configurar as informações que sejam pertinentes ao ambiente. Após ajustar o docker-compose pode-se instalar a aplicação usando o arquivo deploy.sh
 
     % cd devops
     % ./deploy.sh
 
-O script irá criar os diretórios de volume do Docker, buildar a aplicação montar as imagens da API e do MongoDB e subir os containers. Para mais informações sobre docker-compose consulte a [doc](https://docs.docker.com/compose/)
-Após levantada a apĺicação você pode parar ou iniciar os containers.
+O script irá criar os diretórios de volume do Docker, compilar a aplicação, montar as imagens da API e do MongoDB e subir os containers. Para mais informações sobre docker-compose consulte a [doc](https://docs.docker.com/compose/).
+
+Após levantada a apĺicação a mesma poderá ser parada ou iniciada.
     
     % cd devops/
     % ./stop.sh
@@ -190,18 +194,18 @@ Após levantada a apĺicação você pode parar ou iniciar os containers.
 Backup e Restore
 ----------------- 
 
-Para realizar o backup da base do MongoDB usa executa o seguinte comando:
+Para realizar o backup da base do MongoDB execute o seguinte comando:
 
     % cd devops
     % ./doBackup.sh
 
-Os backups gerados, por padrão, serão armazenados no diretório `$HOME/backups` com o nome `bck_boletoapi-2017-05-08.tar`.
+Os backups gerados, por padrão, serão armazenados no diretório `$HOME/backups` com o nome `bck_boletoapi-YYYY-MM-DD.tar`.
 Para restaurar um backup:
     
     % cd devops
     % ./doRestore.sh
 
-Quando fizer o restore o script irá solicitar a data do arquivo de restore e deverá ser informada uma data válida do backup no padrão: `2017-05-08`.
+Quando fizer o restore o script irá solicitar a data do arquivo de restore e deverá ser informada uma data válida do backup no padrão: `YYYY-MM-DD`.
     
 Como contrubuir
 -----------------
@@ -211,25 +215,25 @@ Para contrubuir dê uma olhada no arquivo [CONTRIBUTING](CONTRIBUTING.md)
 Layout do Código Fonte
 ---
 
-A Raiz da aplicação apenas contém o arquivo main.go e alguns arquivos de configuração e documentação.
+A Raiz da aplicação contém apenas o arquivo main.go e alguns arquivos de configuração e documentação.
 
 Dentro da raiz temos alguns pacotes:
 
-* `api`: Pacote de controladores Rest
-* `auth`: Pacote de autenticação dos bancos
-* `bank`: Pacote de registro de boleto de cada banco
-* `boleto`: Pacote responsável pela geração do boleto para o usuário
-* `cache`: Pacote de Banco de dados (chave-valor) in-memory utilizado apenas quando roda a aplicação em modo mock
-* `config`: Pacote de gerenciamento de configuração da aplicação
-* `db`: Pacote de persistência de dados
+* `api`: Controladores Rest;
+* `auth`: Autenticação com os bancos;
+* `bank`: Registro de boletos;
+* `boleto`: Geração do boleto para o usuário;
+* `cache`: Banco de dados (chave-valor) in-memory utilizado apenas quando roda a aplicação em modo mock;
+* `config`: Configuração da aplicação
+* `db`: Persistência de dados
 * `devops`: Contém os arquivos de subida, deploy, backup e restore da aplicação
-* `letters`: Pacote que contém os layouts de integração com os bancos
-* `log`: Pacote de Log da Aplicação
-* `models`: Pacote com as estruturas de dados da aplpicação
-* `parser`: Pacote de XML
-* `test`: Pacote utilitário de testes unitários
-* `tmpl`: Pacote utilitário de template
-* `util`: Pacote com utilitários de forma geral
+* `letters`: Layouts de integração com os bancos
+* `log`: Log da Aplicação
+* `models`: Estruturas de dados da aplicação
+* `parser`: XML parser
+* `test`: Utilitários de testes
+* `tmpl`: Utilitário de template
+* `util`: Utilitários de forma geral
 
 Para mais informações
 -----------------
