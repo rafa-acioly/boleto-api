@@ -31,7 +31,9 @@ func (t Title) ValidateInstructionsLength() error {
 func (t *Title) ValidateDocumentNumber() error {
 	re := regexp.MustCompile("(\\D+)")
 	ad := re.ReplaceAllString(t.DocumentNumber, "")
-	if len(ad) < 10 {
+	if ad == "" {
+		t.DocumentNumber = ad
+	} else if len(ad) < 10 {
 		t.DocumentNumber = util.PadLeft(ad, "0", 10)
 	} else {
 		t.DocumentNumber = ad[:10]
