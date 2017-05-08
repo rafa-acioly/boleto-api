@@ -2,6 +2,7 @@ package api
 
 import (
 	"errors"
+	"time"
 
 	"bitbucket.org/mundipagg/boletoapi/config"
 	"bitbucket.org/mundipagg/boletoapi/log"
@@ -33,6 +34,13 @@ func ParseBoleto() gin.HandlerFunc {
 		errBind := c.BindJSON(&boleto)
 		if errBind != nil {
 			e := models.NewFormatError(errBind.Error())
+			checkError(c, e, log.CreateLog())
+			return
+		}
+		d, errFmt := time.Parse("2006-01-02", boleto.Title.ExpireDate)
+		boleto.Title.ExpireDateTime = d
+		if errFmt != nil {
+			e := models.NewFormatError(errFmt.Error())
 			checkError(c, e, log.CreateLog())
 			return
 		}
