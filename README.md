@@ -1,8 +1,3 @@
-# Boleto API
-
-Consulte o [FAQ](./FAQ.md)
-
-
 O que é a Api de BoletoOnline?
 --------------
 
