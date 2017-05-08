@@ -39,7 +39,9 @@ Rodando a aplicação
 -------------
 
 Para rodar a api com as configurações default
+
 Ex: 
+
 Linux (*NIX):
 
 	% ./boletoapi
