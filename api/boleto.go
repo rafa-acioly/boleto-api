@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 
 	"errors"
@@ -18,7 +17,6 @@ import (
 func registerBoleto(c *gin.Context) {
 	_boleto, _ := c.Get("boleto")
 	boleto := _boleto.(models.BoletoRequest)
-	fmt.Println(boleto.Title.ExpireDateTime)
 	bank, err := bank.Get(boleto.BankNumber)
 	if checkError(c, err, log.CreateLog()) {
 		return
