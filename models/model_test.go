@@ -21,6 +21,10 @@ func TestShouldValidateDocumentNumber(t *testing.T) {
 	h.DocumentNumber = "123x"
 	h.ValidateDocumentNumber()
 	test.ExpectTrue(len(h.DocumentNumber) == 10, t)
+
+	h.DocumentNumber = "xx"
+	h.ValidateDocumentNumber()
+	test.ExpectTrue(h.DocumentNumber == "", t)
 }
 
 func TestShouldReturnInvalidCpfOnDocumentType(t *testing.T) {
