@@ -5,6 +5,7 @@ Este repositório contém informações de como será a política do time One em
 ## Índice
 
 [Como eu posso contribuir?](#como-eu-posso-contribuir)
+
   * [Reportando Bugs](#reportando-bugs)
   * [Fluxo de Desenvolvimento](#fluxo-de-desenvolvimento)
   * [Fluxo Git](#fluxo-git)
