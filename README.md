@@ -209,8 +209,10 @@ Para contrubuir dê uma olhada no arquivo [CONTRIBUTING](CONTRIBUTING.md)
 Layout do Código Fonte
 ---
 
-A Raiz da aplicação apenas contém o arquivo main.go e alguns arquivos de configuração e documentação
+A Raiz da aplicação apenas contém o arquivo main.go e alguns arquivos de configuração e documentação.
+
 Dentro da raiz temos alguns pacotes:
+
 * `api`: Pacote de controladores Rest
 * `auth`: Pacote de autenticação dos bancos
 * `bank`: Pacote de registro de boleto de cada banco
