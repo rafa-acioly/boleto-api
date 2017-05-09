@@ -73,7 +73,7 @@ func getBoleto(c *gin.Context) {
 	c.Status(200)
 
 	id := c.Query("id")
-	fmt := c.Query("fmt")
+	//fmt := c.Query("fmt")
 	mongo, errCon := db.GetDB()
 	if checkError(c, errCon, log.CreateLog()) {
 		return
