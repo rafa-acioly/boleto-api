@@ -37,7 +37,7 @@ func registerBoleto(c *gin.Context) {
 	lg.Recipient = bank.GetBankNumber().BankName()
 	c.Set("log", lg)
 	lg.Request(boleto, c.Request.URL.RequestURI(), c.Request.Header)
-	mongo, err := db.GetDB()
+	repo, err := db.GetDB()
 	if checkError(c, err, lg) {
 		return
 	}
@@ -52,8 +52,9 @@ func registerBoleto(c *gin.Context) {
 	} else {
 		boView := models.NewBoletoView(boleto, resp.BarCodeNumber, resp.DigitableLine)
 		resp.URL = boView.EncodeURL()
-		errMongo := mongo.SaveBoleto(boView)
+		errMongo := repo.SaveBoleto(boView)
 		if errMongo != nil {
+			lg.Warn(errMongo.Error(), "I could not save your boleto at Database")
 			fd, errOpen := os.Create("/home/upMongo/boleto_" + boView.UID + ".json")
 			if errOpen != nil {
 				lg.Fatal(boView, "[BOLETO_ONLINE_CONTINGENCIA]"+errOpen.Error())
@@ -74,11 +75,11 @@ func getBoleto(c *gin.Context) {
 
 	id := c.Query("id")
 	fmt := c.Query("fmt")
-	mongo, errCon := db.GetDB()
+	repo, errCon := db.GetDB()
 	if checkError(c, errCon, log.CreateLog()) {
 		return
 	}
-	bleto, err := mongo.GetBoletoByID(id)
+	bleto, err := repo.GetBoletoByID(id)
 	if err != nil {
 		uid := util.Decrypt(id)
 		fd, err := os.Open("/home/upMongo/boleto_" + uid + ".json")
