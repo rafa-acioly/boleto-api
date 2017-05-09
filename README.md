@@ -181,9 +181,10 @@ Instalando a API via Docker
 Antes de fazer o deploy deve-se abrir o arquivo [docker-compose](/devops/docker-compose.yml) e configurar as informações que sejam pertinentes ao ambiente. Após ajustar o docker-compose pode-se instalar a aplicação usando o arquivo deploy.sh
 
     % cd devops
-    % ./deploy.sh
+    % ./deploy.sh .. local
 
-O script irá criar os diretórios de volume do Docker, compilar a aplicação, montar as imagens da API e do MongoDB e subir os containers. Para mais informações sobre docker-compose consulte a [doc](https://docs.docker.com/compose/).
+O script irá criar os diretórios de volume do Docker, compilar a aplicação, montar as imagens da API e do MongoDB e subir os containers. Para mais informações sobre docker-compose consulte a [doc](https://docs.docker.com/compose/). 
+Os parâmetros passados para o script diz que o deploy será feito de forma local e não via TFS, caso não passe o argumento "local", o script irá utilizar o docker-compose.release.yml.
 
 Após levantada a apĺicação a mesma poderá ser parada ou iniciada.
     
