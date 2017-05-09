@@ -7,6 +7,13 @@
     body {
         font-family: "Arial";
     }
+    @media print
+	{    
+		.no-print, .no-print *
+		{
+			display: none !important;
+		}
+	}
     
     .document {
         margin: auto auto;
@@ -406,7 +413,7 @@
         <br/>
         <br/>
         <br/>
-        <center><input type="button" onclick="window.print()" value="Imprimir"></center>
+        <center><input class="no-print" type="button" onclick="window.print()" value="Imprimir"></center>
     </div>
 </body>
 
