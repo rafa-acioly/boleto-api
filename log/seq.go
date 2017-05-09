@@ -53,15 +53,9 @@ func CreateLog() *Log {
 // Request loga o request para algum banco
 func (l Log) Request(content interface{}, url string, headers http.Header) {
 	go (func() {
-		props := goseq.NewProperties()
-		props.AddProperty("MessageType", "Request")
-		props.AddProperty("Content", content)
-		props.AddProperty("Recipient", l.Recipient)
+		props := l.defaultProperties("Request", content)
 		props.AddProperty("Headers", headers)
-		props.AddProperty("Operation", l.Operation)
-		props.AddProperty("NossoNumero", l.NossoNumero)
 		props.AddProperty("URL", url)
-
 		msg := formatter("to {Recipient} ({URL})")
 
 		l.logger.Information(msg, props)
@@ -71,12 +65,7 @@ func (l Log) Request(content interface{}, url string, headers http.Header) {
 // Response loga o response para algum banco
 func (l Log) Response(content interface{}, url string) {
 	go (func() {
-		props := goseq.NewProperties()
-		props.AddProperty("MessageType", "Response")
-		props.AddProperty("Content", content)
-		props.AddProperty("Recipient", l.Recipient)
-		props.AddProperty("Operation", l.Operation)
-		props.AddProperty("NossoNumero", l.NossoNumero)
+		props := l.defaultProperties("Response", content)
 		props.AddProperty("URL", url)
 		msg := formatter("from {Recipient} ({URL})")
 
@@ -90,23 +79,33 @@ func Info(msg string) {
 }
 
 //Warn loga mensagem do leve Warning
-func Warn(msg string) {
-	go logger.Warning(msg, goseq.NewProperties())
+func (l Log) Warn(content interface{}, msg string) {
+	go (func() {
+		props := l.defaultProperties("Warning", content)
+		m := formatter(msg)
+
+		l.logger.Warning(m, props)
+	})()
 }
 
 // Fatal loga erros da aplicação
-func (l Log) Fatal(content interface{}, m string) {
+func (l Log) Fatal(content interface{}, msg string) {
 	go (func() {
-		props := goseq.NewProperties()
-		props.AddProperty("MessageType", "Error")
-		props.AddProperty("Content", content)
-		props.AddProperty("Recipient", l.Recipient)
-		props.AddProperty("Operation", l.Operation)
-		props.AddProperty("NossoNumero", l.NossoNumero)
-		msg := formatter(m)
+		props := l.defaultProperties("Error", content)
+		m := formatter(msg)
 
-		l.logger.Fatal(msg, props)
+		l.logger.Fatal(m, props)
 	})()
+}
+
+func (l Log) defaultProperties(messageType string, content interface{}) goseq.Properties {
+	props := goseq.NewProperties()
+	props.AddProperty("MessageType", messageType)
+	props.AddProperty("Content", content)
+	props.AddProperty("Recipient", l.Recipient)
+	props.AddProperty("Operation", l.Operation)
+	props.AddProperty("NossoNumero", l.NossoNumero)
+	return props
 }
 
 //Close fecha a conexao com o SEQ
