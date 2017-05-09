@@ -73,7 +73,7 @@ func getBoleto(c *gin.Context) {
 	c.Status(200)
 
 	id := c.Query("id")
-	//fmt := c.Query("fmt")
+	fmt := c.Query("fmt")
 	mongo, errCon := db.GetDB()
 	if checkError(c, errCon, log.CreateLog()) {
 		return
@@ -95,16 +95,15 @@ func getBoleto(c *gin.Context) {
 		fd.Close()
 	}
 
-	s := boleto.HTML(bleto)
-	//if fmt == "html" {
-	c.Header("Content-Type", "text/html; charset=utf-8")
-	c.Writer.WriteString(s)
-	//}
-	/*else {
+	s := boleto.HTML(bleto, fmt)
+	if fmt == "html" {
+		c.Header("Content-Type", "text/html; charset=utf-8")
+		c.Writer.WriteString(s)
+	} else {
 		c.Header("Content-Type", "application/pdf")
 		buf, _ := toPdf(s)
 		c.Writer.Write(buf)
-	}*/
+	}
 
 }
 

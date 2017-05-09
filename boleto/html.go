@@ -21,14 +21,15 @@ const templateBoleto = `
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 <style>
-
-	@media print
-	{    
-		.no-print, .no-print *
-		{
-			display: none !important;
-		}
-	}
+    
+        @media print
+        {    
+            .no-print, .no-print *
+            {
+                display: none !important;
+            }
+        }
+    
 
     body {
         font-family: "Arial";
@@ -54,7 +55,7 @@ const templateBoleto = `
     
     
     .boletoNumber {
-        width: 62%;
+        width: 66%;
         font-weight: bold;
         font-size:0.9em;
     }
@@ -116,8 +117,10 @@ const templateBoleto = `
     {{template "boletoForm" .}}
 
 	<hr/>
-	{{template "boletoForm" .}}	
-	<center><input class="no-print" type="button" onclick="window.print()" value="Imprimir"></center>
+	{{template "boletoForm" .}}
+    {{if eq .Format "html"}}	
+	    <center><input class="no-print" type="button" onclick="window.print()" value="Imprimir"></center>
+    {{end}}
     </div>	
 </body>
 
@@ -301,9 +304,10 @@ const boletoForm = `
 `
 
 //HTML renderiza HTML do boleto
-func HTML(boleto models.BoletoView) string {
+func HTML(boleto models.BoletoView, format string) string {
 	b := tmpl.New()
 	boleto.BankLogo = template.HTML(logoBB)
+	boleto.Format = format
 	bcode, _ := twooffive.Encode(boleto.Barcode, true)
 	orgBounds := bcode.Bounds()
 	orgWidth := orgBounds.Max.X - orgBounds.Min.X

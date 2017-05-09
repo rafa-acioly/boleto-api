@@ -37,6 +37,7 @@ type BoletoResponse struct {
 type BoletoView struct {
 	ID            string
 	UID           string
+	Format        string        `json:",omitempty"`
 	BankLogo      template.HTML `json:",omitempty"`
 	Boleto        BoletoRequest `json:",omitempty"`
 	BankID        BankNumber    `json:",omitempty"`
