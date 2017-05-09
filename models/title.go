@@ -2,7 +2,10 @@ package models
 
 import (
 	"fmt"
+	"regexp"
 	"time"
+
+	"bitbucket.org/mundipagg/boletoapi/util"
 )
 
 // Title título de cobrança de entrada
@@ -13,12 +16,27 @@ type Title struct {
 	AmountInCents  uint64
 	OurNumber      uint
 	Instructions   string
+	DocumentNumber string
 }
 
 //ValidateInstructionsLength valida se texto das instruções possui quantidade de caracteres corretos
 func (t Title) ValidateInstructionsLength() error {
 	if len(t.Instructions) > 220 {
 		return NewErrorResponse("MPInstructions", "Instruções não podem passar de 220 caracteres")
+	}
+	return nil
+}
+
+//ValidateDocumentNumber número do documento
+func (t *Title) ValidateDocumentNumber() error {
+	re := regexp.MustCompile("(\\D+)")
+	ad := re.ReplaceAllString(t.DocumentNumber, "")
+	if ad == "" {
+		t.DocumentNumber = ad
+	} else if len(ad) < 10 {
+		t.DocumentNumber = util.PadLeft(ad, "0", 10)
+	} else {
+		t.DocumentNumber = ad[:10]
 	}
 	return nil
 }

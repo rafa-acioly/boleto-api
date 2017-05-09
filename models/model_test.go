@@ -13,6 +13,20 @@ func TestShouldReturnValidCpfOnDocumentType(t *testing.T) {
 	}
 }
 
+func TestShouldValidateDocumentNumber(t *testing.T) {
+	h := Title{DocumentNumber: "1234567891011"}
+	h.ValidateDocumentNumber()
+	test.ExpectTrue(len(h.DocumentNumber) == 10, t)
+
+	h.DocumentNumber = "123x"
+	h.ValidateDocumentNumber()
+	test.ExpectTrue(len(h.DocumentNumber) == 10, t)
+
+	h.DocumentNumber = "xx"
+	h.ValidateDocumentNumber()
+	test.ExpectTrue(h.DocumentNumber == "", t)
+}
+
 func TestShouldReturnInvalidCpfOnDocumentType(t *testing.T) {
 	document := Document{Number: "1234567890132", Type: "CNPJ"}
 	if document.IsCNPJ() == false {

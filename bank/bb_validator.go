@@ -152,3 +152,12 @@ func bbValidateTitleInstructions(b interface{}) error {
 		return invalidType(t)
 	}
 }
+
+func bbValidateTitleDocumentNumber(b interface{}) error {
+	switch t := b.(type) {
+	case *models.BoletoRequest:
+		return t.Title.ValidateDocumentNumber()
+	default:
+		return invalidType(t)
+	}
+}

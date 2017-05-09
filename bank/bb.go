@@ -38,6 +38,7 @@ func newBB() bankBB {
 	b.validate.Push(bbValidateBuyerDocumentNumber)
 	b.validate.Push(bbValidateRecipientDocumentNumber)
 	b.validate.Push(bbValidateTitleInstructions)
+	b.validate.Push(bbValidateTitleDocumentNumber)
 	return b
 }
 
