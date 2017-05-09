@@ -15,6 +15,7 @@ echo ""
 
 cd "$1"
 echo "Creating volume folder"
+mkdir -p ~/boletodb/upMongo
 mkdir -p ~/boletodb/db
 mkdir -p ~/boletodb/configdb
 mkdir -p ~/dump_boletodb
@@ -24,7 +25,11 @@ echo "API Compiled";
 cd devops
 echo "Starting docker containers"
 docker-compose build --no-cache
-docker-compose -f ./docker-compose.release.yml up -d
+if [ "$2" == 'local' ]; then
+    docker-compose up -d
+else
+    docker-compose -f ./docker-compose.release.yml up -d
+fi
 rm boletoapi
 echo "Containers started"
 echo ""

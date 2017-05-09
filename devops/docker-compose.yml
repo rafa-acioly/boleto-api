@@ -2,6 +2,10 @@ version: "2"
 services:
   api:
     build: .
+    volumes:
+     - ~/boletodb/upMongo:/home/upMongo
+     - ~/boletodb/configdb:/data/configdb
+     - ~/dump_boletodb:/dump/boletoapi
     ports:
      - "8080:3000"
     environment:

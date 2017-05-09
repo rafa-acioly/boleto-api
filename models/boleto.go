@@ -36,6 +36,7 @@ type BoletoResponse struct {
 // BoletoView contem as informações que serão preenchidas no boleto
 type BoletoView struct {
 	ID            string
+	UID           string
 	BankLogo      template.HTML `json:",omitempty"`
 	Boleto        BoletoRequest `json:",omitempty"`
 	BankID        BankNumber    `json:",omitempty"`
@@ -53,6 +54,7 @@ func NewBoletoView(boleto BoletoRequest, barcode string, digitableLine string) B
 	id := util.Encrypt(uid.String())
 	view := BoletoView{
 		ID:            id,
+		UID:           uid.String(),
 		BankID:        boleto.BankNumber,
 		Boleto:        boleto,
 		Barcode:       barcode,

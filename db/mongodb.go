@@ -31,6 +31,9 @@ func (e *mongoDb) SaveBoleto(boleto models.BoletoView) error {
 	var err error
 	e.m.Lock()
 	defer e.m.Unlock()
+	if e.session == nil {
+		return models.NewInternalServerError("Database error", "Falha ao conectar com o banco de dados")
+	}
 	c := e.session.DB("boletoapi").C("boletos")
 	err = c.Insert(boleto)
 	return err
