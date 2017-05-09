@@ -9,11 +9,17 @@ import (
 
 	"strings"
 
+	"encoding/json"
+	"os"
+
+	"io/ioutil"
+
 	"bitbucket.org/mundipagg/boletoapi/bank"
 	"bitbucket.org/mundipagg/boletoapi/boleto"
 	"bitbucket.org/mundipagg/boletoapi/db"
 	"bitbucket.org/mundipagg/boletoapi/log"
 	"bitbucket.org/mundipagg/boletoapi/models"
+	"bitbucket.org/mundipagg/boletoapi/util"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
@@ -33,7 +39,6 @@ func registerBoleto(c *gin.Context) {
 	lg.Request(boleto, c.Request.URL.RequestURI(), c.Request.Header)
 	mongo, err := db.GetDB()
 	if checkError(c, err, lg) {
-
 		return
 	}
 	resp, errR := bank.ProcessBoleto(boleto)
@@ -47,8 +52,19 @@ func registerBoleto(c *gin.Context) {
 	} else {
 		boView := models.NewBoletoView(boleto, resp.BarCodeNumber, resp.DigitableLine)
 		resp.URL = boView.EncodeURL()
-
-		mongo.SaveBoleto(boView)
+		errMongo := mongo.SaveBoleto(boView)
+		if errMongo != nil {
+			fd, errOpen := os.Create("/home/upMongo/boleto_" + boView.UID + ".json")
+			if errOpen != nil {
+				lg.Fatal(boView, "[BOLETO_ONLINE_CONTINGENCIA]"+errOpen.Error())
+			}
+			data, _ := json.Marshal(boView)
+			_, errW := fd.Write(data)
+			if errW != nil {
+				lg.Fatal(boView, "[BOLETO_ONLINE_CONTINGENCIA]"+errW.Error())
+			}
+			fd.Close()
+		}
 	}
 	c.JSON(st, resp)
 }
@@ -63,20 +79,32 @@ func getBoleto(c *gin.Context) {
 		return
 	}
 	bleto, err := mongo.GetBoletoByID(id)
-	if err == nil {
-		s := boleto.HTML(bleto)
-		if fmt == "html" {
-			c.Header("Content-Type", "text/html; charset=utf-8")
-			c.Writer.WriteString(s)
-		} else {
-			c.Header("Content-Type", "application/pdf")
-			buf, _ := toPdf(s)
-			c.Writer.Write(buf)
+	if err != nil {
+		uid := util.Decrypt(id)
+		fd, err := os.Open("/home/upMongo/boleto_" + uid + ".json")
+		if err != nil {
+			checkError(c, errors.New("Boleto não encontrado na base de dados"), log.CreateLog())
+			return
 		}
-
-	} else {
-		checkError(c, errors.New("Boleto não encontrado na base de dados"), log.CreateLog())
+		data, errR := ioutil.ReadAll(fd)
+		if errR != nil {
+			checkError(c, errors.New("Boleto não encontrado na base de dados"), log.CreateLog())
+			return
+		}
+		json.Unmarshal(data, &bleto)
+		fd.Close()
 	}
+
+	s := boleto.HTML(bleto)
+	//if fmt == "html" {
+	c.Header("Content-Type", "text/html; charset=utf-8")
+	c.Writer.WriteString(s)
+	//}
+	/*else {
+		c.Header("Content-Type", "application/pdf")
+		buf, _ := toPdf(s)
+		c.Writer.Write(buf)
+	}*/
 
 }
 
