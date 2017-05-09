@@ -16,3 +16,16 @@ services:
      - URL_BB_TOKEN=#{CONF_URL_BB_TOKEN}#
      - MONGODB_URL=#{CONF_MONGODB_URL}#
      - APP_URL=#{CONF_APP_URL}#
+  mongodb:
+    image: mongo:latest
+    container_name: "mongodb"
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - ~/boletodb/db:/data/db
+      - ~/boletodb/configdb:/data/configdb
+      - ~/dump_boletodb:/dump/boletoapi
+    ports:
+        - 27017:27017
+    command: mongod --smallfiles --logpath=/dev/null
