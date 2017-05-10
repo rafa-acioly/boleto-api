@@ -54,3 +54,15 @@ func Decrypt(s string) string {
 
 	return fmt.Sprintf("%s", ciphertext)
 }
+
+//Base64 converte um string para base64
+func Base64(s string) string {
+	sEnc := base64.StdEncoding.EncodeToString([]byte(s))
+	return sEnc
+}
+
+//Base64Decode converte uma string base64 para uma string normal
+func Base64Decode(s string) string {
+	sDec, _ := base64.StdEncoding.DecodeString(s)
+	return string(sDec)
+}
