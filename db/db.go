@@ -14,18 +14,21 @@ type DB interface {
 	Close()
 }
 
-var db DB
-var _createOnce sync.Once
+var db DB = nil
+var _create sync.Mutex
 
 //GetDB retorna o objeto concreto que implementa as funções de persistência
 func GetDB() (DB, error) {
 	var err error
-	_createOnce.Do(func() {
-		if config.Get().MockMode {
-			db = new(mock)
-		} else {
-			db, err = CreateMongo()
-		}
-	})
+	_create.Lock()
+	defer _create.Unlock()
+	if db != nil {
+		return db, nil
+	}
+	if config.Get().MockMode {
+		db = new(mock)
+	} else {
+		db, err = CreateMongo()
+	}
 	return db, err
 }
