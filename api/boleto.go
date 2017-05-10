@@ -16,6 +16,7 @@ import (
 
 	"bitbucket.org/mundipagg/boletoapi/bank"
 	"bitbucket.org/mundipagg/boletoapi/boleto"
+	"bitbucket.org/mundipagg/boletoapi/config"
 	"bitbucket.org/mundipagg/boletoapi/db"
 	"bitbucket.org/mundipagg/boletoapi/log"
 	"bitbucket.org/mundipagg/boletoapi/models"
@@ -35,8 +36,7 @@ func registerBoleto(c *gin.Context) {
 	lg.Operation = "RegisterBoleto"
 	lg.NossoNumero = boleto.Title.OurNumber
 	lg.Recipient = bank.GetBankNumber().BankName()
-	c.Set("log", lg)
-	lg.Request(boleto, c.Request.URL.RequestURI(), c.Request.Header)
+	lg.Request(boleto, c.Request.URL.RequestURI(), util.HeaderToMap(c.Request.Header))
 	repo, err := db.GetDB()
 	if checkError(c, err, lg) {
 		return
@@ -54,27 +54,31 @@ func registerBoleto(c *gin.Context) {
 		resp.URL = boView.EncodeURL()
 		errMongo := repo.SaveBoleto(boView)
 		if errMongo != nil {
-			lg.Warn(errMongo.Error(), "I could not save your boleto at Database")
-			fd, errOpen := os.Create("/home/upMongo/boleto_" + boView.UID + ".json")
-			if errOpen != nil {
-				lg.Fatal(boView, "[BOLETO_ONLINE_CONTINGENCIA]"+errOpen.Error())
-			}
-			data, _ := json.Marshal(boView)
-			_, errW := fd.Write(data)
-			if errW != nil {
-				lg.Fatal(boView, "[BOLETO_ONLINE_CONTINGENCIA]"+errW.Error())
-			}
-			fd.Close()
+			saveBoletoJSONFile(boView, lg, errMongo)
 		}
 	}
 	c.JSON(st, resp)
+}
+
+func saveBoletoJSONFile(boView models.BoletoView, lg *log.Log, err error) {
+	lg.Warn(err.Error(), "I could not save your boleto at Database")
+	fd, errOpen := os.Create(config.Get().BoletoJSONFileStore + "/boleto_" + boView.UID + ".json")
+	if errOpen != nil {
+		lg.Fatal(boView, "[BOLETO_ONLINE_CONTINGENCIA]"+errOpen.Error())
+	}
+	data, _ := json.Marshal(boView)
+	_, errW := fd.Write(data)
+	if errW != nil {
+		lg.Fatal(boView, "[BOLETO_ONLINE_CONTINGENCIA]"+errW.Error())
+	}
+	fd.Close()
 }
 
 func getBoleto(c *gin.Context) {
 	c.Status(200)
 
 	id := c.Query("id")
-	fmt := c.Query("fmt")
+	format := c.Query("fmt")
 	repo, errCon := db.GetDB()
 	if checkError(c, errCon, log.CreateLog()) {
 		return
@@ -82,7 +86,7 @@ func getBoleto(c *gin.Context) {
 	bleto, err := repo.GetBoletoByID(id)
 	if err != nil {
 		uid := util.Decrypt(id)
-		fd, err := os.Open("/home/upMongo/boleto_" + uid + ".json")
+		fd, err := os.Open("/boleto_" + uid + ".json")
 		if err != nil {
 			checkError(c, errors.New("Boleto não encontrado na base de dados"), log.CreateLog())
 			return
@@ -96,8 +100,8 @@ func getBoleto(c *gin.Context) {
 		fd.Close()
 	}
 
-	s := boleto.HTML(bleto, fmt)
-	if fmt == "html" {
+	s := boleto.HTML(bleto, format)
+	if format == "html" {
 		c.Header("Content-Type", "text/html; charset=utf-8")
 		c.Writer.WriteString(s)
 	} else {
