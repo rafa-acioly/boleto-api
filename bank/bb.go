@@ -95,8 +95,8 @@ func (b *bankBB) login(user, password string) (auth.Token, error) {
 }
 
 //ProcessBoleto faz o processamento de registro de boleto
-func (b bankBB) ProcessBoleto(boleto models.BoletoRequest) (models.BoletoResponse, error) {
-	errs := b.ValidateBoleto(&boleto)
+func (b bankBB) ProcessBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
+	errs := b.ValidateBoleto(boleto)
 	if len(errs) > 0 {
 		return models.BoletoResponse{Errors: errs}, nil
 	}
@@ -107,7 +107,7 @@ func (b bankBB) ProcessBoleto(boleto models.BoletoRequest) (models.BoletoRespons
 	return b.RegisterBoleto(boleto)
 }
 
-func (b bankBB) RegisterBoleto(boleto models.BoletoRequest) (models.BoletoResponse, error) {
+func (b bankBB) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
 	builder := tmpl.New()
 	soap, err := builder.From(boleto).To(letters.GetRegisterBoletoBBTmpl()).XML().Transform()
 	if err != nil {

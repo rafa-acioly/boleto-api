@@ -35,13 +35,13 @@ func registerBoleto(c *gin.Context) {
 	lg.Operation = "RegisterBoleto"
 	lg.NossoNumero = boleto.Title.OurNumber
 	lg.Recipient = bank.GetBankNumber().BankName()
-	c.Set("log", lg)
 	lg.Request(boleto, c.Request.URL.RequestURI(), c.Request.Header)
 	repo, err := db.GetDB()
 	if checkError(c, err, lg) {
 		return
 	}
-	resp, errR := bank.ProcessBoleto(boleto)
+	resp, errR := bank.ProcessBoleto(&boleto)
+
 	if checkError(c, errR, lg) {
 		return
 	}
