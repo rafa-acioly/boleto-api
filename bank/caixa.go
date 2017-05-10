@@ -26,10 +26,10 @@ func (b bankCaixa) Log() *log.Log {
 func (b bankCaixa) Login(user, password, body string) (auth.Token, error) {
 	return auth.Token{Status: 200}, nil
 }
-func (b bankCaixa) RegisterBoleto(boleto models.BoletoRequest) (models.BoletoResponse, error) {
+func (b bankCaixa) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
 	return models.BoletoResponse{}, nil
 }
-func (b bankCaixa) ProcessBoleto(boleto models.BoletoRequest) (models.BoletoResponse, error) {
+func (b bankCaixa) ProcessBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
 	return models.BoletoResponse{}, nil
 }
 

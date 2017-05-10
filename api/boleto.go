@@ -41,7 +41,8 @@ func registerBoleto(c *gin.Context) {
 	if checkError(c, err, lg) {
 		return
 	}
-	resp, errR := bank.ProcessBoleto(boleto)
+	resp, errR := bank.ProcessBoleto(&boleto)
+
 	if checkError(c, errR, lg) {
 		return
 	}
