@@ -35,7 +35,7 @@ func Post(url, body string, header map[string]string) (string, int, error) {
 func DoRequest(method, url, body string, header map[string]string) (string, int, error) {
 	client := DefaultHTTPClient()
 	message := strings.NewReader(body)
-	req, err := http.NewRequest("POST", url, message)
+	req, err := http.NewRequest(method, url, message)
 	if err != nil {
 		return "", http.StatusInternalServerError, err
 	}
