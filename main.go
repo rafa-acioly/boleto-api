@@ -14,6 +14,7 @@ import (
 	"bitbucket.org/mundipagg/boletoapi/api"
 	"bitbucket.org/mundipagg/boletoapi/config"
 	"bitbucket.org/mundipagg/boletoapi/log"
+	"bitbucket.org/mundipagg/boletoapi/robot"
 )
 
 var (
@@ -61,6 +62,11 @@ func configFlags() {
 		os.Setenv("APP_URL", "http://localhost:3000/boleto")
 		os.Setenv("ELASTIC_URL", "http://localhost:9200")
 		os.Setenv("MONGODB_URL", "localhost:27017")
+		os.Setenv("BOLETO_JSON_STORE", "/home/philippe/boletodb/upMongo")
+		if *mockMode {
+			os.Setenv("URL_BB_REGISTER_BOLETO", "http://localhost:4000/registrarBoleto")
+			os.Setenv("URL_BB_TOKEN", "http://localhost:4000/oauth/token")
+		}
 	}
 	config.Install(*mockMode, *devMode)
 }
@@ -69,7 +75,9 @@ func main() {
 	configFlags()
 	logo1()
 	installLog()
+	robot.GoRobots()
 	api.InstallRestAPI()
+
 }
 
 func logo1() {

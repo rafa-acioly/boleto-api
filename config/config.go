@@ -24,6 +24,7 @@ type Config struct {
 	AppURL              string
 	ElasticURL          string
 	MongoURL            string
+	BoletoJSONFileStore string
 }
 
 var cnf Config
@@ -54,6 +55,7 @@ func Install(mockMode, devMode bool) {
 		ElasticURL:          os.Getenv("ELASTIC_URL"),
 		DevMode:             devMode,
 		MongoURL:            os.Getenv("MONGODB_URL"),
+		BoletoJSONFileStore: os.Getenv("BOLETO_JSON_STORE"),
 	}
 }
 

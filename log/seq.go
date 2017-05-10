@@ -2,7 +2,6 @@ package log
 
 import (
 	"fmt"
-	"net/http"
 
 	"bitbucket.org/mundipagg/boletoapi/config"
 	"github.com/mundipagg/goseq"
@@ -51,7 +50,7 @@ func CreateLog() *Log {
 }
 
 // Request loga o request para algum banco
-func (l Log) Request(content interface{}, url string, headers http.Header) {
+func (l Log) Request(content interface{}, url string, headers map[string]string) {
 	go (func() {
 		props := l.defaultProperties("Request", content)
 		props.AddProperty("Headers", headers)

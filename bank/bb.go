@@ -3,7 +3,6 @@ package bank
 import (
 	"encoding/json"
 	"errors"
-	"io/ioutil"
 	"net/http"
 	"strings"
 
@@ -47,18 +46,16 @@ func (b bankBB) Log() *log.Log {
 	return b.log
 }
 func (b *bankBB) login(user, password string) (auth.Token, error) {
-	if config.Get().MockMode {
-		return auth.Token{AccessToken: "1111111111"}, nil
-	}
+
 	body := "grant_type=client_credentials&scope=cobranca.registro-boletos"
-	client := util.DefaultHTTPClient()
-	req, err := http.NewRequest("POST", config.Get().URLBBToken, strings.NewReader(body))
+	header := make(map[string]string)
+	header["Content-Type"] = "application/x-www-form-urlencoded"
+	header["Cache-Control"] = "no-cache"
+	header["Authorization"] = "Basic " + util.Base64(user+":"+password)
+	resp, st, err := util.Post(config.Get().URLBBToken, body, header)
 	if err != nil {
 		return auth.Token{}, err
 	}
-	req.SetBasicAuth(user, password)
-	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Add("Cache-Control", "no-cache")
 	b.log.Request(struct {
 		Username string
 		Password string
@@ -67,26 +64,14 @@ func (b *bankBB) login(user, password string) (auth.Token, error) {
 		Username: user,
 		Password: password,
 		Body:     body,
-	}, config.Get().URLBBToken, req.Header)
+	}, config.Get().URLBBToken, header)
 
-	resp, errResp := client.Do(req)
-	if errResp != nil {
-		return auth.Token{}, errResp
-	}
-	defer resp.Body.Close()
-	data, errResponse := ioutil.ReadAll(resp.Body)
-	if errResponse != nil {
-		return auth.Token{}, errResponse
-	}
-
-	tok := auth.Token{Status: resp.StatusCode}
-	errParser := json.Unmarshal(data, &tok)
+	tok := auth.Token{Status: st}
+	errParser := json.Unmarshal([]byte(resp), &tok)
 	if errParser != nil {
 		return auth.Token{}, errParser
 	}
-
 	b.log.Response(tok, config.Get().URLBBToken)
-
 	if tok.Status != http.StatusOK {
 		return tok, errors.New(tok.ErrorDescription)
 	}
@@ -113,7 +98,7 @@ func (b bankBB) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRespo
 	if err != nil {
 		return models.BoletoResponse{}, err
 	}
-	response, status, errRegister := b.registerBoletoRequest(soap, b.token)
+	response, status, errRegister := b.doRequest(soap, b.token)
 	if errRegister != nil {
 		return models.BoletoResponse{}, errRegister
 	}
@@ -149,40 +134,16 @@ func (b bankBB) GetBankNumber() models.BankNumber {
 }
 
 //registerBoletoRequest faz a requisição no serviço do banco para registro de boleto
-func (b bankBB) registerBoletoRequest(message string, token auth.Token) (string, int, error) {
-	if config.Get().MockMode {
-		return b.doMockSuccess(message, token)
-	}
-	return b.doRequest(message, token)
-}
-
-//registerBoletoRequest faz a requisição no serviço do banco para registro de boleto
 func (b bankBB) doRequest(message string, token auth.Token) (string, int, error) {
-	client := util.DefaultHTTPClient()
-	body := strings.NewReader(message)
-	req, err := http.NewRequest("POST", config.Get().URLBBRegisterBoleto, body)
-	if err != nil {
-		return "", http.StatusInternalServerError, err
-	}
-	req.Header.Add("SOAPACTION", "registrarBoleto")
-	req.Header.Add("Authorization", "Bearer "+token.AccessToken)
-	req.Header.Add("Content-Type", "text/xml; charset=utf-8")
+	header := make(map[string]string)
+	header["SOAPACTION"] = "registrarBoleto"
+	header["Authorization"] = "Bearer " + token.AccessToken
+	header["Content-Type"] = "text/xml; charset=utf-8"
+	b.log.Request(message, config.Get().URLBBRegisterBoleto, header)
+	resp, status, err := util.Post(config.Get().URLBBRegisterBoleto, message, header)
+	b.log.Response(resp, config.Get().URLBBRegisterBoleto)
+	return resp, status, err
 
-	b.log.Request(message, config.Get().URLBBRegisterBoleto, req.Header)
-
-	resp, errResp := client.Do(req)
-	if errResp != nil {
-		return "", resp.StatusCode, errResp
-	}
-	defer resp.Body.Close()
-	data, errResponse := ioutil.ReadAll(resp.Body)
-	if errResponse != nil {
-		return "", resp.StatusCode, errResponse
-	}
-
-	sData := string(data)
-	b.log.Response(sData, config.Get().URLBBRegisterBoleto)
-	return sData, resp.StatusCode, nil
 }
 
 func (b bankBB) doMockSuccess(message string, token auth.Token) (string, int, error) {

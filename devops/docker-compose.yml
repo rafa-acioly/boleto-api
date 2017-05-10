@@ -18,6 +18,7 @@ services:
      - URL_BB_TOKEN=https://oauth.desenv.bb.com.br:43000/oauth/token
      - MONGODB_URL=10.0.2.15:27017
      - APP_URL=http://localhost:8080/boleto
+     - BOLETO_JSON_STORE=/home/philippe/boletodb/upMongo
   mongodb:
         image: mongo:latest
         container_name: "mongodb"

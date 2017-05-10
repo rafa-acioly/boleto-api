@@ -1,66 +1,51 @@
 {
-    "BoletoRequest": {
-        "BankNumber": 1,
-        "Authentication": {
-            "Username": "client_id",
-            "Password": "client_secret"
+    "BankNumber": 1,
+    "Authentication": {
+        "Username": "eyJpZCI6IjgwNDNiNTMtZjQ5Mi00YyIsImNvZGlnb1B1YmxpY2Fkb3IiOjEwOSwiY29kaWdvU29mdHdhcmUiOjEsInNlcXVlbmNpYWxJbnN0YWxhY2FvIjoxfQ",
+        "Password": "eyJpZCI6IjBjZDFlMGQtN2UyNC00MGQyLWI0YSIsImNvZGlnb1B1YmxpY2Fkb3IiOjEwOSwiY29kaWdvU29mdHdhcmUiOjEsInNlcXVlbmNpYWxJbnN0YWxhY2FvIjoxLCJzZXF1ZW5jaWFsQ3JlZGVuY2lhbCI6MX0"
+    },
+    "Agreement": {
+        "AgreementNumber": 1014051,
+        "WalletVariation": 19,
+        "Agency":"5797",
+        "Account":"6685"
+    },
+    "Title": {
+        "ExpireDate": "2017-05-20",
+        "AmountInCents": 200,
+        "OurNumber": 101405187,
+        "Instructions": "Senhor caixa, após o vencimento não aceitar o pagamento"
+    },
+    "Buyer": {
+        "Name": "Mundipagg Tecnologia em Pagamentos",
+        "Document": {
+            "Type": "CNPJ",
+            "Number": "73400584000166"
         },
-        "Agreement": {
-            "AgreementNumber": 10,
-            "Wallet": 17, // Talvez não usemos
-            "WalletVariation": 32,
-            "Agency": "1234",
-            "AgencyDigit": "1", // Pode ser nulo e nós vamos ter que calcular
-            "Account": "12345",
-            "AccountDigit": "2" // Pode ser nulo e nós vamos ter que calcular
-        },
-        "Recipient": {
-            "Name": "Nome da loja",
-            "Document": {
-                "Type": "CPF", // CPF ou CNPJ
-                "Number": "12345678901" // Número do CPF/CNPJ que será validado
-            },
-            "Address": {
-                "Street": "R. Conde de Bonfim",
-                "Number": "123",
-                "Complement": "Apto",
-                "ZipCode": "20520051",
-                "City": "Rio de Janeiro",
-                "District": "Tijuca",
-                "StateCode": "RJ"
-            }
-        },
-        "Title": {
-            "ExpireDate": "2017-04-15", // Pode ser nulo, setamos 5 dias de expire se não for passado
-            "AmountInCents": 100,
-            "OurNumber": 1234567890 // Nosso Número -- Número sequencial: 3 primeiras posições: zeros; 7 posições seguintes, o número do convênio; 10 posições restantes, numéricas, com zeros a esquerda (controle empresa)
-        },
-        "Buyer": {
-            "Name": "Nome do Pagador", // não pode ter mais de 60 chars
-            "Document": {
-                "Type": "CPF", // CPF ou CNPJ
-                "Number": "12345678901" // Número do CPF/CNPJ que será validado
-            },
-            "Address": {
-                "Street": "R. Conde de Bonfim",
-                "Number": "123",
-                "Complement": "Apto",
-                "ZipCode": "20520051",
-                "City": "Rio de Janeiro",
-                "District": "Tijuca",
-                "StateCode": "RJ"
-            }
+        "Address": {
+            "Street": "R. Conde de Bonfim",
+            "Number": "123",
+            "Complement": "Apto",
+            "ZipCode": "20520051",
+            "City": "Rio de Janeiro",
+            "District": "Tijuca",
+            "StateCode": "RJ"
         }
     },
-    "BoletoResponse": {
-        "Url": "http://mundipagg.com/v1/boleto?hue=br&bank=1&type=pdf",
-        "DigitableLine": "00190000090101405100500066673179971340000010000",
-        "BarCodeNumber": "00199713400000100000000001014051000006667317",
-        "Errors": [
-            {
-                "Code": "CBRSR005",
-                "Message": "?CPF do pagador nao encontrado na base."
-            }
-        ]
+    "Recipient": {
+      "Name": "Mundipagg Tecnologia em Pagamentos",
+        "Document": {
+            "Type": "CNPJ",
+            "Number": "73400584000166"
+        },
+        "Address": {
+            "Street": "R. Conde de Bonfim",
+            "Number": "123",
+            "Complement": "Apto",
+            "ZipCode": "20520051",
+            "City": "Rio de Janeiro",
+            "District": "Tijuca",
+            "StateCode": "RJ"
+        }
     }
 }
