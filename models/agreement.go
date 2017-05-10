@@ -55,9 +55,11 @@ func (a *Agreement) IsAccountValid(accountLength int) error {
 func (a *Agreement) CalculateAccountDigit(digitCalculator func(agency, account string) string) {
 	re := regexp.MustCompile("(\\D+)")
 	ad := re.ReplaceAllString(a.AccountDigit, "")
+	fmt.Println(a.AccountDigit)
 	if len(ad) == 1 {
 		a.AccountDigit = ad
 	} else {
 		a.AccountDigit = digitCalculator(a.Agency, a.Account)
 	}
+
 }
