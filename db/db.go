@@ -3,6 +3,7 @@ package db
 import (
 	"sync"
 
+	"bitbucket.org/mundipagg/boletoapi/config"
 	"bitbucket.org/mundipagg/boletoapi/models"
 )
 
@@ -19,5 +20,8 @@ var err error
 
 //GetDB retorna o objeto concreto que implementa as funções de persistência
 func GetDB() (DB, error) {
+	if config.Get().MockMode {
+		return new(mock), nil
+	}
 	return CreateMongo()
 }
