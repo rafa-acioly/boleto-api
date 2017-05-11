@@ -30,13 +30,12 @@ Antes de fazer o clone do Projeto deve ser criado o caminho de pastas dentro do 
 
 Antes de compilar a aplicação deve-se instalar o [Glide](http://glide.sh/) que é o gerenciador de dependências da aplicação.
 
-Após a instalação poderão ser instaladas todas as dependências da aplicação.
+Após instalar o GO faça:
 
-	% glide install
+	% cd devops
+	% ./build
 
-Para compilar a aplicação deve-se executar o comando:
-
-	% go build
+O script build.sh irá baixar todas as dependências da aplicação e instalar o wkhtmltox, necessário para a geração do boleto em PDF.
 
 Executando a aplicação
 -------------
