@@ -18,10 +18,9 @@ import (
 const templateBoleto = `
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-</head>
-<style>
-    
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style>
+
         @media print
         {    
             .no-print, .no-print *
@@ -29,98 +28,129 @@ const templateBoleto = `
                 display: none !important;
             }
         }
-    
 
-    body {
-        font-family: "Arial";
-		background-color: #fff;
-        font-size:0.7em;
-    }
-    .left {
-		margin: auto;		
-		width: 216mm;
-	}
-    .document {
-        margin: auto auto;
-        width: 216mm;
-        height: 108mm;
-    }
-    
-    table {
-        width: 100%;
-        position: relative;
-        border-collapse: collapse;
-    }
+        body {
+            font-family: "Arial";
+    		background-color: #fff;
+            font-size:0.7em;
+        }
+        .left {
+    		margin: auto;		
+    		width: 216mm;
+    	}
+        .document {
+            margin: auto auto;
+            width: 216mm;
+            height: 108mm;
+        }
 
-    
-    
-    .boletoNumber {
-        width: 66%;
-        font-weight: bold;
-        font-size:0.9em;
-    }
+        table {
+            width: 100%;
+            position: relative;
+            border-collapse: collapse;
+        }
 
-    .center {
-        text-align: center;
-    }
-    
-    .right {
-        text-align: right;
-        right: 20px;
-    }
-    
-    td {
-        position: relative;
-    }
-    
-    .title {
-        position: absolute;
-        left: 0px;
-        top: 0px;
-        font-size:0.65em;
-        font-weight: bold;
-    }
-    
-    .text {
-         font-size:0.7em;
-    }
-    
-    p.content {
-        padding: 0px;
-        width: 100%;
-        margin: 0px;
-        font-size:0.7em;
-    }
-    
-    .sideBorders {
-        border-left: 1px solid black;
-        border-right: 1px solid black;
-    }
+        .boletoNumber {
+            width: 66%;
+            font-weight: bold;
+            font-size:0.9em;
+        }
 
-    hr {
-        size: 1;
-        border: 1px dashed;
-		width: 216mm;
-		margin-top: 9mm;
-    	margin-bottom: 9mm;
-    }
+        .center {
+            text-align: center;
+        }
 
-    br {
-        content: " ";
-        display: block;
-        margin: 12px 0;
-        line-height: 12px;
-    }
-</style>
+        .right {
+            text-align: right;
+            right: 20px;
+        }
+
+        td {
+            position: relative;
+        }
+
+        .title {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            font-size:0.65em;
+            font-weight: bold;
+        }
+
+        .text {
+             font-size:0.7em;
+        }
+
+        p.content {
+            padding: 0px;
+            width: 100%;
+            margin: 0px;
+            font-size:0.7em;
+        }
+
+        .sideBorders {
+            border-left: 1px solid black;
+            border-right: 1px solid black;
+        }
+
+        hr {
+            size: 1;
+            border: 1px dashed;
+    		width: 216mm;
+    		margin-top: 9mm;
+        	margin-bottom: 9mm;
+        }
+
+        br {
+            content: " ";
+            display: block;
+            margin: 12px 0;
+            line-height: 12px;
+        }
+
+        .print {
+            /* TODO(dbeam): reconcile this with overlay.css' .default-button. */
+            background-color: rgb(77, 144, 254);
+            background-image: linear-gradient(to bottom, rgb(77, 144, 254), rgb(71, 135, 237));
+            border: 1px solid rgb(48, 121, 237);
+            color: #fff;
+            text-shadow: 0 1px rgba(0, 0, 0, 0.1);
+        }
+
+        .btnDefault {
+            font-kerning: none;
+            font-weight: bold;
+        }
+
+        .btnDefault:not(:focus):not(:disabled) {
+            border-color: #808080;
+        }
+
+        button {
+            padding: 5px;
+            line-height: 20px;
+        }
+
+        span.iconFont {
+            font-size: 20px;
+        }
+
+        span.align {
+            display: inline-block;
+            vertical-align: middle;
+        }
+    </style>
+    <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+</head>
 
 <body>
+    {{if eq .Format "html"}}	
+	    <center><input class="no-print" type="button" onclick="window.print()" value="Imprimir"></center>
+    {{end}}
     {{template "boletoForm" .}}
 
 	<hr/>
 	{{template "boletoForm" .}}
-    {{if eq .Format "html"}}	
-	    <center><input class="no-print" type="button" onclick="window.print()" value="Imprimir"></center>
-    {{end}}
     </div>	
 </body>
 

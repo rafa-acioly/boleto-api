@@ -19,9 +19,6 @@ mkdir -p ~/boletodb/upMongo
 mkdir -p ~/boletodb/db
 mkdir -p ~/boletodb/configdb
 mkdir -p ~/dump_boletodb
-echo "Compiling API";
-go build  -o ./devops/boletoapi;
-echo "API Compiled";
 cd devops
 echo "Starting docker containers"
 docker-compose build --no-cache

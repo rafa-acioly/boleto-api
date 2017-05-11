@@ -65,7 +65,13 @@ func (l list) each(callback func(string)) {
 }
 
 func getFiles(path string) list {
-	files, _ := ioutil.ReadDir(path)
+	files, err := ioutil.ReadDir(path)
+	if err != nil {
+		errCreate := os.MkdirAll(path, 0777)
+		if errCreate != nil {
+			return list(make([]string, 0, 0))
+		}
+	}
 	names := make([]string, 0, len(files))
 	for _, f := range files {
 		names = append(names, f.Name())

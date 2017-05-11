@@ -41,7 +41,8 @@ func registerBoleto(c *gin.Context) {
 	if checkError(c, err, lg) {
 		return
 	}
-	resp, errR := bank.ProcessBoleto(boleto)
+	resp, errR := bank.ProcessBoleto(&boleto)
+
 	if checkError(c, errR, lg) {
 		return
 	}
@@ -86,7 +87,7 @@ func getBoleto(c *gin.Context) {
 	bleto, err := repo.GetBoletoByID(id)
 	if err != nil {
 		uid := util.Decrypt(id)
-		fd, err := os.Open("/boleto_" + uid + ".json")
+		fd, err := os.Open(config.Get().BoletoJSONFileStore + "/boleto_" + uid + ".json")
 		if err != nil {
 			checkError(c, errors.New("Boleto não encontrado na base de dados"), log.CreateLog())
 			return

@@ -6,10 +6,8 @@ echo "Changing directory to path $PROJECTPATH"
 ls -la $PROJECTPATH
 cd $PROJECTPATH
 
-#export GOPATH="/home/mundipagg/go"
-
 echo "Installing dependencies with glide"
 glide install
 
 echo "Starting build"
-go build -v
+go build  -o ./devops/boletoapi -v
