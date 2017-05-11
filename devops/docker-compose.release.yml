@@ -2,6 +2,8 @@ version: "2"
 services:
   api:
     build: .
+    volumes:
+     - ~/boletodb/upMongo:/home/upMongo
     ports:
      - "#{CONF_EXPOSEPORT}#:3000"
     environment:
