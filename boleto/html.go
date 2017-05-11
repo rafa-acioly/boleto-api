@@ -190,7 +190,7 @@ const boletoForm = `
                     {{.BankLogo}}					
                 </td>
                 <td class="sideBorders center"><span style="font-weight:bold;font-size:0.9em;">{{.BankNumber}}</span></td>
-                <td class="boletoNumber center"><span>{{fmtDigitableLine .DigitableLine}}</span></td>
+                <td class="boletoNumber center"><span>{{.DigitableLine}}</span></td>
             </tr>
         </table>
         <table cellspacing="0" cellpadding="0" border="1">
