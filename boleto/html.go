@@ -44,6 +44,12 @@ const templateBoleto = `
             height: 108mm;
         }
 
+        .headerBtn {
+            margin: auto auto;
+            width: 216mm;
+            background-color: #fff;
+        }
+
         table {
             width: 100%;
             position: relative;
@@ -127,6 +133,7 @@ const templateBoleto = `
         }
 
         button {
+            border: 1px;
             padding: 5px;
             line-height: 20px;
         }
@@ -140,12 +147,29 @@ const templateBoleto = `
             vertical-align: middle;
         }
     </style>
-    <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 </head>
 
 <body>
     {{if eq .Format "html"}}	
-	    <center><input class="no-print" type="button" onclick="window.print()" value="Imprimir"></center>
+	<br/>
+    <div class="headerBtn">
+        <div style="text-align:right;">
+            <button class="no-print btnDefault print" onclick="window.print()">
+                <span class="align iconFont ion-printer"></span>
+                <span class="align">&nbspImprimir</span>
+            </button>
+            <button class="no-print btnDefault print" onclick="window.location='./boleto?fmt=pdf&id={{.ID}}'">
+                <span class="align iconFont ion-document-text"></span>
+                <span class="align">&nbspGerar PDF</span>
+            </button>
+            <!--<button class="no-print btnDefault print" onclick="window.location='./boleto/www.google.com'">
+                <span class="align iconFont ion-image"></span>
+                <span class="align">&nbspSalvar como Imagem</span>
+            </button>-->
+        </div>
+    </div>
+    <br/>
     {{end}}
     {{template "boletoForm" .}}
 
