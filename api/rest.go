@@ -16,7 +16,7 @@ func InstallRestAPI() {
 	router := gin.New()
 	router.Use(gin.Recovery())
 	router.Use(executionController())
-	if config.Get().DevMode {
+	if config.Get().DevMode && !config.Get().MockMode {
 		router.Use(gin.Logger())
 	}
 	InstallV1(router)
