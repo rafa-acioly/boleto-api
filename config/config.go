@@ -25,6 +25,7 @@ type Config struct {
 	ElasticURL          string
 	MongoURL            string
 	BoletoJSONFileStore string
+	DisableLog          bool
 }
 
 var cnf Config
@@ -36,7 +37,7 @@ var mutex sync.Mutex
 func Get() Config {
 	return cnf
 }
-func Install(mockMode, devMode bool) {
+func Install(mockMode, devMode, disableLog bool) {
 	atomic.StoreUint64(&running, 0)
 	cnf = Config{
 		APIPort:             ":" + os.Getenv("API_PORT"),
@@ -54,6 +55,7 @@ func Install(mockMode, devMode bool) {
 		AppURL:              os.Getenv("APP_URL"),
 		ElasticURL:          os.Getenv("ELASTIC_URL"),
 		DevMode:             devMode,
+		DisableLog:          disableLog,
 		MongoURL:            os.Getenv("MONGODB_URL"),
 		BoletoJSONFileStore: os.Getenv("BOLETO_JSON_STORE"),
 	}

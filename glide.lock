@@ -1,5 +1,5 @@
-hash: 8ad15de40351b6b2f7c9f065b71abe182d6e035f595fad7727d15093e3ffc1aa
-updated: 2017-05-09T10:15:10.920985687-03:00
+hash: b92d2ff2504495f7b60d4334c20743e951d0e903ba17ee34475fa544abdaf19d
+updated: 2017-05-11T14:34:04.080504358-03:00
 imports:
 - name: github.com/beevik/etree
   version: abae5fc32af8862e420d52e686a7e6ec14111685
@@ -31,6 +31,8 @@ imports:
   version: 8c3362a5e6781e0d1046f1267b3c1f19b2cde334
 - name: github.com/SebastiaanKlippert/go-wkhtmltopdf
   version: 476a1aaadffdb573c921d380cd43a956cef430d4
+- name: github.com/smartystreets/goconvey
+  version: d4c757aa9afd1e2fc1832aaab209b5794eb336e1
 - name: golang.org/x/net
   version: f315505cf3349909cdf013ea56690da34e96a451
   subpackages:

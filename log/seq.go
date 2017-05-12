@@ -25,7 +25,7 @@ type Log struct {
 
 //Install instala o "servico" de log do SEQ
 func Install() error {
-	_logger, err := goseq.GetLogger(config.Get().SEQUrl, config.Get().SEQAPIKey, 100)
+	_logger, err := goseq.GetLogger(config.Get().SEQUrl, config.Get().SEQAPIKey, 40)
 	if err != nil {
 		return err
 	}
@@ -51,6 +51,9 @@ func CreateLog() *Log {
 
 // Request loga o request para algum banco
 func (l Log) Request(content interface{}, url string, headers map[string]string) {
+	if config.Get().DisableLog {
+		return
+	}
 	go (func() {
 		props := l.defaultProperties("Request", content)
 		props.AddProperty("Headers", headers)
@@ -63,6 +66,9 @@ func (l Log) Request(content interface{}, url string, headers map[string]string)
 
 // Response loga o response para algum banco
 func (l Log) Response(content interface{}, url string) {
+	if config.Get().DisableLog {
+		return
+	}
 	go (func() {
 		props := l.defaultProperties("Response", content)
 		props.AddProperty("URL", url)
@@ -74,11 +80,17 @@ func (l Log) Response(content interface{}, url string) {
 
 //Info loga mensagem do level INFO
 func Info(msg string) {
+	if config.Get().DisableLog {
+		return
+	}
 	go logger.Information(msg, goseq.NewProperties())
 }
 
 //Warn loga mensagem do leve Warning
 func (l Log) Warn(content interface{}, msg string) {
+	if config.Get().DisableLog {
+		return
+	}
 	go (func() {
 		props := l.defaultProperties("Warning", content)
 		m := formatter(msg)
@@ -89,6 +101,9 @@ func (l Log) Warn(content interface{}, msg string) {
 
 // Fatal loga erros da aplicação
 func (l Log) Fatal(content interface{}, msg string) {
+	if config.Get().DisableLog {
+		return
+	}
 	go (func() {
 		props := l.defaultProperties("Error", content)
 		m := formatter(msg)
@@ -109,6 +124,9 @@ func (l Log) defaultProperties(messageType string, content interface{}) goseq.Pr
 
 //Close fecha a conexao com o SEQ
 func Close() {
+	if config.Get().DisableLog {
+		return
+	}
 	fmt.Println("Closing SEQ Connection")
 	logger.Close()
 }

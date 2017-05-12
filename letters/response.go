@@ -10,7 +10,7 @@ const registerBoletoResponse = `{
     ]
     {{else}}
     "Url": null,
-    "DigitableLine": "{{trim .digitableLine}}",
+    "DigitableLine": "{{fmtDigitableLine (trim .digitableLine)}}",
     "BarCodeNumber": "{{trim .barcodeNumber}}"
     {{end}}
 }

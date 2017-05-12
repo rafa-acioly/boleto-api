@@ -32,6 +32,10 @@ func Post(url, body string, header map[string]string) (string, int, error) {
 	return DoRequest("POST", url, body, header)
 }
 
+func Get(url, body string, header map[string]string) (string, int, error) {
+	return DoRequest("GET", url, body, header)
+}
+
 func DoRequest(method, url, body string, header map[string]string) (string, int, error) {
 	client := DefaultHTTPClient()
 	message := strings.NewReader(body)
