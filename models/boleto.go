@@ -28,9 +28,17 @@ type BoletoRequest struct {
 type BoletoResponse struct {
 	StatusCode    int    `json:"-"`
 	Errors        Errors `json:",omitempty"`
-	URL           string `json:"Url,omitempty"`
+	ID            string `json:"id,omitempty"`
 	DigitableLine string `json:",omitempty"`
 	BarCodeNumber string `json:",omitempty"`
+	Links         []Link
+}
+
+//Link é um tipo padrão no restfull para satisfazer o HATEOAS
+type Link struct {
+	Href   string `json:"href,omitempty"`
+	Rel    string `json:"rel,omitempty"`
+	Method string `json:"method,omitempty"`
 }
 
 // BoletoView contem as informações que serão preenchidas no boleto
@@ -67,9 +75,18 @@ func NewBoletoView(boleto BoletoRequest, barcode string, digitableLine string) B
 }
 
 //EncodeURL tranforma o boleto view na forma que será escrito na url
-func (b *BoletoView) EncodeURL() string {
-	url := fmt.Sprintf("%s?fmt=html&id=%s", config.Get().AppURL, b.ID)
+func (b *BoletoView) EncodeURL(format string) string {
+	url := fmt.Sprintf("%s?fmt=%s&id=%s", config.Get().AppURL, format, b.ID)
 	return url
+}
+
+//CreateLinks cria a lista de links com os formatos suportados
+func (b *BoletoView) CreateLinks() []Link {
+	links := make([]Link, 0, 3)
+	for _, f := range []string{"html", "pdf"} {
+		links = append(links, Link{Href: b.EncodeURL(f), Rel: f, Method: "GET"})
+	}
+	return links
 }
 
 //ToJSON tranforma o boleto view em json
