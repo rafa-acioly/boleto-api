@@ -52,7 +52,8 @@ func registerBoleto(c *gin.Context) {
 		st = http.StatusBadRequest
 	} else {
 		boView := models.NewBoletoView(boleto, resp.BarCodeNumber, resp.DigitableLine)
-		resp.URL = boView.EncodeURL()
+		resp.Links = boView.CreateLinks()
+		resp.ID = boView.ID
 		errMongo := repo.SaveBoleto(boView)
 		if errMongo != nil {
 			saveBoletoJSONFile(boView, lg, errMongo)

@@ -17,11 +17,12 @@ import (
 )
 
 var (
-	processID  = os.Getpid()
-	totalProcs = runtime.NumCPU()
-	devMode    = flag.Bool("dev", false, "-dev To run in dev mode")
-	mockMode   = flag.Bool("mock", false, "-mock To run mock requests")
-	disableLog = flag.Bool("nolog", false, "-nolog disable seq log")
+	processID    = os.Getpid()
+	totalProcs   = runtime.NumCPU()
+	devMode      = flag.Bool("dev", false, "-dev To run in dev mode")
+	mockMode     = flag.Bool("mock", false, "-mock To run mock requests")
+	disableLog   = flag.Bool("nolog", false, "-nolog disable seq log")
+	airPlaneMode = flag.Bool("airplane-mode", false, "-airplane-mode run api in dev, mock and nolog mode")
 )
 
 func init() {
@@ -51,7 +52,12 @@ func createPIDfile() {
 func main() {
 	flag.Parse()
 	logo1()
-	app.Run(*devMode, *mockMode, *disableLog)
+	if *airPlaneMode {
+		app.Run(true, true, true)
+	} else {
+		app.Run(*devMode, *mockMode, *disableLog)
+	}
+
 }
 
 func logo1() {
