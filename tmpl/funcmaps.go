@@ -15,18 +15,19 @@ import (
 )
 
 var funcMap = template.FuncMap{
-	"today":            today,
-	"brdate":           brDate,
-	"replace":          replace,
-	"docType":          docType,
-	"trim":             trim,
-	"padLeft":          padLeft,
-	"toString":         toString,
-	"fmtDigitableLine": fmtDigitableLine,
-	"fmtCNPJ":          fmtCNPJ,
-	"fmtCPF":           fmtCPF,
-	"fmtDoc":           fmtDoc,
-	"fmtNumber":        fmtNumber,
+	"today":                  today,
+	"brdate":                 brDate,
+	"replace":                replace,
+	"docType":                docType,
+	"trim":                   trim,
+	"padLeft":                padLeft,
+	"toString":               toString,
+	"fmtDigitableLine":       fmtDigitableLine,
+	"fmtCNPJ":                fmtCNPJ,
+	"fmtCPF":                 fmtCPF,
+	"fmtDoc":                 fmtDoc,
+	"fmtNumber":              fmtNumber,
+	"brDateWithoutDelimiter": brDateWithoutDelimiter,
 }
 
 func padLeft(value, char string, total uint) string {
@@ -56,6 +57,10 @@ func today() time.Time {
 
 func brDate(d time.Time) string {
 	return d.Format("02/01/2006")
+}
+
+func brDateWithoutDelimiter(d time.Time) string {
+	return d.Format("02012006")
 }
 
 func replace(str, old, new string) string {

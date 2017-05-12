@@ -35,7 +35,7 @@ const body = `
         "WalletVariation": 19,
 
         "Agency":"5797",
-
+        
         "Account":"6685"
 
     },
@@ -125,6 +125,7 @@ func getBody() string {
 	req := models.BoletoRequest{}
 	json.Unmarshal([]byte(body), &req)
 	req.Title.ExpireDate = time.Now().Format("2006-01-02")
+	req.Title.ExpireDateTime = time.Now()
 	d, _ := json.Marshal(req)
 	return string(d)
 }

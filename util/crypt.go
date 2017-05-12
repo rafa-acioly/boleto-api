@@ -4,6 +4,7 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
+	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
 	"io"
@@ -65,4 +66,12 @@ func Base64(s string) string {
 func Base64Decode(s string) string {
 	sDec, _ := base64.StdEncoding.DecodeString(s)
 	return string(sDec)
+}
+
+//Sha256 converte uma string num hash sha256 e encode no formato base64
+func Sha256(s string) string {
+	h := sha256.New()
+	h.Write([]byte(s))
+	sEnc := base64.StdEncoding.EncodeToString([]byte(h.Sum(nil)))
+	return sEnc
 }
