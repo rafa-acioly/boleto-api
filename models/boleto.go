@@ -31,7 +31,7 @@ type BoletoResponse struct {
 	ID            string `json:"id,omitempty"`
 	DigitableLine string `json:",omitempty"`
 	BarCodeNumber string `json:",omitempty"`
-	Links         []Link
+	Links         []Link `json:",omitempty"`
 }
 
 //Link é um tipo padrão no restfull para satisfazer o HATEOAS
