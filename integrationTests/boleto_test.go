@@ -140,7 +140,7 @@ func TestRegisterBoletoRequest(t *testing.T) {
 		errJSON := json.Unmarshal([]byte(response), &boleto)
 		So(errJSON, ShouldEqual, nil)
 		Convey("Se o boleto foi registrado então ele tem que está disponível no formato HTML", func() {
-			html, st, err := util.Get(boleto.URL, "", nil)
+			html, st, err := util.Get(boleto.Links[0].Href, "", nil)
 			So(err, ShouldEqual, nil)
 			So(st, ShouldEqual, 200)
 			htmlFromBoleto := strings.Contains(html, boleto.DigitableLine)
