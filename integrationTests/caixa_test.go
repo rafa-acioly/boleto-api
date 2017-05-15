@@ -19,7 +19,7 @@ func TestCaixaIntegration(t *testing.T) {
 	Convey("Quando registrar boleto na Caixa", t, func() {
 		Convey("Deve-se montar a string de autenticação", func() {
 			caixa, _ := bank.Get(models.Caixa)
-			caixa.GetAuthToken()
+			caixa.GetAuthToken(boleto)
 
 		})
 

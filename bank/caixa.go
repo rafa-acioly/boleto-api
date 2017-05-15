@@ -1,9 +1,12 @@
 package bank
 
 import (
+	"fmt"
+
 	"bitbucket.org/mundipagg/boletoapi/auth"
 	"bitbucket.org/mundipagg/boletoapi/log"
 	"bitbucket.org/mundipagg/boletoapi/models"
+	"bitbucket.org/mundipagg/boletoapi/util"
 )
 
 type bankCaixa struct {
@@ -35,6 +38,21 @@ func (b bankCaixa) ProcessBoleto(boleto *models.BoletoRequest) (models.BoletoRes
 
 func (b bankCaixa) ValidateBoleto(boleto *models.BoletoRequest) models.Errors {
 	return nil
+}
+
+//getCheckSumCode Código do Cedente (7 posições) + Nosso Número (17 posições) + Data de Vencimento (DDMMAAAA) + Valor (15 posições) + CPF/CNPJ (14 Posições)
+func (b bankCaixa) getCheckSumCode(boleto models.BoletoRequest) string {
+	ourNumber := fmt.Sprintf("%d%d", boleto.Agreement.AgreementNumber, boleto.Title.OurNumber)
+	return fmt.Sprintf("%07d%017s%s%015d%014s",
+		boleto.Agreement.AgreementNumber,
+		ourNumber,
+		boleto.Title.ExpireDateTime.Format("02012006"),
+		boleto.Title.AmountInCents,
+		boleto.Recipient.Document.Number)
+}
+
+func (b bankCaixa) getAuthToken(info string) string {
+	return util.Sha256(info)
 }
 
 //GetBankNumber retorna o codigo do banco
