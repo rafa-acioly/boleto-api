@@ -27,6 +27,7 @@ var funcMap = template.FuncMap{
 	"fmtCPF":           fmtCPF,
 	"fmtDoc":           fmtDoc,
 	"fmtNumber":        fmtNumber,
+	"toFloatStr":       toFloatStr,
 }
 
 func padLeft(value, char string, total uint) string {
@@ -37,6 +38,12 @@ func fmtNumber(n uint64) string {
 	real := n / 100
 	cents := n % 100
 	return fmt.Sprintf("%d,%02d", real, cents)
+}
+
+func toFloatStr(n uint64) string {
+	real := n / 100
+	cents := n % 100
+	return fmt.Sprintf("%d.%02d", real, cents)
 }
 
 func fmtDoc(doc models.Document) string {
