@@ -6,7 +6,7 @@ import (
 
 //mockRobot sobe uma aplicação web para mockar a integração com os Bancos
 func mockRobot() {
-
+	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
 	router.Use(gin.Recovery())
 	router.POST("/oauth/token", authBB)

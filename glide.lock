@@ -1,5 +1,5 @@
-hash: 8ad15de40351b6b2f7c9f065b71abe182d6e035f595fad7727d15093e3ffc1aa
-updated: 2017-05-09T10:15:10.920985687-03:00
+hash: 30a6a199dd75bdcd5062b5b4ad1c945ba3cc7e003cab33b38df2ca3d32c6d7fc
+updated: 2017-05-12T10:33:33.382528-03:00
 imports:
 - name: github.com/beevik/etree
   version: abae5fc32af8862e420d52e686a7e6ec14111685
@@ -19,6 +19,8 @@ imports:
   - proto
 - name: github.com/google/uuid
   version: 064e2069ce9c359c118179501254f67d7d37ba24
+- name: github.com/jtolds/gls
+  version: 8ddce2a84170772b95dd5d576c48d517b22cac63
 - name: github.com/jung-kurt/gofpdf
   version: b572f8a6f278a31b4ff7dd03c0bb348545022f51
 - name: github.com/manucorporat/sse
@@ -31,6 +33,12 @@ imports:
   version: 8c3362a5e6781e0d1046f1267b3c1f19b2cde334
 - name: github.com/SebastiaanKlippert/go-wkhtmltopdf
   version: 476a1aaadffdb573c921d380cd43a956cef430d4
+- name: github.com/smartystreets/goconvey
+  version: d4c757aa9afd1e2fc1832aaab209b5794eb336e1
+  subpackages:
+  - convey
+  - convey/gotest
+  - convey/reporting
 - name: golang.org/x/net
   version: f315505cf3349909cdf013ea56690da34e96a451
   subpackages:
@@ -57,4 +65,13 @@ imports:
   - internal/scram
 - name: gopkg.in/yaml.v2
   version: cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b
-testImports: []
+testImports:
+- name: github.com/gopherjs/gopherjs
+  version: 9659c814f1d54d63f9c623449a7111d3864c1361
+  subpackages:
+  - js
+- name: github.com/smartystreets/assertions
+  version: d20dfdd831a09c7eb926e4bd8ae0cbedebff251a
+  subpackages:
+  - internal/go-render/render
+  - internal/oglematchers

@@ -7,6 +7,7 @@ import (
 	"bitbucket.org/mundipagg/boletoapi/config"
 	"bitbucket.org/mundipagg/boletoapi/log"
 	"bitbucket.org/mundipagg/boletoapi/models"
+	"bitbucket.org/mundipagg/boletoapi/util"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
@@ -44,7 +45,15 @@ func ParseBoleto() gin.HandlerFunc {
 			checkError(c, e, log.CreateLog())
 			return
 		}
+		l := log.CreateLog()
+		l.NossoNumero = boleto.Title.OurNumber
+		l.Operation = "RegisterBoleto"
+		l.Recipient = "BoletoApi"
+		l.Request(boleto, c.Request.URL.RequestURI(), util.HeaderToMap(c.Request.Header))
 		c.Set("boleto", boleto)
 		c.Next()
+		_boletoResponse, _ := c.Get("boletoResponse")
+		resp := _boletoResponse.(models.BoletoResponse)
+		l.Response(resp, c.Request.URL.RequestURI())
 	}
 }
