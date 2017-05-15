@@ -28,6 +28,9 @@ var funcMap = template.FuncMap{
 	"fmtDoc":                 fmtDoc,
 	"fmtNumber":              fmtNumber,
 	"brDateWithoutDelimiter": brDateWithoutDelimiter,
+	"enDateWithoutDelimiter": enDateWithoutDelimiter,
+	"fullDate":               fulldate,
+	"enDate":                 enDate,
 }
 
 func padLeft(value, char string, total uint) string {
@@ -55,12 +58,24 @@ func today() time.Time {
 	return time.Now()
 }
 
+func fulldate(t time.Time) string {
+	return t.Format("20060102150405")
+}
+
 func brDate(d time.Time) string {
 	return d.Format("02/01/2006")
 }
 
+func enDate(d time.Time, del string) string {
+	return d.Format("2006" + del + "01" + del + "02")
+}
+
 func brDateWithoutDelimiter(d time.Time) string {
 	return d.Format("02012006")
+}
+
+func enDateWithoutDelimiter(d time.Time) string {
+	return d.Format("20060102")
 }
 
 func replace(str, old, new string) string {
