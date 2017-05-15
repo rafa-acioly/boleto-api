@@ -19,7 +19,6 @@ mkdir -p ~/boletodb/upMongo
 mkdir -p ~/boletodb/db
 mkdir -p ~/boletodb/configdb
 mkdir -p ~/dump_boletodb
-cd devops
 echo "Starting docker containers"
 docker-compose build --no-cache
 if [ "$2" == 'local' ]; then
