@@ -121,20 +121,40 @@ const body = `
 }
 `
 
-func getBody() string {
+func getBody(bank models.BankNumber, v uint64) string {
 	req := models.BoletoRequest{}
 	json.Unmarshal([]byte(body), &req)
 	req.Title.ExpireDate = time.Now().Format("2006-01-02")
 	req.Title.ExpireDateTime = time.Now()
+	req.BankNumber = bank
+	req.Title.AmountInCents = v
 	d, _ := json.Marshal(req)
+	return string(d)
+}
+
+func getModelBody(bank models.BankNumber, v uint64) models.BoletoRequest {
+	str := getBody(bank, v)
+	return boletoify(str)
+}
+
+func boletoify(str string) models.BoletoRequest {
+	bo := models.BoletoRequest{}
+	err := json.Unmarshal([]byte(str), &bo)
+	if err != nil {
+		panic(err)
+	}
+	return bo
+}
+
+func stringify(boleto models.BoletoRequest) string {
+	d, _ := json.Marshal(boleto)
 	return string(d)
 }
 
 func TestRegisterBoletoRequest(t *testing.T) {
 	go app.Run(true, true, false)
-
 	Convey("deve-se registrar um boleto e retornar as informações de url, linha digitável e código de barras", t, func() {
-		response, st, err := util.Post("http://localhost:3000/v1/boleto/register", getBody(), nil)
+		response, st, err := util.Post("http://localhost:3000/v1/boleto/register", getBody(models.BancoDoBrasil, 200), nil)
 		So(err, ShouldEqual, nil)
 		So(st, ShouldEqual, 200)
 		boleto := models.BoletoResponse{}
@@ -147,6 +167,90 @@ func TestRegisterBoletoRequest(t *testing.T) {
 			htmlFromBoleto := strings.Contains(html, boleto.DigitableLine)
 			So(htmlFromBoleto, ShouldBeTrue)
 		})
+	})
+
+	Convey("Deve-se retornar a lista de erros ocorridos durante o registro", t, func() {
+		response, st, err := util.Post("http://localhost:3000/v1/boleto/register", getBody(models.BancoDoBrasil, 301), nil)
+		So(err, ShouldEqual, nil)
+		So(st, ShouldEqual, 400)
+		boleto := models.BoletoResponse{}
+		errJSON := json.Unmarshal([]byte(response), &boleto)
+		So(errJSON, ShouldEqual, nil)
+		So(len(boleto.Errors), ShouldBeGreaterThan, 0)
+		Convey("Deve-se retornar erro quando passar um Nosso Número inválido", func() {
+			m := getModelBody(models.BancoDoBrasil, 200)
+			m.Title.OurNumber = 999999999999
+			response, st, err := util.Post("http://localhost:3000/v1/boleto/register", stringify(m), nil)
+			So(err, ShouldEqual, nil)
+			So(st, ShouldEqual, 400)
+			boleto := models.BoletoResponse{}
+			errJSON := json.Unmarshal([]byte(response), &boleto)
+			So(errJSON, ShouldEqual, nil)
+			So(len(boleto.Errors), ShouldBeGreaterThan, 0)
+			So(boleto.Errors[0].Message, ShouldEqual, "Nosso número inválido")
+		})
+
+		Convey("Deve-se tratar o número da conta", func() {
+			Convey("O número da conta sempre deve ser passado", func() {
+				m := getModelBody(models.BancoDoBrasil, 200)
+				m.Agreement.Account = ""
+				response, st, err := util.Post("http://localhost:3000/v1/boleto/register", stringify(m), nil)
+				So(err, ShouldEqual, nil)
+				So(st, ShouldEqual, 400)
+				boleto := models.BoletoResponse{}
+				errJSON := json.Unmarshal([]byte(response), &boleto)
+				So(errJSON, ShouldEqual, nil)
+				So(len(boleto.Errors), ShouldBeGreaterThan, 0)
+				So(boleto.Errors[0].Message, ShouldEqual, "Conta inválida, deve conter até 8 dígitos")
+			})
+
+			Convey("O tipo de documento do comprador deve ser CPF ou CNPJ", func() {
+				m := getModelBody(models.BancoDoBrasil, 200)
+				m.Buyer.Document.Type = "FAIL"
+				response, st, err := util.Post("http://localhost:3000/v1/boleto/register", stringify(m), nil)
+				So(err, ShouldEqual, nil)
+				So(st, ShouldEqual, 400)
+				boleto := models.BoletoResponse{}
+				errJSON := json.Unmarshal([]byte(response), &boleto)
+				So(errJSON, ShouldEqual, nil)
+				So(len(boleto.Errors), ShouldBeGreaterThan, 0)
+				So(boleto.Errors[0].Message, ShouldEqual, "Tipo de Documento inválido")
+			})
+
+			Convey("O CPF deve ser válido", func() {
+				m := getModelBody(models.BancoDoBrasil, 200)
+				m.Buyer.Document.Type = "CPF"
+				m.Buyer.Document.Number = "ASDA"
+				response, st, err := util.Post("http://localhost:3000/v1/boleto/register", stringify(m), nil)
+				So(err, ShouldEqual, nil)
+				So(st, ShouldEqual, 400)
+				boleto := models.BoletoResponse{}
+				errJSON := json.Unmarshal([]byte(response), &boleto)
+				So(errJSON, ShouldEqual, nil)
+				So(len(boleto.Errors), ShouldBeGreaterThan, 0)
+				So(boleto.Errors[0].Message, ShouldEqual, "CPF inválido")
+			})
+
+		})
+	})
+
+	Convey("Deve-se registrar um boleto na Caixa", t, func() {
+		_, st, err := util.Post("http://localhost:3000/v1/boleto/register", getBody(models.Caixa, 200), nil)
+		So(err, ShouldBeNil)
+		So(st, ShouldEqual, 200)
+		Convey("Deve-se gerar um boleto específico para a Caixa", func() {
+			//TODO
+		})
+	})
+
+	Convey("Deve-se retornar um objeto de erro não registra um boleto na Caixa", t, func() {
+		response, st, err := util.Post("http://localhost:3000/v1/boleto/register", getBody(models.Caixa, 300), nil)
+		So(err, ShouldBeNil)
+		So(st, ShouldEqual, 400)
+		boleto := models.BoletoResponse{}
+		errJSON := json.Unmarshal([]byte(response), &boleto)
+		So(errJSON, ShouldEqual, nil)
+		So(len(boleto.Errors), ShouldBeGreaterThan, 0)
 	})
 
 }

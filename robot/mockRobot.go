@@ -1,6 +1,10 @@
 package robot
 
 import (
+	"io/ioutil"
+
+	"strings"
+
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
@@ -11,6 +15,8 @@ func mockRobot() {
 	router.Use(gin.Recovery())
 	router.POST("/oauth/token", authBB)
 	router.POST("/registrarBoleto", registerBoletoBB)
+	router.POST("/caixa/registrarBoleto", registerBoletoCaixa)
+
 	router.Run(":4000")
 }
 
@@ -24,6 +30,7 @@ func authBB(c *gin.Context) {
 }
 
 func registerBoletoBB(c *gin.Context) {
+
 	sData := `
 		<?xml version="1.0" encoding="UTF-8"?>
 		<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
@@ -56,5 +63,104 @@ func registerBoletoBB(c *gin.Context) {
 		</SOAP-ENV:Body>
 		</SOAP-ENV:Envelope>
 	`
-	c.Data(200, "text/xml", []byte(sData))
+
+	sDataErr := `
+		<?xml version="1.0" encoding="UTF-8"?>
+		<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+		<SOAP-ENV:Body>
+			<ns0:resposta xmlns:ns0="http://www.tibco.com/schemas/bws_registro_cbr/Recursos/XSD/Schema.xsd">
+				<ns0:siglaSistemaMensagem />
+				<ns0:codigoRetornoPrograma>ER500</ns0:codigoRetornoPrograma>
+				<ns0:nomeProgramaErro>Nome Programa ERRO</ns0:nomeProgramaErro>
+				<ns0:textoMensagemErro>Falha ao registrar Boleto</ns0:textoMensagemErro>
+				<ns0:numeroPosicaoErroPrograma>0</ns0:numeroPosicaoErroPrograma>
+				<ns0:codigoTipoRetornoPrograma>0</ns0:codigoTipoRetornoPrograma>
+				<ns0:textoNumeroTituloCobrancaBb>00010140510000066673</ns0:textoNumeroTituloCobrancaBb>
+				<ns0:numeroCarteiraCobranca>17</ns0:numeroCarteiraCobranca>
+				<ns0:numeroVariacaoCarteiraCobranca>19</ns0:numeroVariacaoCarteiraCobranca>
+				<ns0:codigoPrefixoDependenciaBeneficiario>3851</ns0:codigoPrefixoDependenciaBeneficiario>
+				<ns0:numeroContaCorrenteBeneficiario>8570</ns0:numeroContaCorrenteBeneficiario>
+				<ns0:codigoCliente>932131545</ns0:codigoCliente>
+				<ns0:linhaDigitavel>00190000090101405100500066673179971340000010000</ns0:linhaDigitavel>
+				<ns0:codigoBarraNumerico>00199713400000100000000001014051000006667317</ns0:codigoBarraNumerico>
+				<ns0:codigoTipoEnderecoBeneficiario>0</ns0:codigoTipoEnderecoBeneficiario>
+				<ns0:nomeLogradouroBeneficiario>Cliente nao informado.</ns0:nomeLogradouroBeneficiario>
+				<ns0:nomeBairroBeneficiario />
+				<ns0:nomeMunicipioBeneficiario />
+				<ns0:codigoMunicipioBeneficiario>0</ns0:codigoMunicipioBeneficiario>
+				<ns0:siglaUfBeneficiario />
+				<ns0:codigoCepBeneficiario>0</ns0:codigoCepBeneficiario>
+				<ns0:indicadorComprovacaoBeneficiario />
+				<ns0:numeroContratoCobranca>17414296</ns0:numeroContratoCobranca>
+			</ns0:resposta>
+		</SOAP-ENV:Body>
+		</SOAP-ENV:Envelope>
+	`
+
+	d, _ := ioutil.ReadAll(c.Request.Body)
+	xml := string(d)
+	if strings.Contains(xml, "<sch:valorOriginalTitulo>200</sch:valorOriginalTitulo>") {
+		c.Data(200, "text/xml", []byte(sData))
+	} else {
+		c.Data(200, "text/xml", []byte(sDataErr))
+	}
+}
+
+func registerBoletoCaixa(c *gin.Context) {
+	sData := `
+<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope 
+    xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+    <soapenv:Body>
+        <manutencaocobrancabancaria:SERVICO_SAIDA 
+            xmlns:manutencaocobrancabancaria="http://caixa.gov.br/sibar/manutencao_cobranca_bancaria/boleto/externo" 
+            xmlns:sibar_base="http://caixa.gov.br/sibar">
+            <sibar_base:HEADER>
+                <VERSAO>1.0</VERSAO>
+                <OPERACAO>IncluiBoleto</OPERACAO>
+                <DATA_HORA>2017052012121212</DATA_HORA>
+            </sibar_base:HEADER>
+            <COD_RETORNO>200</COD_RETORNO>
+            <MSG_RETORNO>Boleto Registrado</MSG_RETORNO>
+            <DADOS>                
+				<CODIGO_BARRAS>12371873171273123891793718973891273123812983</CODIGO_BARRAS>
+                <LINHA_DIGITAVEL>12371873171273123891793718973891273123812983</LINHA_DIGITAVEL>
+                <NOSSO_NUMERO>685939858868492398683</NOSSO_NUMERO>
+                <URL>http://www.globo.com</URL>
+            </DADOS>
+        </manutencaocobrancabancaria:SERVICO_SAIDA>
+    </soapenv:Body>
+</soapenv:Envelope>
+	`
+
+	sDataErr := `
+<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope 
+    xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+    <soapenv:Body>
+        <manutencaocobrancabancaria:SERVICO_SAIDA 
+            xmlns:manutencaocobrancabancaria="http://caixa.gov.br/sibar/manutencao_cobranca_bancaria/boleto/externo" 
+            xmlns:sibar_base="http://caixa.gov.br/sibar">
+            <sibar_base:HEADER>
+                <VERSAO>1.0</VERSAO>
+                <OPERACAO>IncluiBoleto</OPERACAO>
+                <DATA_HORA>2017052012121212</DATA_HORA>
+            </sibar_base:HEADER>
+            <COD_RETORNO>X(50) ERRO</COD_RETORNO>
+            <MSG_RETORNO>USUÁRIO NÃO CADASTRADO</MSG_RETORNO>
+            <DADOS>
+				<EXCECAO>Stacktrace de Erro na Caixa</EXCECAO>	
+            </DADOS>
+        </manutencaocobrancabancaria:SERVICO_SAIDA>
+    </soapenv:Body>
+</soapenv:Envelope>
+	`
+	d, _ := ioutil.ReadAll(c.Request.Body)
+	xml := string(d)
+	if strings.Contains(xml, "<VALOR>200</VALOR>") {
+		c.Data(200, "text/xml", []byte(sData))
+	} else {
+		c.Data(200, "text/xml", []byte(sDataErr))
+	}
+
 }
