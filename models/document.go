@@ -7,8 +7,8 @@ import (
 
 // Document nó com o tipo de documento e número do documento
 type Document struct {
-	Type   string
-	Number string
+	Type   string `json:"type,omitempty"`
+	Number string `json:"number,omitempty"`
 }
 
 // IsCPF diz se o DocumentType é um CPF
