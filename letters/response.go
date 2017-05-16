@@ -1,17 +1,27 @@
 package letters
 
 const registerBoletoResponse = `{
-    {{if (trim .errorCode) ne ""}}
-    "Errors": [
-        {
-            "Code": "{{trim .errorCode}}",
-            "Message": "{{trim .errorMessage}}"
-        }
-    ]
+    {{if (hasErrorTags . "errorCode" "errorMessage" "exception")}}
+        {{if (hasErrorTags . "exception")}}
+            "Errors": [
+                {                    
+                    "Code": "{{trim .returnCode}}",
+                    "Message": "{{trim .returnMessage}}"
+                }
+            ]
+        {{else}}
+            "Errors": [
+                {                    
+                    "Code": "{{trim .errorCode}}",
+                    "Message": "{{trim .errorMessage}}"
+                }
+            ]
+        {{end}}
+        
     {{else}}
-    "Url": null,
-    "DigitableLine": "{{fmtDigitableLine (trim .digitableLine)}}",
-    "BarCodeNumber": "{{trim .barcodeNumber}}"
+        "Url": null,
+        "DigitableLine": "{{fmtDigitableLine (trim .digitableLine)}}",
+        "BarCodeNumber": "{{trim .barcodeNumber}}"
     {{end}}
 }
 `

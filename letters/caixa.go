@@ -1,6 +1,6 @@
 package letters
 
-const erro = `
+const responseCaixa = `
 <?xml version="1.0" encoding="utf-8"?>
 <soapenv:Envelope 
     xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
@@ -10,14 +10,17 @@ const erro = `
             xmlns:sibar_base="http://caixa.gov.br/sibar">
             <sibar_base:HEADER>
                 <VERSAO>1.0</VERSAO>
-                <OPERACAO>SEM_OPERACAO</OPERACAO>
-                <DATA_HORA>20170515125658</DATA_HORA>
+                <OPERACAO>{{operation}}</OPERACAO>
+                <DATA_HORA>{{datetime}}</DATA_HORA>
             </sibar_base:HEADER>
-            <COD_RETORNO>X5</COD_RETORNO>
-            <ORIGEM_RETORNO>BROKER-SPD7CJD0</ORIGEM_RETORNO>
-            <MSG_RETORNO>(BK76) ERRO NA FORMATACAO DA MENSAGEM.</MSG_RETORNO>
+            <COD_RETORNO>{{returnCode}}</COD_RETORNO>
+            <MSG_RETORNO>{{returnMessage}}</MSG_RETORNO>
             <DADOS>
-                <EXCECAO>EXCECAO NO BAR_MANUTENCAO_COBRANCA_BANCARIA_WS.SOAPInput_Empresas_Externas. DETALHES: ParserException(1) - Funcao: ImbDataFlowNode::createExceptionList, Texto Excecao: Node throwing exception, Texto de Insercao(1) - BAR_MANUTENCAO_COBRANCA_BANCARIA_WS.SOAPInput_Empresas_Externas.ParserException(2) - Funcao: ImbSOAPInputNode::validateData, Texto Excecao: Error occurred in ImbSOAPInputHelper::validateSOAPInput().ParserException(3) - Funcao: ImbRootParser::parseNextItem, Texto Excecao: Exception whilst parsing.ParserException(4) - Funcao: ImbSOAPParser::createSoapShapedTree, Texto Excecao: problem creating SOAP tree from bitstream.ParserException(5) - Funcao: ImbXMLNSCParser::parseLastChild, Texto Excecao: XML Parsing Errors have occurred.ParserException(6) - Funcao: ImbXMLNSCDocHandler::handleParseErrors, Texto Excecao: A schema validation error has occurred while parsing the XML document, Texto de Insercao(1) - 5008, Texto de Insercao(2) - 2, Texto de Insercao(3) - 9, Texto de Insercao(4) - 29, Texto de Insercao(5) - cvc-complex-type.2.4.e: Unexpected element. Element "SISTEMA_ORIGEM" is not one of the choices., Texto de Insercao(6) - /XMLNSC/http://schemas.xmlsoap.org/soap/envelope/:Envelope/http://schemas.xmlsoap.org/soap/envelope/:Body/http://caixa.gov.br/sibar/manutencao_cobranca_bancaria/boleto/externo:SERVICO_ENTRADA/http://caixa.gov.br/sibar:HEADER.</EXCECAO>
+                <EXCECAO>{{exception}}</EXCECAO>
+                <CODIGO_BARRAS>{{barcodeNumber}}</CODIGO_BARRAS>
+                <LINHA_DIGITAVEL>{{digitableLine}}</LINHA_DIGITAVEL>
+                <NOSSO_NUMERO>{{ourNumber}}</NOSSO_NUMERO>
+                <URL>{{url}}</URL>
             </DADOS>
         </manutencaocobrancabancaria:SERVICO_SAIDA>
     </soapenv:Body>
@@ -32,7 +35,7 @@ const incluiBoleto = `
          <sib:HEADER>
             <VERSAO>1.0</VERSAO>
             <!--Optional:-->
-            <AUTENTICACAO>{{.Authentication.Password}}</AUTENTICACAO>
+            <AUTENTICACAO>{{.Authentication.AuthorizationToken}}</AUTENTICACAO>
             <USUARIO>1234567</USUARIO>
             <OPERACAO>INCLUI_BOLETO</OPERACAO>
             <SISTEMA_ORIGEM>SIGCB</SISTEMA_ORIGEM>
@@ -91,4 +94,9 @@ const incluiBoleto = `
 //GetRegisterBoletoCaixaTmpl retorna o padrão de registro de boleto da Caixa
 func GetRegisterBoletoCaixaTmpl() string {
 	return incluiBoleto
+}
+
+//GetResponseTemplateCaixa retorna o template de mensagem da Caixa
+func GetResponseTemplateCaixa() string {
+	return responseCaixa
 }

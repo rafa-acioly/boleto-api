@@ -31,10 +31,25 @@ var funcMap = template.FuncMap{
 	"enDateWithoutDelimiter": enDateWithoutDelimiter,
 	"fullDate":               fulldate,
 	"enDate":                 enDate,
+	"hasErrorTags":           hasErrorTags,
 }
 
+func GetFuncMaps() template.FuncMap {
+	return funcMap
+}
 func padLeft(value, char string, total uint) string {
 	return util.PadLeft(value, char, total)
+}
+
+func hasErrorTags(mapValues map[string]string, errorTags ...string) bool {
+	hasError := false
+	for _, v := range errorTags {
+		if value, exist := mapValues[v]; exist && strings.Trim(value, " ") != "" {
+			hasError = true
+			break
+		}
+	}
+	return hasError
 }
 
 func fmtNumber(n uint64) string {

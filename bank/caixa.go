@@ -3,9 +3,16 @@ package bank
 import (
 	"fmt"
 
+	"github.com/PMoneda/gonnie"
+
+	"encoding/json"
+
 	"bitbucket.org/mundipagg/boletoapi/auth"
+	"bitbucket.org/mundipagg/boletoapi/config"
+	"bitbucket.org/mundipagg/boletoapi/letters"
 	"bitbucket.org/mundipagg/boletoapi/log"
 	"bitbucket.org/mundipagg/boletoapi/models"
+	"bitbucket.org/mundipagg/boletoapi/tmpl"
 	"bitbucket.org/mundipagg/boletoapi/util"
 )
 
@@ -30,10 +37,27 @@ func (b bankCaixa) Login(user, password, body string) (auth.Token, error) {
 	return auth.Token{Status: 200}, nil
 }
 func (b bankCaixa) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
-	return models.BoletoResponse{}, nil
+	r := gonnie.NewPipe()
+	from := gonnie.Transform(letters.GetResponseTemplateCaixa())
+	to := gonnie.Transform(letters.GetRegisterBoletoAPIResponseTmpl())
+
+	bod := r.From("direct:registraBoletoCaixa", boleto)
+	bod = bod.To("template://", letters.GetRegisterBoletoCaixaTmpl(), tmpl.GetFuncMaps())
+	bod = bod.SetHeader("Content-Type", "text/xml")
+	bod = bod.SetHeader("SOAPAction", "IncluiBoleto")
+	bod = bod.To(config.Get().URLCaixaRegisterBoleto, map[string]string{"method": "POST", "insecureSkipVerify": "true"})
+	ch := bod.Choice()
+	ch = ch.When(gonnie.Header("status").IsEqualTo("200"))
+	ch = ch.To("transform://?format=xml", from, to, tmpl.GetFuncMaps())
+
+	response := models.BoletoResponse{}
+	json.Unmarshal([]byte(bod.GetBody().(string)), &response)
+	return response, nil
 }
 func (b bankCaixa) ProcessBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
-	return models.BoletoResponse{}, nil
+	checkSum := b.getCheckSumCode(*boleto)
+	boleto.Authentication.AuthorizationToken = b.getAuthToken(checkSum)
+	return b.RegisterBoleto(boleto)
 }
 
 func (b bankCaixa) ValidateBoleto(boleto *models.BoletoRequest) models.Errors {
