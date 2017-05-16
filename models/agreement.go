@@ -9,13 +9,13 @@ import (
 
 // Agreement afiliação do cliente com o bano
 type Agreement struct {
-	AgreementNumber uint
-	Wallet          uint16
-	WalletVariation uint16
-	Agency          string
-	AgencyDigit     string
-	Account         string
-	AccountDigit    string
+	AgreementNumber uint   `json:"agreementNumber,omitempty"`
+	Wallet          uint16 `json:"wallet,omitempty"`
+	WalletVariation uint16 `json:"walletVariation,omitempty"`
+	Agency          string `json:"agency,omitempty"`
+	AgencyDigit     string `json:"agencyDigit,omitempty"`
+	Account         string `json:"account,omitempty"`
+	AccountDigit    string `json:"accountDigit,omitempty"`
 }
 
 // IsAgencyValid retorna se é uma agência válida
