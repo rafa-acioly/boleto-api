@@ -147,7 +147,7 @@ func bbValidateRecipientDocumentNumber(b interface{}) error {
 func bbValidateTitleInstructions(b interface{}) error {
 	switch t := b.(type) {
 	case *models.BoletoRequest:
-		return t.Title.ValidateInstructionsLength()
+		return t.Title.ValidateInstructionsLength(220)
 	default:
 		return invalidType(t)
 	}
