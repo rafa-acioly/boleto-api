@@ -59,8 +59,8 @@ func NewFormatError(e string) FormatError {
 
 // ErrorResponse objeto de erro
 type ErrorResponse struct {
-	Code    string
-	Message string
+	Code    string `json:"code,omitempty"`
+	Message string `json:"message,omitempty"`
 }
 
 func (e ErrorResponse) Error() string {

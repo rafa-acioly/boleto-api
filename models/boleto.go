@@ -27,11 +27,11 @@ type BoletoRequest struct {
 // BoletoResponse entidade de saída para o boleto
 type BoletoResponse struct {
 	StatusCode    int    `json:"-"`
-	Errors        Errors `json:",omitempty"`
+	Errors        Errors `json:"errors,omitempty"`
 	ID            string `json:"id,omitempty"`
-	DigitableLine string `json:",omitempty"`
-	BarCodeNumber string `json:",omitempty"`
-	Links         []Link `json:",omitempty"`
+	DigitableLine string `json:"digitableLine,omitempty"`
+	BarCodeNumber string `json:"barCodeNumber,omitempty"`
+	Links         []Link `json:"links,omitempty"`
 }
 
 //Link é um tipo padrão no restfull para satisfazer o HATEOAS
@@ -45,15 +45,15 @@ type Link struct {
 type BoletoView struct {
 	ID            string
 	UID           string
-	Format        string        `json:",omitempty"`
-	BankLogo      template.HTML `json:",omitempty"`
-	Boleto        BoletoRequest `json:",omitempty"`
-	BankID        BankNumber    `json:",omitempty"`
-	CreateDate    time.Time     `json:",omitempty"`
-	BankNumber    string        `json:",omitempty"`
-	DigitableLine string        `json:",omitempty"`
-	Barcode       string        `json:",omitempty"`
-	Barcode64     string        `json:",omitempty"`
+	Format        string        `json:"format,omitempty"`
+	BankLogo      template.HTML `json:"bankLogo,omitempty"`
+	Boleto        BoletoRequest `json:"boleto,omitempty"`
+	BankID        BankNumber    `json:"bankId,omitempty"`
+	CreateDate    time.Time     `json:"createDate,omitempty"`
+	BankNumber    string        `json:"bankNumber,omitempty"`
+	DigitableLine string        `json:"digitableLine,omitempty"`
+	Barcode       string        `json:"barcode,omitempty"`
+	Barcode64     string        `json:"barcode64,omitempty"`
 }
 
 // NewBoletoView cria um novo objeto view de boleto a partir de um boleto request, codigo de barras e linha digitavel

@@ -1,7 +1,7 @@
 O que é a API de Registro de Boleto Online?
 --------------
 
-BoletoOnline é uma API para registro online de boleto junto ao banco e a geração do boleto para pagamento.
+BoletoOnline é uma API para registro online de boletos junto ao banco e geração de boletos para pagamento.
 
 
 Atualmente os bancos suportados são:
@@ -18,11 +18,11 @@ A ordem de integração seguirá a lista acima mas poderá haver modificações 
 Construindo a API
 --------------
 
-A API foi desenvolvida utilizando a linguagem GO e portanto é necessário instalar as ferramentas da linguagem, caso queira compilar a aplicação a partir do fonte.
+A API foi desenvolvida utilizando a linguagem GO e portanto é necessário instalar as ferramentas da linguagem caso queira compilar a aplicação a partir do fonte.
 
 O Go pode ser baixado [aqui](https://golang.org/dl/)
 
-Antes de fazer o clone do Projeto deve ser criado o caminho de pastas dentro do $GOPATH
+Antes de fazer o clone do Projeto, deve ser criado o caminho de pastas dentro do $GOPATH
 
 	% mkdir -p "$GOPATH/src/bitbucket.org/mundipagg"
 	% cd $GOPATH/src/bitbucket.org/mundipagg 
@@ -30,7 +30,7 @@ Antes de fazer o clone do Projeto deve ser criado o caminho de pastas dentro do 
 
 Antes de compilar a aplicação deve-se instalar o [Glide](http://glide.sh/) que é o gerenciador de dependências da aplicação.
 
-Após instalar o GO faça:
+Após instalar o GO, faça:
 
 	% cd devops
 	% ./build
@@ -60,9 +60,13 @@ Caso queira executar a aplicação em modo mock, para não realizar diretamente 
 
 	% ./boletoapi -mock
 
-Também pode-se combinar as duas opções:
+Caso queira executar a aplicação com o log desligado, deve-se usar a opção -nolog:
 
-	% ./boletoapi -dev -mock
+	% ./boletoapi -nolog
+
+Você pode combinar essas opções como quiser e caso queira usar todas elas juntas, basta usar a opção -airplane-mode
+
+	% ./boletoapi -airplane-mode
 	
 
 Usando a API de boleto online
@@ -126,8 +130,7 @@ Pode-ser usar o [Postman](https://chrome.google.com/webstore/detail/postman/fhbj
         }
     },
     "BankNumber":1
-
-}'
+}
 
 ```
 Resposta de sucesso da API
@@ -135,7 +138,19 @@ Resposta de sucesso da API
 {
   "Url": "http://localhost:3000/boleto?fmt=html&id=g8HXWatft9oMLdTMAqzxbnPYFv3sqgV_KD0W7j8Cy9nkCLZMIK1WH2p9JwP1Jzz4ZtohmQ==",
   "DigitableLine": "00190000090101405100500066673179971340000010000",
-  "BarCodeNumber": "00199713400000100000000001014051000006667317"
+  "BarCodeNumber": "00199713400000100000000001014051000006667317",
+  "Links": [
+    {
+      "href": "http://localhost:3000/boleto?fmt=html&id=wOKZh6K_moLwXTW0Xr3oelh9YkYWXdl3VyURiQ-bu6TcuDzxdZI52BnQnuzNpGeh4TapUA==",
+      "rel": "html",
+      "method": "GET"
+    },
+    {
+      "href": "http://localhost:3000/boleto?fmt=pdf&id=wOKZh6K_moLwXTW0Xr3oelh9YkYWXdl3VyURiQ-bu6TcuDzxdZI52BnQnuzNpGeh4TapUA==",
+      "rel": "pdf",
+      "method": "GET"
+    }
+  ]
 }
 
 ```
@@ -180,12 +195,12 @@ Instalando a API via Docker
 Antes de fazer o deploy deve-se abrir o arquivo [docker-compose](/devops/docker-compose.yml) e configurar as informações que sejam pertinentes ao ambiente. Após ajustar o docker-compose pode-se instalar a aplicação usando o arquivo deploy.sh
 
     % cd devops
-    % ./deploy.sh .. local
+    % ./deploy.sh . local
 
 O script irá criar os diretórios de volume do Docker, compilar a aplicação, montar as imagens da API e do MongoDB e subir os containers. Para mais informações sobre docker-compose consulte a [doc](https://docs.docker.com/compose/). 
-Os parâmetros passados para o script diz que o deploy será feito de forma local e não via TFS, caso não passe o argumento "local", o script irá utilizar o docker-compose.release.yml.
+Os parâmetros passados para o script dizem que o deploy será feito de forma local e não via TFS, caso não passe o argumento "local", o script irá utilizar o docker-compose.release.yml.
 
-Após levantada a apĺicação a mesma poderá ser parada ou iniciada.
+Após levantada, aplicação poderá ser parada ou iniciada.
     
     % cd devops/
     % ./stop.sh
@@ -205,7 +220,7 @@ Para restaurar um backup:
     % cd devops
     % ./doRestore.sh
 
-Quando fizer o restore o script irá solicitar a data do arquivo de restore e deverá ser informada uma data válida do backup no padrão: `YYYY-MM-DD`.
+Quando fizer o restore, o script irá solicitar a data do arquivo de restore e deverá ser informada uma data válida do backup no padrão: `YYYY-MM-DD`.
     
 Como contrubuir
 -----------------
@@ -219,11 +234,11 @@ A Raiz da aplicação contém apenas o arquivo main.go e alguns arquivos de conf
 
 Dentro da raiz temos alguns pacotes:
 
-* `api`: Controladores Rest;
-* `auth`: Autenticação com os bancos;
-* `bank`: Registro de boletos;
-* `boleto`: Geração do boleto para o usuário;
-* `cache`: Banco de dados (chave-valor) in-memory utilizado apenas quando roda a aplicação em modo mock;
+* `api`: Controladores Rest
+* `auth`: Autenticação com os bancos
+* `bank`: Registro de boletos
+* `boleto`: Geração do boleto para o usuário
+* `cache`: Banco de dados (chave-valor) in-memory utilizado apenas quando roda a aplicação em modo mock
 * `config`: Configuração da aplicação
 * `db`: Persistência de dados
 * `devops`: Contém os arquivos de subida, deploy, backup e restore da aplicação
