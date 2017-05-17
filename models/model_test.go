@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"bitbucket.org/mundipagg/boletoapi/test"
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestShouldReturnValidCpfOnDocumentType(t *testing.T) {
@@ -82,65 +83,68 @@ func TestShouldCreateNewSingleErrorCollection(t *testing.T) {
 }
 
 func TestIsAgencyValid(t *testing.T) {
-	a := Agreement{
-		Agency: "234-2a",
-	}
-	err := a.IsAgencyValid()
-	test.ExpectNoError(err, t)
-	test.ExpectTrue(a.Agency == "2342", t)
-}
+	Convey("Deve retornar um erro para a agência inválida", t, func() {
+		a := Agreement{
+			Agency: "234-2222a",
+		}
+		err := a.IsAgencyValid()
+		So(err, ShouldNotBeNil)
 
-func TestIsAgencyInValid(t *testing.T) {
-	a := Agreement{
-		Agency: "234-2222a",
-	}
-	err := a.IsAgencyValid()
-	test.ExpectError(err, t)
-}
-
-func TestIsAgencyValidWithLessThan4Digits(t *testing.T) {
-	a := Agreement{
-		Agency: "321",
-	}
-	err := a.IsAgencyValid()
-	test.ExpectNoError(err, t)
-	test.ExpectTrue(a.Agency == "0321", t)
+		Convey("Deve ajustar a agência para ter a quantidade certa de dígitos", func() {
+			a.Agency = "321"
+			err := a.IsAgencyValid()
+			So(a.Agency, ShouldEqual, "0321")
+			So(err, ShouldBeNil)
+		})
+	})
 }
 
 func TestCalculateAgencyDigit(t *testing.T) {
-	a := new(Agreement)
-	a.AccountDigit = "1sssss"
-	c := func(s string) string {
-		return "1"
-	}
-	a.CalculateAgencyDigit(c)
-	test.ExpectTrue(a.AgencyDigit == "1", t)
+	Convey("Deve ajustar o dígito da Agência quando ela tiver caracteres inválidos", t, func() {
+		a := new(Agreement)
+		a.AgencyDigit = "2sssss"
+		c := func(s string) string {
+			return "1"
+		}
+		a.CalculateAgencyDigit(c)
+		So(a.AgencyDigit, ShouldEqual, "2")
+		Convey("Deve calcular o dígito da Agência quando o fornecido for errado", func() {
+			a.AgencyDigit = "332sssss"
+			a.CalculateAgencyDigit(c)
+			So(a.AgencyDigit, ShouldEqual, "1")
+		})
+	})
 }
 
-func WTestCalculateAgencyDigitWithInvalidDigit(t *testing.T) {
-	a := Agreement{
-		AgencyDigit: "",
-	}
-	c := func(s string) string {
-		return "1"
-	}
-	a.CalculateAgencyDigit(c)
-	test.ExpectTrue(a.AgencyDigit == "1", t)
+func TestCalculateAccountDigit(t *testing.T) {
+	Convey("Deve ajustar o dígito da Conta quando ela tiver caracteres inválidos", t, func() {
+		a := new(Agreement)
+		a.AccountDigit = "2sssss"
+		c := func(s, y string) string {
+			return "1"
+		}
+		a.CalculateAccountDigit(c)
+		So(a.AccountDigit, ShouldEqual, "2")
+		Convey("Deve calcular o dígito da Conta quando o fornecido for errado", func() {
+			a.AccountDigit = "332sssss"
+			a.CalculateAccountDigit(c)
+			So(a.AccountDigit, ShouldEqual, "1")
+		})
+	})
 }
 
 func TestIsAccountValid(t *testing.T) {
-	a := Agreement{
-		Account: "1234fff",
-	}
-	err := a.IsAccountValid(8)
-	test.ExpectNoError(err, t)
-	test.ExpectTrue(a.Account == "00001234", t)
-}
-
-func TestIsAccountInValid(t *testing.T) {
-	a := Agreement{
-		Account: "123456789",
-	}
-	err := a.IsAccountValid(8)
-	test.ExpectError(err, t)
+	Convey("Verifica se a conta é valida e formata para o tamanho correto", t, func() {
+		a := Agreement{
+			Account: "1234fff",
+		}
+		err := a.IsAccountValid(8)
+		So(err, ShouldBeNil)
+		So(a.Account, ShouldEqual, "00001234")
+		Convey("Verifica se a conta é valida e retorna um erro", func() {
+			a.Account = "654654654654654654654654654564"
+			err := a.IsAccountValid(8)
+			So(err, ShouldNotBeNil)
+		})
+	})
 }
