@@ -48,10 +48,12 @@ func (b bankCaixa) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRe
 	bod = bod.To("template://", letters.GetRegisterBoletoCaixaTmpl(), tmpl.GetFuncMaps())
 	bod = bod.SetHeader("Content-Type", "text/xml")
 	bod = bod.SetHeader("SOAPAction", "IncluiBoleto")
+	bod = bod.To("logseq://", b.log)
 	bod = bod.To(config.Get().URLCaixaRegisterBoleto, map[string]string{"method": "POST", "insecureSkipVerify": "true"})
 	ch := bod.Choice()
 	ch = ch.When(gonnie.Header("status").IsEqualTo("200"))
 	ch = ch.To("transform://?format=xml", from, to, tmpl.GetFuncMaps())
+	ch = ch.Otherwise().To("logseq://", b.log)
 
 	response := models.BoletoResponse{}
 	json.Unmarshal([]byte(bod.GetBody().(string)), &response)

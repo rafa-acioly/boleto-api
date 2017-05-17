@@ -4,15 +4,19 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/PMoneda/gonnie"
+
 	"bitbucket.org/mundipagg/boletoapi/api"
 	"bitbucket.org/mundipagg/boletoapi/config"
 	"bitbucket.org/mundipagg/boletoapi/log"
 	"bitbucket.org/mundipagg/boletoapi/robot"
+	"bitbucket.org/mundipagg/boletoapi/util"
 )
 
 //Run starts boleto api Application
 func Run(devMode, mockMode, disableLog bool) {
 	configFlags(devMode, mockMode, disableLog)
+	installGonnieConnectors()
 	robot.GoRobots()
 	installLog()
 	api.InstallRestAPI()
@@ -25,6 +29,10 @@ func installLog() {
 		fmt.Println("Log SEQ Fails")
 		os.Exit(-1)
 	}
+}
+
+func installGonnieConnectors() {
+	gonnie.RegisterConector("logseq", util.SeqLogConector)
 }
 
 func configFlags(devMode, mockMode, disableLog bool) {
