@@ -39,3 +39,18 @@ func TestGetCaixaCheckSumInfo(t *testing.T) {
 	})
 
 }
+
+func TestShouldCalculateAccountDigitCaixa(t *testing.T) {
+	Convey("Deve-se calcular  e validar Agencia e Conta da Caixa", t, func() {
+		boleto := models.BoletoRequest{
+			Agreement: models.Agreement{
+				Account: "100000448",
+				Agency:  "2004",
+			},
+		}
+		err := caixaValidateAccountAndDigit(&boleto)
+		errAg := caixaValidateAgency(&boleto)
+		So(err, ShouldBeNil)
+		So(errAg, ShouldBeNil)
+	})
+}

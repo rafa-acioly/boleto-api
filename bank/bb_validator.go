@@ -9,13 +9,7 @@ import (
 var bb bankBB
 
 func modElevenCalculator(a string, m []int) string {
-	sum := 0
-
-	for idx, c := range a {
-		i, _ := strconv.Atoi(string(c))
-
-		sum += i * m[idx]
-	}
+	sum := sumAccountDigits(a, m)
 
 	digit := 11 - sum%11
 

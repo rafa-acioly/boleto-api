@@ -30,6 +30,7 @@ func newCaixa() bankCaixa {
 	b.validate.Push(baseValidateBuyerDocumentNumber)
 	b.validate.Push(baseValidateRecipientDocumentNumber)
 	b.validate.Push(caixaValidateAccountAndDigit)
+	b.validate.Push(caixaValidateAgency)
 	return b
 }
 

@@ -1,6 +1,10 @@
 package bank
 
-import "bitbucket.org/mundipagg/boletoapi/models"
+import (
+	"strconv"
+
+	"bitbucket.org/mundipagg/boletoapi/models"
+)
 
 func baseValidateRecipientDocumentNumber(b interface{}) error {
 	switch t := b.(type) {
@@ -15,6 +19,16 @@ func baseValidateRecipientDocumentNumber(b interface{}) error {
 	default:
 		return invalidType(t)
 	}
+}
+
+func sumAccountDigits(a string, m []int) int {
+	sum := 0
+	for idx, c := range a {
+		i, _ := strconv.Atoi(string(c))
+
+		sum += i * m[idx]
+	}
+	return sum
 }
 
 func baseValidateBuyerDocumentNumber(b interface{}) error {
