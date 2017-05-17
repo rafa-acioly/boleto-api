@@ -30,7 +30,7 @@ func Encrypt(s string) string {
 	return base64.URLEncoding.EncodeToString(ciphertext)
 }
 
-//Decrypt
+//Decrypt decripta string encriptada
 func Decrypt(s string) string {
 	ciphertext, _ := base64.URLEncoding.DecodeString(s)
 
