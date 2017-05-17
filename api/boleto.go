@@ -5,8 +5,6 @@ import (
 
 	wkhtmltopdf "github.com/SebastiaanKlippert/go-wkhtmltopdf"
 
-	"errors"
-
 	"strings"
 
 	"encoding/json"
@@ -91,12 +89,12 @@ func getBoleto(c *gin.Context) {
 		uid := util.Decrypt(id)
 		fd, err := os.Open(config.Get().BoletoJSONFileStore + "/boleto_" + uid + ".json")
 		if err != nil {
-			checkError(c, errors.New("Boleto não encontrado na base de dados"), log.CreateLog())
+			checkError(c, models.NewHttpNotFound("Boleto não encontrado na base de dados", "MP404"), log.CreateLog())
 			return
 		}
 		data, errR := ioutil.ReadAll(fd)
 		if errR != nil {
-			checkError(c, errors.New("Boleto não encontrado na base de dados"), log.CreateLog())
+			checkError(c, models.NewHttpNotFound("Boleto não encontrado na base de dados", "MP404"), log.CreateLog())
 			return
 		}
 		json.Unmarshal(data, &bleto)

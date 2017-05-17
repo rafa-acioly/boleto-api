@@ -154,9 +154,11 @@ func stringify(boleto models.BoletoRequest) string {
 func TestRegisterBoletoRequest(t *testing.T) {
 	go app.Run(true, true, false)
 	Convey("deve-se registrar um boleto e retornar as informações de url, linha digitável e código de barras", t, func() {
+
 		response, st, err := util.Post("http://localhost:3000/v1/boleto/register", getBody(models.BancoDoBrasil, 200), nil)
 		So(err, ShouldEqual, nil)
 		So(st, ShouldEqual, 200)
+
 		boleto := models.BoletoResponse{}
 		errJSON := json.Unmarshal([]byte(response), &boleto)
 		So(errJSON, ShouldEqual, nil)
@@ -232,6 +234,21 @@ func TestRegisterBoletoRequest(t *testing.T) {
 			})
 
 		})
+	})
+
+	Convey("Quando um boleto não existir na base de dados", t, func() {
+		Convey("Deve-se retornar um status 404", func() {
+			_, st, err := util.Get("http://localhost:3000/boleto?fmt=html&id=90230843492384", getBody(models.Caixa, 200), nil)
+			So(err, ShouldBeNil)
+			So(st, ShouldEqual, 404)
+		})
+
+		Convey("A mensagem de retorno deverá ser Boleto não encontrado", func() {
+			resp, _, err := util.Get("http://localhost:3000/boleto?fmt=html&id=90230843492384", getBody(models.Caixa, 200), nil)
+			So(err, ShouldBeNil)
+			So(resp, ShouldContainSubstring, "Boleto não encontrado na base de dados")
+		})
+
 	})
 
 	Convey("Deve-se registrar um boleto na Caixa", t, func() {

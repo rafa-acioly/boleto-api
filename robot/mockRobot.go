@@ -99,7 +99,7 @@ func registerBoletoBB(c *gin.Context) {
 
 	d, _ := ioutil.ReadAll(c.Request.Body)
 	xml := string(d)
-	if strings.Contains(xml, "<sch:valorOriginalTitulo>200</sch:valorOriginalTitulo>") {
+	if strings.Contains(xml, "<sch:valorOriginalTitulo>2.00</sch:valorOriginalTitulo>") {
 		c.Data(200, "text/xml", []byte(sData))
 	} else {
 		c.Data(200, "text/xml", []byte(sDataErr))
