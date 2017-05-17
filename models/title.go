@@ -10,13 +10,13 @@ import (
 
 // Title título de cobrança de entrada
 type Title struct {
-	CreateDate     time.Time
-	ExpireDateTime time.Time
-	ExpireDate     string
-	AmountInCents  uint64
-	OurNumber      uint
-	Instructions   string
-	DocumentNumber string
+	CreateDate     time.Time `json:"createDate,omitempty"`
+	ExpireDateTime time.Time `json:"expireDateTime,omitempty"`
+	ExpireDate     string    `json:"expireDate,omitempty"`
+	AmountInCents  uint64    `json:"amountInCents,omitempty"`
+	OurNumber      uint      `json:"ourNumber,omitempty"`
+	Instructions   string    `json:"instructions,omitempty"`
+	DocumentNumber string    `json:"documentNumber,omitempty"`
 }
 
 //ValidateInstructionsLength valida se texto das instruções possui quantidade de caracteres corretos
