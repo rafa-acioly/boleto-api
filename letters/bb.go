@@ -19,7 +19,7 @@ const registerBoleto = `
  <sch:codigoModalidadeTitulo>1</sch:codigoModalidadeTitulo>
  <sch:dataEmissaoTitulo>{{replace (today | brdate) "/" "."}}</sch:dataEmissaoTitulo>
  <sch:dataVencimentoTitulo>{{replace (.Title.ExpireDateTime | brdate) "/" "."}}</sch:dataVencimentoTitulo>
- <sch:valorOriginalTitulo>{{.Title.AmountInCents}}</sch:valorOriginalTitulo>
+ <sch:valorOriginalTitulo>{{toFloatStr .Title.AmountInCents}}</sch:valorOriginalTitulo>
  <sch:codigoTipoDesconto>0</sch:codigoTipoDesconto> 
  <sch:codigoTipoMulta>0</sch:codigoTipoMulta> 
  <sch:codigoAceiteTitulo>N</sch:codigoAceiteTitulo>

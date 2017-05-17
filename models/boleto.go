@@ -27,25 +27,33 @@ type BoletoRequest struct {
 // BoletoResponse entidade de saída para o boleto
 type BoletoResponse struct {
 	StatusCode    int    `json:"-"`
-	Errors        Errors `json:",omitempty"`
-	URL           string `json:"Url,omitempty"`
-	DigitableLine string `json:",omitempty"`
-	BarCodeNumber string `json:",omitempty"`
+	Errors        Errors `json:"errors,omitempty"`
+	ID            string `json:"id,omitempty"`
+	DigitableLine string `json:"digitableLine,omitempty"`
+	BarCodeNumber string `json:"barCodeNumber,omitempty"`
+	Links         []Link `json:"links,omitempty"`
+}
+
+//Link é um tipo padrão no restfull para satisfazer o HATEOAS
+type Link struct {
+	Href   string `json:"href,omitempty"`
+	Rel    string `json:"rel,omitempty"`
+	Method string `json:"method,omitempty"`
 }
 
 // BoletoView contem as informações que serão preenchidas no boleto
 type BoletoView struct {
 	ID            string
 	UID           string
-	Format        string        `json:",omitempty"`
-	BankLogo      template.HTML `json:",omitempty"`
-	Boleto        BoletoRequest `json:",omitempty"`
-	BankID        BankNumber    `json:",omitempty"`
-	CreateDate    time.Time     `json:",omitempty"`
-	BankNumber    string        `json:",omitempty"`
-	DigitableLine string        `json:",omitempty"`
-	Barcode       string        `json:",omitempty"`
-	Barcode64     string        `json:",omitempty"`
+	Format        string        `json:"format,omitempty"`
+	BankLogo      template.HTML `json:"bankLogo,omitempty"`
+	Boleto        BoletoRequest `json:"boleto,omitempty"`
+	BankID        BankNumber    `json:"bankId,omitempty"`
+	CreateDate    time.Time     `json:"createDate,omitempty"`
+	BankNumber    string        `json:"bankNumber,omitempty"`
+	DigitableLine string        `json:"digitableLine,omitempty"`
+	Barcode       string        `json:"barcode,omitempty"`
+	Barcode64     string        `json:"barcode64,omitempty"`
 }
 
 // NewBoletoView cria um novo objeto view de boleto a partir de um boleto request, codigo de barras e linha digitavel
@@ -67,9 +75,18 @@ func NewBoletoView(boleto BoletoRequest, barcode string, digitableLine string) B
 }
 
 //EncodeURL tranforma o boleto view na forma que será escrito na url
-func (b *BoletoView) EncodeURL() string {
-	url := fmt.Sprintf("%s?fmt=html&id=%s", config.Get().AppURL, b.ID)
+func (b *BoletoView) EncodeURL(format string) string {
+	url := fmt.Sprintf("%s?fmt=%s&id=%s", config.Get().AppURL, format, b.ID)
 	return url
+}
+
+//CreateLinks cria a lista de links com os formatos suportados
+func (b *BoletoView) CreateLinks() []Link {
+	links := make([]Link, 0, 3)
+	for _, f := range []string{"html", "pdf"} {
+		links = append(links, Link{Href: b.EncodeURL(f), Rel: f, Method: "GET"})
+	}
+	return links
 }
 
 //ToJSON tranforma o boleto view em json

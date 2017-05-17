@@ -36,7 +36,7 @@ func registerBoleto(c *gin.Context) {
 	lg.Operation = "RegisterBoleto"
 	lg.NossoNumero = boleto.Title.OurNumber
 	lg.Recipient = bank.GetBankNumber().BankName()
-	lg.Request(boleto, c.Request.URL.RequestURI(), util.HeaderToMap(c.Request.Header))
+
 	repo, err := db.GetDB()
 	if checkError(c, err, lg) {
 		return
@@ -46,19 +46,21 @@ func registerBoleto(c *gin.Context) {
 	if checkError(c, errR, lg) {
 		return
 	}
-	lg.Response(resp, c.Request.URL.RequestURI())
+
 	st := http.StatusOK
 	if len(resp.Errors) > 0 {
 		st = http.StatusBadRequest
 	} else {
 		boView := models.NewBoletoView(boleto, resp.BarCodeNumber, resp.DigitableLine)
-		resp.URL = boView.EncodeURL()
+		resp.Links = boView.CreateLinks()
+		resp.ID = boView.ID
 		errMongo := repo.SaveBoleto(boView)
 		if errMongo != nil {
 			saveBoletoJSONFile(boView, lg, errMongo)
 		}
 	}
 	c.JSON(st, resp)
+	c.Set("boletoResponse", resp)
 }
 
 func saveBoletoJSONFile(boView models.BoletoView, lg *log.Log, err error) {

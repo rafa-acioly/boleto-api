@@ -32,6 +32,7 @@ var funcMap = template.FuncMap{
 	"fullDate":               fulldate,
 	"enDate":                 enDate,
 	"hasErrorTags":           hasErrorTags,
+	"toFloatStr":             toFloatStr,
 }
 
 func GetFuncMaps() template.FuncMap {
@@ -56,6 +57,12 @@ func fmtNumber(n uint64) string {
 	real := n / 100
 	cents := n % 100
 	return fmt.Sprintf("%d,%02d", real, cents)
+}
+
+func toFloatStr(n uint64) string {
+	real := n / 100
+	cents := n % 100
+	return fmt.Sprintf("%d.%02d", real, cents)
 }
 
 func fmtDoc(doc models.Document) string {
