@@ -7,7 +7,6 @@ import (
 
 	"encoding/json"
 
-	"bitbucket.org/mundipagg/boletoapi/auth"
 	"bitbucket.org/mundipagg/boletoapi/config"
 	"bitbucket.org/mundipagg/boletoapi/letters"
 	"bitbucket.org/mundipagg/boletoapi/log"
@@ -22,20 +21,23 @@ type bankCaixa struct {
 }
 
 func newCaixa() bankCaixa {
-	c := bankCaixa{
+	b := bankCaixa{
 		validate: models.NewValidator(),
 		log:      log.CreateLog(),
 	}
-	return c
+	b.validate.Push(baseValidateAmountInCents)
+	b.validate.Push(baseValidateExpireDate)
+	b.validate.Push(baseValidateBuyerDocumentNumber)
+	b.validate.Push(baseValidateRecipientDocumentNumber)
+	b.validate.Push(caixaValidateAccountAndDigit)
+	return b
 }
 
 //Log retorna a referencia do log
 func (b bankCaixa) Log() *log.Log {
 	return b.log
 }
-func (b bankCaixa) Login(user, password, body string) (auth.Token, error) {
-	return auth.Token{Status: 200}, nil
-}
+
 func (b bankCaixa) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
 	r := gonnie.NewPipe()
 	from := gonnie.Transform(letters.GetResponseTemplateCaixa())
@@ -55,13 +57,17 @@ func (b bankCaixa) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRe
 	return response, nil
 }
 func (b bankCaixa) ProcessBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
+	errs := b.ValidateBoleto(boleto)
+	if len(errs) > 0 {
+		return models.BoletoResponse{Errors: errs}, nil
+	}
 	checkSum := b.getCheckSumCode(*boleto)
 	boleto.Authentication.AuthorizationToken = b.getAuthToken(checkSum)
 	return b.RegisterBoleto(boleto)
 }
 
 func (b bankCaixa) ValidateBoleto(boleto *models.BoletoRequest) models.Errors {
-	return nil
+	return models.Errors(b.validate.Assert(boleto))
 }
 
 //getCheckSumCode Código do Cedente (7 posições) + Nosso Número (17 posições) + Data de Vencimento (DDMMAAAA) + Valor (15 posições) + CPF/CNPJ (14 Posições)
