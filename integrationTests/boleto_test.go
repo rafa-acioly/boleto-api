@@ -152,7 +152,7 @@ func stringify(boleto models.BoletoRequest) string {
 }
 
 func TestRegisterBoletoRequest(t *testing.T) {
-	go app.Run(true, true, false)
+	go app.Run(true, true, true)
 	Convey("deve-se registrar um boleto e retornar as informações de url, linha digitável e código de barras", t, func() {
 
 		response, st, err := util.Post("http://localhost:3000/v1/boleto/register", getBody(models.BancoDoBrasil, 200), nil)
