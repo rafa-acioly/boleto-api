@@ -1,6 +1,8 @@
 package letters
 
 const responseCaixa = `
+## CHP = {{}}
+
 <?xml version="1.0" encoding="utf-8"?>
 <soapenv:Envelope 
     xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
@@ -28,6 +30,10 @@ const responseCaixa = `
 `
 
 const incluiBoleto = `
+
+## SOAPAction:IncluiBoleto
+## Content-Type:text/xml
+
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ext="http://caixa.gov.br/sibar/manutencao_cobranca_bancaria/boleto/externo" xmlns:sib="http://caixa.gov.br/sibar">
    <soapenv:Header/>
    <soapenv:Body>

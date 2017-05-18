@@ -7,11 +7,13 @@ import (
 	"bitbucket.org/mundipagg/boletoapi/config"
 	"bitbucket.org/mundipagg/boletoapi/util"
 
+	"github.com/PMoneda/gonnie"
 	"github.com/google/uuid"
 
 	"fmt"
 
 	"encoding/json"
+	"strconv"
 )
 
 // BoletoRequest entidade de entrada para o boleto
@@ -160,3 +162,23 @@ const (
 	// Caixa constante do Caixa
 	Caixa = 104
 )
+
+// BoletoErrorConector é um connector gonnie para criar um objeto de erro
+func BoletoErrorConector(next func(), e *gonnie.ExchangeMessage, out gonnie.Message, u gonnie.Uri, params ...interface{}) error {
+	b := e.GetBody().(string)
+	if b == "" {
+		b = "Erro interno"
+	}
+	st, err := strconv.Atoi(e.GetHeader("status"))
+	if err != nil {
+		st = 0
+	}
+	resp := BoletoResponse{}
+	resp.Errors = make(Errors, 0, 0)
+	resp.Errors.Append("MP"+e.GetHeader("status"), b)
+	resp.StatusCode = st
+	e.SetBody(resp)
+	out <- e
+	next()
+	return nil
+}

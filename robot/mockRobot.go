@@ -1,6 +1,7 @@
 package robot
 
 import (
+	"errors"
 	"io/ioutil"
 
 	"strings"
@@ -157,7 +158,9 @@ func registerBoletoCaixa(c *gin.Context) {
 	`
 	d, _ := ioutil.ReadAll(c.Request.Body)
 	xml := string(d)
-	if strings.Contains(xml, "<VALOR>200</VALOR>") {
+	if strings.Contains(xml, "<VALOR>504</VALOR>") {
+		c.AbortWithError(504, errors.New("Teste de Erro"))
+	} else if strings.Contains(xml, "<VALOR>200</VALOR>") {
 		c.Data(200, "text/xml", []byte(sData))
 	} else {
 		c.Data(200, "text/xml", []byte(sDataErr))

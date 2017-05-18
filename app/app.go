@@ -9,6 +9,7 @@ import (
 	"bitbucket.org/mundipagg/boletoapi/api"
 	"bitbucket.org/mundipagg/boletoapi/config"
 	"bitbucket.org/mundipagg/boletoapi/log"
+	"bitbucket.org/mundipagg/boletoapi/models"
 	"bitbucket.org/mundipagg/boletoapi/robot"
 	"bitbucket.org/mundipagg/boletoapi/util"
 )
@@ -33,6 +34,7 @@ func installLog() {
 
 func installGonnieConnectors() {
 	gonnie.RegisterConector("logseq", util.SeqLogConector)
+	gonnie.RegisterConector("apierro", models.BoletoErrorConector)
 }
 
 func configFlags(devMode, mockMode, disableLog bool) {
@@ -40,8 +42,8 @@ func configFlags(devMode, mockMode, disableLog bool) {
 		os.Setenv("API_PORT", "3000")
 		os.Setenv("API_VERSION", "0.0.1")
 		os.Setenv("ENVIROMENT", "Development")
-		os.Setenv("SEQ_URL", "http://192.168.8.119:5341") // http://stglog.mundipagg.com/ 192.168.8.119:5341
-		os.Setenv("SEQ_API_KEY", "4jZzTybZ9bUHtJiPdh6")   //4jZzTybZ9bUHtJiPdh6
+		os.Setenv("SEQ_URL", "http://localhost:5341")   // http://stglog.mundipagg.com/ 192.168.8.119:5341
+		os.Setenv("SEQ_API_KEY", "4jZzTybZ9bUHtJiPdh6") //4jZzTybZ9bUHtJiPdh6
 		os.Setenv("ENABLE_REQUEST_LOG", "false")
 		os.Setenv("ENABLE_PRINT_REQUEST", "true")
 		os.Setenv("URL_BB_REGISTER_BOLETO", "https://cobranca.homologa.bb.com.br:7101/registrarBoleto")

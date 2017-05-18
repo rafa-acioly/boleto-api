@@ -152,7 +152,7 @@ func stringify(boleto models.BoletoRequest) string {
 }
 
 func TestRegisterBoletoRequest(t *testing.T) {
-	go app.Run(true, true, true)
+	go app.Run(true, true, false)
 	Convey("deve-se registrar um boleto e retornar as informações de url, linha digitável e código de barras", t, func() {
 
 		response, st, err := util.Post("http://localhost:3000/v1/boleto/register", getBody(models.BancoDoBrasil, 200), nil)
@@ -283,6 +283,13 @@ func TestRegisterBoletoRequest(t *testing.T) {
 		So(len(boleto.Errors), ShouldBeGreaterThan, 0)
 	})
 
+	Convey("Quando o serviço da caixa estiver offline", t, func() {
+		Convey("Deve-se retornar o status 504", func() {
+			resp, st, _ := util.Post("http://localhost:3000/v1/boleto/register", getBody(models.Caixa, 504), nil)
+			So(st, ShouldEqual, 504)
+			So(strings.Contains(resp, "MP504"), ShouldBeTrue)
+		})
+	})
 }
 
 func BenchmarkRegisterBoleto(b *testing.B) {

@@ -5,8 +5,6 @@ import (
 
 	"github.com/PMoneda/gonnie"
 
-	"encoding/json"
-
 	"bitbucket.org/mundipagg/boletoapi/config"
 	"bitbucket.org/mundipagg/boletoapi/letters"
 	"bitbucket.org/mundipagg/boletoapi/log"
@@ -38,26 +36,29 @@ func newCaixa() bankCaixa {
 func (b bankCaixa) Log() *log.Log {
 	return b.log
 }
-
 func (b bankCaixa) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
 	r := gonnie.NewPipe()
+	urlCaixa := config.Get().URLCaixaRegisterBoleto
 	from := gonnie.Transform(letters.GetResponseTemplateCaixa())
 	to := gonnie.Transform(letters.GetRegisterBoletoAPIResponseTmpl())
-
-	bod := r.From("direct:registraBoletoCaixa", boleto)
-	bod = bod.To("template://", letters.GetRegisterBoletoCaixaTmpl(), tmpl.GetFuncMaps())
-	bod = bod.SetHeader("Content-Type", "text/xml")
-	bod = bod.SetHeader("SOAPAction", "IncluiBoleto")
-	bod = bod.To("logseq://", b.log)
-	bod = bod.To(config.Get().URLCaixaRegisterBoleto, map[string]string{"method": "POST", "insecureSkipVerify": "true"})
+	bod := r.From("message://?source=inline", boleto, letters.GetRegisterBoletoCaixaTmpl(), tmpl.GetFuncMaps())
+	bod = bod.To("logseq://?type=request&url="+urlCaixa, b.log)
+	bod = bod.To(urlCaixa, map[string]string{"method": "POST", "insecureSkipVerify": "true"})
+	bod = bod.To("logseq://?type=response&url="+urlCaixa, b.log)
 	ch := bod.Choice()
 	ch = ch.When(gonnie.Header("status").IsEqualTo("200"))
 	ch = ch.To("transform://?format=xml", from, to, tmpl.GetFuncMaps())
-	ch = ch.Otherwise().To("logseq://", b.log)
-
-	response := models.BoletoResponse{}
-	json.Unmarshal([]byte(bod.GetBody().(string)), &response)
-	return response, nil
+	ch = ch.Otherwise()
+	ch = ch.To("logseq://?type=response&url="+urlCaixa, b.log).To("apierro://")
+	switch t := bod.GetBody().(type) {
+	case string:
+		response := models.BoletoResponse{}
+		util.ParseJSON(t, &response)
+		return response, nil
+	case models.BoletoResponse:
+		return t, nil
+	}
+	return models.BoletoResponse{}, models.NewInternalServerError("MP500", "Erro interno")
 }
 func (b bankCaixa) ProcessBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
 	errs := b.ValidateBoleto(boleto)

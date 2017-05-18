@@ -44,10 +44,13 @@ func registerBoleto(c *gin.Context) {
 	if checkError(c, errR, lg) {
 		return
 	}
-
 	st := http.StatusOK
 	if len(resp.Errors) > 0 {
-		st = http.StatusBadRequest
+		if resp.StatusCode > 0 {
+			st = resp.StatusCode
+		} else {
+			st = http.StatusBadRequest
+		}
 	} else {
 		boView := models.NewBoletoView(boleto, resp.BarCodeNumber, resp.DigitableLine)
 		resp.Links = boView.CreateLinks()
@@ -58,11 +61,10 @@ func registerBoleto(c *gin.Context) {
 		}
 	}
 	c.JSON(st, resp)
-	c.Set("boletoResponse", resp)
 }
 
 func saveBoletoJSONFile(boView models.BoletoView, lg *log.Log, err error) {
-	lg.Warn(err.Error(), "I could not save your boleto at Database")
+	lg.Warn(err.Error(), "Boleto cannot be saved at Database")
 	fd, errOpen := os.Create(config.Get().BoletoJSONFileStore + "/boleto_" + boView.UID + ".json")
 	if errOpen != nil {
 		lg.Fatal(boView, "[BOLETO_ONLINE_CONTINGENCIA]"+errOpen.Error())
