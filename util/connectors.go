@@ -8,6 +8,7 @@ import (
 
 // SeqLogConector é um connector gonnie para logar no Seq
 func SeqLogConector(next func(), e *gonnie.ExchangeMessage, out gonnie.Message, u gonnie.Uri, params ...interface{}) error {
+
 	b := e.GetBody().(string)
 	if b == "" {
 		b = "Nenhum retorno do serviço"
