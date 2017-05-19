@@ -1,5 +1,5 @@
-hash: 30a6a199dd75bdcd5062b5b4ad1c945ba3cc7e003cab33b38df2ca3d32c6d7fc
-updated: 2017-05-12T10:33:33.382528-03:00
+hash: 7f3dc7923e868f674744335337c067b8950444b1581c875f9ced5449a4d8ba88
+updated: 2017-05-18T17:06:23.2518459-03:00
 imports:
 - name: github.com/beevik/etree
   version: abae5fc32af8862e420d52e686a7e6ec14111685
@@ -19,6 +19,8 @@ imports:
   - proto
 - name: github.com/google/uuid
   version: 064e2069ce9c359c118179501254f67d7d37ba24
+- name: github.com/Jeffail/gabs
+  version: c9fb5b700cddb62013b2ee9dfc9ce011caea55e0
 - name: github.com/jtolds/gls
   version: 8ddce2a84170772b95dd5d576c48d517b22cac63
 - name: github.com/jung-kurt/gofpdf
@@ -31,6 +33,8 @@ imports:
   version: 1cc9c18494a98432fe441990cd63bfe457a80597
 - name: github.com/Pallinder/go-randomdata
   version: 8c3362a5e6781e0d1046f1267b3c1f19b2cde334
+- name: github.com/PMoneda/gonnie
+  version: bb297ef100791327825559f63b05f074a16a8272
 - name: github.com/SebastiaanKlippert/go-wkhtmltopdf
   version: 476a1aaadffdb573c921d380cd43a956cef430d4
 - name: github.com/smartystreets/goconvey
