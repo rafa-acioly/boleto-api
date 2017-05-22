@@ -2,7 +2,9 @@ package robot
 
 import (
 	"errors"
+	"fmt"
 	"io/ioutil"
+	"net/http/httputil"
 
 	"strings"
 
@@ -20,8 +22,14 @@ func mockRobot() {
 
 	router.Run(":4000")
 }
-
+func dumpRequest(c *gin.Context) {
+	b, _ := httputil.DumpRequest(c.Request, true)
+	fmt.Println("----------------------------------------------------------")
+	fmt.Println(string(b))
+	fmt.Println("----------------------------------------------------------")
+}
 func authBB(c *gin.Context) {
+
 	const tok = `{
 					"access_token":"Yemfehvhs9PmpKLcJgSLzjfjSxHj4QREdKcrhHbM_oivhlYXmOIPn5j2Tp6FdZFmbIzCxVN-SdxnyoGT7cE5xg.AcQSHv1xiN0uaZ-efTafZIWPNenudJn9eU54TUAfiR0ff8RRE9thqgdRb2gm9t_uTREmOsBOz9jvQySnsPBqbfptOqz9-O_63c-LQq2ogxbu7iet-6te8V28gfjOVePnr87yIK8ueATW9ulb7jytYRYJd7CuZXF3PyD763tI2ykX-PNm2LAClqpAU-WAORQ_2OSLo5ElwPS_MgVAqvXm_n1PX0wPazW-YlwSvoYr9pYabiBAOCW4KkiZva0hRver7AMWlkP2t2M_wttG6wv1V8szty2Lb9oyGDL-cdfdit4rHFgpXp9dzG3qFS5qWxtO5tnQc3sVBBybDNINOmMlOaxKrsrNtQl5ncELy6jozyrPS-Yb3JhlvVaj3IDHq599bd30G8JMjDsGSc9wuws7Ws9tuUbOTiS-d2TaGOqTjKs.Mvco1yM5ErKRswd11TBjFYr-zX0kor4y1EDyq52M_ew874ifju5PaU-G5btc2zMhUcltTIVY1sJlTf2rqXKaPQ",
 					"token_type":"Bearer",
