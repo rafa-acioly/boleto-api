@@ -61,6 +61,7 @@ func registerBoleto(c *gin.Context) {
 		}
 	}
 	c.JSON(st, resp)
+	c.Set("boletoResponse", resp)
 }
 
 func saveBoletoJSONFile(boView models.BoletoView, lg *log.Log, err error) {

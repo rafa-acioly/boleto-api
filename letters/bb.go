@@ -1,14 +1,33 @@
 package letters
 
-import "bitbucket.org/mundipagg/boletoapi/parser"
-
 /*
 @author Philippe Moneda
 @date 10/04/2017
 Descreve o padrão de mensagem para Boletos do Banco do Brasil
 */
+const authBB = `
+## Content-Type:application/x-www-form-urlencoded
+## Cache-Control:no-cache
+## Authorization:Basic {{base64 (concat .Authentication.Username ":" .Authentication.Password)}}
+grant_type=client_credentials&scope=cobranca.registro-boletos
+`
+
+const authLetterBBResponse = `
+{
+	"access_token":"{{authToken}}"	
+}
+`
+
+//GetBBAuthLetters retorna as cartas de envio e retorno de autencação do BB
+func GetBBAuthLetters() (string, string) {
+	return authBB, authLetterBBResponse
+}
 
 const registerBoleto = `
+ ## SOAPACTION:registrarBoleto
+ ##	Authorization:Bearer {{.Authentication.AuthorizationToken}}
+ ## Content-Type:text/xml; charset=utf-8
+
  <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sch="http://www.tibco.com/schemas/bws_registro_cbr/Recursos/XSD/Schema.xsd">
  <soapenv:Header/>
  <soapenv:Body>
@@ -49,69 +68,24 @@ func GetRegisterBoletoBBTmpl() string {
 	return registerBoleto
 }
 
-//GetRegisterBoletoReponseTranslator retorna as regras de tradução da resposta de registrar boleto
-func GetRegisterBoletoReponseTranslator() *parser.TranslatorMap {
-	translator := parser.NewTranslatorMap()
-	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:codigoRetornoPrograma", MapKey: "returnCode"})
-	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:nomeProgramaErro", MapKey: "errorCode"})
-	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:textoMensagemErro", MapKey: "errorMessage"})
-	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:numeroPosicaoErroPrograma", MapKey: "positionNumberErrorProgram"})
-	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:codigoTipoRetornoPrograma", MapKey: "returnTypeCodeProgram"})
-	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:textoNumeroTituloCobrancaBb", MapKey: "numberTextTitleCharging"})
-	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:numeroCarteiraCobranca", MapKey: "walletNumberCharging"})
-	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:numeroVariacaoCarteiraCobranca", MapKey: "rateNumberWalletCharging"})
-	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:codigoPrefixoDependenciaBeneficiario", MapKey: "prefixCodeBeneficiaryDependency"})
-	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:numeroContaCorrenteBeneficiario", MapKey: "checkingNumberBeneficiary"})
-	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:codigoCliente", MapKey: "clientCode"})
-	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:linhaDigitavel", MapKey: "digitableLine"})
-	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:codigoBarraNumerico", MapKey: "barcodeNumber"})
-	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:codigoTipoEnderecoBeneficiario", MapKey: "addressTypeCodeBeneficiary"})
-	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:nomeLogradouroBeneficiario", MapKey: "addressBeneficiary"})
-	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:nomeBairroBeneficiario", MapKey: "beneficiaryNeighborhood"})
-	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:nomeMunicipioBeneficiario", MapKey: "beneficiaryCity"})
-	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:codigoMunicipioBeneficiario", MapKey: "beneficiaryCityCode"})
-	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:siglaUfBeneficiario", MapKey: "beneficiaryUfInitials"})
-	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:codigoCepBeneficiario", MapKey: "beneficiaryZipCode"})
-	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:indicadorComprovacaoBeneficiario", MapKey: "beneficiaryIndicatorEvidence"})
-	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:codigoMunicipioBeneficiario", MapKey: "beneficiaryCityCode"})
-	translator.AddRule(parser.Rule{XMLQuery: "///ns0:resposta/ns0:numeroContratoCobranca", MapKey: "chargingContractNumber"})
-	return translator
-}
+const registerBoletoBBResponse = `
 
-// GetRegisterBoletoError retorna as regras para ler os campos de erro do banco do brasil
-func GetRegisterBoletoError() *parser.TranslatorMap {
-	translator := parser.NewTranslatorMap()
-	translator.AddRule(parser.Rule{XMLQuery: "//////ns:Mensagem", MapKey: "messageString"})
-	translator.AddRule(parser.Rule{XMLQuery: "////faultstring", MapKey: "faultString"})
-	translator.AddRule(parser.Rule{XMLQuery: "////faultcode", MapKey: "faultCode"})
-	return translator
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+<SOAP-ENV:Body>
+	<ns0:resposta xmlns:ns0="http://www.tibco.com/schemas/bws_registro_cbr/Recursos/XSD/Schema.xsd">
+		<ns0:siglaSistemaMensagem />
+		<ns0:codigoRetornoPrograma>{{returnCode}}</ns0:codigoRetornoPrograma>
+		<ns0:nomeProgramaErro>{{errorCode}}</ns0:nomeProgramaErro>
+		<ns0:textoMensagemErro>{{errorMessage}}</ns0:textoMensagemErro>
+		<ns0:linhaDigitavel>{{digitableLine}}</ns0:linhaDigitavel>
+		<ns0:codigoBarraNumerico>{{barcodeNumber}}</ns0:codigoBarraNumerico>				
+	</ns0:resposta>
+</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
 
-const bbRegisterBoletoResponse = `{
-	"beneficiaryZipCode": "{{trim .beneficiaryZipCode}}",
-	"numberTextTitleCharging": "{{trim .numberTextTitleCharging}}",
-	"rateNumberWalletCharging": "{{trim .rateNumberWalletCharging}}",
-	"digitableLine": "{{trim .digitableLine}}",
-	"addressTypeCodeBeneficiary": "{{trim .addressTypeCodeBeneficiary}}",
-	"walletNumberCharging": "{{trim .walletNumberCharging}}",
-	"clientCode": "{{trim .clientCode}}",
-	"addressBeneficiary": "{{trim .addressBeneficiary}}",
-	"beneficiaryCity": "{{trim .beneficiaryCity}}",
-	"prefixCodeBeneficiaryDependency": "{{trim .prefixCodeBeneficiaryDependency}}",
-	"checkingNumberBeneficiary": "{{trim .checkingNumberBeneficiary}}",
-	"beneficiaryCityCode": "{{trim .beneficiaryCityCode}}",
-	"beneficiaryIndicatorEvidence": "{{trim .beneficiaryIndicatorEvidence}}",
-	"returnCode": "{{trim .returnCode}}",
-	"programError": "{{trim .errorCode}}",
-	"positionNumberErrorProgram": "{{trim .positionNumberErrorProgram}}",
-	"returnTypeCodeProgram": "{{trim .returnTypeCodeProgram}}",
-	"chargingContractNumber": "{{trim .chargingContractNumber}}",
-	"errorMessage": "{{trim .errorMessage}}",
-	"barcodeNumber": "{{trim .barcodeNumber}}",
-	"beneficiaryNeighborhood": "{{trim .beneficiaryNeighborhood}}"
-}`
+`
 
-//GetRegisterBoletoBBApiResponseTmpl retorna o template do Banco do Brasil de resposta para a Api
-func GetRegisterBoletoBBApiResponseTmpl() string {
-	return bbRegisterBoletoResponse
+func GetBBregisterLetter() string {
+	return registerBoletoBBResponse
 }

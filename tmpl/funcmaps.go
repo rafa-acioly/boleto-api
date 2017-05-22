@@ -33,6 +33,8 @@ var funcMap = template.FuncMap{
 	"enDate":                 enDate,
 	"hasErrorTags":           hasErrorTags,
 	"toFloatStr":             toFloatStr,
+	"concat":                 concat,
+	"base64":                 base64,
 }
 
 func GetFuncMaps() template.FuncMap {
@@ -157,4 +159,16 @@ func fmtCPF(s string) string {
 		buf.WriteRune(c)
 	}
 	return buf.String()
+}
+
+func concat(s ...string) string {
+	buf := bytes.Buffer{}
+	for _, item := range s {
+		buf.WriteString(item)
+	}
+	return buf.String()
+}
+
+func base64(s string) string {
+	return util.Base64(s)
 }
