@@ -19,6 +19,7 @@ func mockRobot() {
 	router.POST("/oauth/token", authBB)
 	router.POST("/registrarBoleto", registerBoletoBB)
 	router.POST("/caixa/registrarBoleto", registerBoletoCaixa)
+	router.POST("/citi/registrarBoleto", registerBoletoCiti)
 
 	router.Run(":4000")
 }
@@ -169,6 +170,42 @@ func registerBoletoCaixa(c *gin.Context) {
 	if strings.Contains(xml, "<VALOR>504</VALOR>") {
 		c.AbortWithError(504, errors.New("Teste de Erro"))
 	} else if strings.Contains(xml, "<VALOR>200</VALOR>") {
+		c.Data(200, "text/xml", []byte(sData))
+	} else {
+		c.Data(200, "text/xml", []byte(sDataErr))
+	}
+
+}
+
+func registerBoletoCiti(c *gin.Context) {
+	sData := `
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <RegisterBoletoResponse>
+         <actionCode>200</actionCode>
+         <reasonMessage>OK</reasonMessage>
+      </RegisterBoletoResponse>
+   </soapenv:Body>
+</soapenv:Envelope>
+	`
+
+	sDataErr := `
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <RegisterBoletoResponse>
+         <actionCode>500</actionCode>
+         <reasonMessage>Erro ao Registrar boleto</reasonMessage>
+      </RegisterBoletoResponse>
+   </soapenv:Body>
+</soapenv:Envelope>
+	`
+	d, _ := ioutil.ReadAll(c.Request.Body)
+	xml := string(d)
+	if strings.Contains(xml, "<TitlAmt>504</TitlAmt>") {
+		c.AbortWithError(504, errors.New("Teste de Erro"))
+	} else if strings.Contains(xml, "<TitlAmt>200</TitlAmt>") {
 		c.Data(200, "text/xml", []byte(sData))
 	} else {
 		c.Data(200, "text/xml", []byte(sDataErr))

@@ -9,7 +9,7 @@ const responseCiti = `
          <reasonMessage>{{returnMessage}}</reasonMessage>
       </RegisterBoletoResponse>
    </soapenv:Body>
-</soapenv:Envelope>>
+</soapenv:Envelope>
 `
 
 const registerBoletoCiti = `

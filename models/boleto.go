@@ -163,7 +163,7 @@ const (
 	Caixa = 104
 
 	// Citi constante do Citi
-	Citibank = 666
+	Citibank = 745
 )
 
 // BoletoErrorConector é um connector gonnie para criar um objeto de erro

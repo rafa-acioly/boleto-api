@@ -58,6 +58,7 @@ func configFlags(devMode, mockMode, disableLog bool) {
 			os.Setenv("URL_BB_REGISTER_BOLETO", "http://localhost:4000/registrarBoleto")
 			os.Setenv("URL_BB_TOKEN", "http://localhost:4000/oauth/token")
 			os.Setenv("URL_CAIXA", "http://localhost:4000/caixa/registrarBoleto")
+			os.Setenv("URL_CITI", "http://localhost:4000/citi/registrarBoleto")
 		}
 	}
 	config.Install(mockMode, devMode, disableLog)
