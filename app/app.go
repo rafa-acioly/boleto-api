@@ -49,7 +49,7 @@ func configFlags(devMode, mockMode, disableLog bool) {
 		os.Setenv("URL_BB_REGISTER_BOLETO", "https://cobranca.homologa.bb.com.br:7101/registrarBoleto")
 		os.Setenv("URL_BB_TOKEN", "https://oauth.hm.bb.com.br:43000/oauth/token")
 		os.Setenv("URL_CAIXA", "https://des.barramento.caixa.gov.br/sibar/ManutencaoCobrancaBancaria/Boleto/Externo")
-		os.Setenv("URL_CITI", "https://urlCiti")
+		os.Setenv("URL_CITI", "https://citigroupsoa.citigroup.com/comercioeletronico/registerboleto/RegisterBoletoSOAP")
 		os.Setenv("APP_URL", "http://localhost:3000/boleto")
 		os.Setenv("ELASTIC_URL", "http://localhost:9200")
 		os.Setenv("MONGODB_URL", "localhost:27017")
