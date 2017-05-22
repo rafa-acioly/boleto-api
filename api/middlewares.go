@@ -52,7 +52,7 @@ func ParseBoleto() gin.HandlerFunc {
 		l.Request(boleto, c.Request.URL.RequestURI(), util.HeaderToMap(c.Request.Header))
 		c.Set("boleto", boleto)
 		c.Next()
-		_boletoResponse, _ := c.Get("boletoResponse")
-		l.Response(_boletoResponse, c.Request.URL.RequestURI())
+		resp, _ := c.Get("boletoResponse")
+		l.Response(resp, c.Request.URL.RequestURI())
 	}
 }
