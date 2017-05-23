@@ -14,6 +14,7 @@ import (
 	"bitbucket.org/mundipagg/boletoapi/app"
 	"bitbucket.org/mundipagg/boletoapi/config"
 	"bitbucket.org/mundipagg/boletoapi/log"
+	"bitbucket.org/mundipagg/boletoapi/robot"
 )
 
 var (
@@ -23,6 +24,7 @@ var (
 	mockMode     = flag.Bool("mock", false, "-mock To run mock requests")
 	disableLog   = flag.Bool("nolog", false, "-nolog disable seq log")
 	airPlaneMode = flag.Bool("airplane-mode", false, "-airplane-mode run api in dev, mock and nolog mode")
+	mockOnly     = flag.Bool("mockonly", false, "-mockonly run just mock service")
 )
 
 func init() {
@@ -51,11 +53,19 @@ func createPIDfile() {
 
 func main() {
 	flag.Parse()
-	logo1()
-	if *airPlaneMode {
-		app.Run(true, true, true)
+	runtime.GOMAXPROCS(runtime.NumCPU())
+	if *mockOnly {
+		w := make(chan int)
+		config.Install(true, true, true)
+		robot.GoRobots()
+		<-w
 	} else {
-		app.Run(*devMode, *mockMode, *disableLog)
+		logo1()
+		if *airPlaneMode {
+			app.Run(true, true, true)
+		} else {
+			app.Run(*devMode, *mockMode, *disableLog)
+		}
 	}
 
 }
