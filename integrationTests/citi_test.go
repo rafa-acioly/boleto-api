@@ -1,0 +1,32 @@
+package integrationTests
+
+import (
+	"fmt"
+	"strings"
+	"testing"
+
+	"bitbucket.org/mundipagg/boletoapi/app"
+	"bitbucket.org/mundipagg/boletoapi/models"
+	"bitbucket.org/mundipagg/boletoapi/util"
+	. "github.com/smartystreets/goconvey/convey"
+)
+
+func TestRegisterBoletoCiti(t *testing.T) {
+	go app.Run(true, true, true)
+	Convey("Deve-se registrar um boleto no Citi", t, func() {
+		resp, st, err := util.Post("http://localhost:3000/v1/boleto/register", getBody(models.Citibank, 200), nil)
+		boleto := util.ParseJSON(resp, new(models.BoletoResponse)).(*models.BoletoResponse)
+		So(err, ShouldBeNil)
+		So(st, ShouldEqual, 200)
+		Convey("Deve-se gerar uma url de acesso ao boleto seguindo o padrão do Citibank", func() {
+			So(len(boleto.Links), ShouldBeGreaterThan, 0)
+			resp, st, err := util.Post("http://localhost:3000/v1/boleto/register", getBody(models.Citibank, 200), nil)
+			So(err, ShouldBeNil)
+			So(st, ShouldEqual, 200)
+			savedBoleto := util.ParseJSON(resp, new(models.BoletoView)).(*models.BoletoView)
+			So(strings.Contains(boleto.Links[0].Href, fmt.Sprintf("%d", savedBoleto.Boleto.Title.OurNumber)), ShouldBeTrue)
+			So(strings.Contains(boleto.Links[0].Href, savedBoleto.Boleto.Recipient.Document.Number), ShouldBeTrue)
+			So(strings.Contains(boleto.Links[0].Href, savedBoleto.Boleto.Buyer.Document.Number), ShouldBeTrue)
+		})
+	})
+}

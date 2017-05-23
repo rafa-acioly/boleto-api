@@ -35,6 +35,7 @@ func Stringify(o interface{}) string {
 }
 
 //ParseJSON converte string para um objeto GO
-func ParseJSON(s string, o interface{}) {
-	json.Unmarshal([]byte(s), &o)
+func ParseJSON(s string, o interface{}) interface{} {
+	json.Unmarshal([]byte(s), o)
+	return o
 }

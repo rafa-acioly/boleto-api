@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"bitbucket.org/mundipagg/boletoapi/config"
-	"bitbucket.org/mundipagg/boletoapi/models"
 	"bitbucket.org/mundipagg/boletoapi/util"
 
 	"github.com/PMoneda/gonnie"
@@ -79,16 +78,16 @@ func NewBoletoView(boleto BoletoRequest, barcode string, digitableLine string) B
 
 //EncodeURL tranforma o boleto view na forma que será escrito na url
 func (b *BoletoView) EncodeURL(format string) string {
-	var url string
+	var _url string
 	switch b.BankID {
-	case models.Citibank:
-		citiURL := "https://corporate.brazil.citibank.com/ebillpayer/jspInformaDadosConsulta.jsp?seuNumero=%s&cpfSacado=%s&cpfCedente=%s"
-		url = fmt.Sprintf(citiURL, b.Boleto.Title.OurNumber, b.Boleto.Recipient.Document.Number, b.Boleto.Buyer.Document.Number)
+	case Citibank:
+		citiURL := "https://corporate.brazil.citibank.com/ebillpayer/jspInformaDadosConsulta.jsp"
+		query := "?seuNumero=%d&cpfSacado=%s&cpfCedente=%s"
+		_url = citiURL + fmt.Sprintf(query, b.Boleto.Title.OurNumber, b.Boleto.Recipient.Document.Number, b.Boleto.Buyer.Document.Number)
 	default:
-		url = fmt.Sprintf("%s?fmt=%s&id=%s", config.Get().AppURL, format, b.ID)
+		_url = fmt.Sprintf("%s?fmt=%s&id=%s", config.Get().AppURL, format, b.ID)
 	}
-
-	return url
+	return _url
 }
 
 //CreateLinks cria a lista de links com os formatos suportados

@@ -35,8 +35,8 @@ func (b bankCiti) Log() *log.Log {
 func (b bankCiti) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
 	r := gonnie.NewPipe()
 	serviceURL := config.Get().URLCiti
-	from := gonnie.Transform(letters.GetResponseTemplateCiti())
-	to := gonnie.Transform(letters.GetRegisterBoletoAPIResponseTmpl())
+	from := letters.GetResponseTemplateCiti()
+	to := letters.GetRegisterBoletoAPIResponseTmpl()
 	bod := r.From("message://?source=inline", boleto, letters.GetRegisterBoletoCitiTmpl(), tmpl.GetFuncMaps())
 	bod = bod.To("logseq://?type=request&url="+serviceURL, b.log)
 	bod = bod.To(serviceURL, map[string]string{"method": "POST", "insecureSkipVerify": "true"})
@@ -48,13 +48,12 @@ func (b bankCiti) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRes
 	ch = ch.To("logseq://?type=response&url="+serviceURL, b.log).To("apierro://")
 	switch t := bod.GetBody().(type) {
 	case string:
-		response := models.BoletoResponse{}
-		util.ParseJSON(t, &response)
-		return response, nil
+		response := util.ParseJSON(t, new(models.BoletoResponse)).(*models.BoletoResponse)
+		return *response, nil
 	case models.BoletoResponse:
 		return t, nil
 	}
-	return models.BoletoResponse{}, models.NewInternalServerError("MP500", "Erro interno")
+	return models.BoletoResponse{}, models.NewInternalServerError("Erro interno", "MP500")
 }
 func (b bankCiti) ProcessBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
 	errs := b.ValidateBoleto(boleto)

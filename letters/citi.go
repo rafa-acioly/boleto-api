@@ -31,7 +31,7 @@ const registerBoletoCiti = `
          </GrpBenf>
          <GrpClPgd>
             <DbtrNm>{{.Buyer.Name}}</DbtrNm>
-            {{if .Buyer.Document.Type eq "CPF"}}				
+            {{if (eq .Buyer.Document.Type "CPF")}}				
             	<DbtrTaxTp>F</DbtrTaxTp>
 			{{else}}
             	<DbtrTaxTp>J</DbtrTaxTp>
@@ -51,7 +51,7 @@ const registerBoletoCiti = `
          <TitlBarCdInd>0</TitlBarCdInd>
          <TitlCcyCd>09</TitlCcyCd>
          <TitlCiaCdId>{{.Title.DocumentNumber}}</TitlCiaCdId>
-         <TitlDueDt>{{enDate .Title.ExpireDate "-"}}</TitlDueDt>
+         <TitlDueDt>{{enDate .Title.ExpireDateTime "-"}}</TitlDueDt>
          <TitlInstrNmDtExec>0</TitlInstrNmDtExec>
          <TitlInstrProtInd> </TitlInstrProtInd>
          <TitlInstrWrtOffInd> </TitlInstrWrtOffInd>

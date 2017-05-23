@@ -15,8 +15,7 @@ import (
 	"bitbucket.org/mundipagg/boletoapi/util"
 )
 
-const body = `
-{
+const body = `{
 
     "BankNumber": 1,
 
@@ -117,7 +116,6 @@ const body = `
         }
 
     }
-
 }
 `
 
@@ -290,6 +288,7 @@ func TestRegisterBoletoRequest(t *testing.T) {
 			So(strings.Contains(resp, "MP504"), ShouldBeTrue)
 		})
 	})
+
 }
 
 func BenchmarkRegisterBoleto(b *testing.B) {
