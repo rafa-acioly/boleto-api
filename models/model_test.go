@@ -5,7 +5,6 @@ import (
 
 	"time"
 
-	"bitbucket.org/mundipagg/boletoapi/test"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -135,18 +134,32 @@ func TestShouldReturnBankNumberIsValid(t *testing.T) {
 	}
 }
 
-func TestShouldAppendCollectionOfErrrors(t *testing.T) {
-	e := NewErrorCollection(ErrorResponse{Code: "200", Message: "Hue2"})
-	e.Append("100", "Hue")
-	test.ExpectTrue(len(e) == 2, t)
+func TestErrors(t *testing.T) {
+	Convey("Deve criar uma nova coleção de ErrorResponse com um item", t, func() {
+		er := NewErrorResponse("200", "Hue2")
+		e := NewErrors()
+
+		Convey("Deve criar uma coleção de Errors vazia", func() {
+			So(len(e), ShouldEqual, 0)
+		})
+
+		e.Append(er.Code, er.Message)
+
+		So(len(e), ShouldEqual, 1)
+
+		Convey("Deve incrementar a coleção com um item", func() {
+			e.Append("100", "Hue")
+			So(len(e), ShouldEqual, 2)
+		})
+
+		Convey("Deve chamar as funções que retornar as propriedades do erro", func() {
+			So(er.ErrorCode(), ShouldEqual, "200")
+			So(er.Error(), ShouldEqual, "Hue2")
+		})
+	})
 }
 
-func TestShouldCreateNewSingleErrorCollection(t *testing.T) {
-	e := NewSingleErrorCollection("200", "Hue2")
-	test.ExpectTrue(len(e) == 1, t)
-}
-
-func TestIsAgencyValid(t *testing.T) {
+func TestAgreement(t *testing.T) {
 	Convey("Deve retornar um erro para a agência inválida", t, func() {
 		a := Agreement{
 			Agency: "234-2222a",
@@ -161,9 +174,7 @@ func TestIsAgencyValid(t *testing.T) {
 			So(err, ShouldBeNil)
 		})
 	})
-}
 
-func TestCalculateAgencyDigit(t *testing.T) {
 	Convey("Deve ajustar o dígito da Agência quando ela tiver caracteres inválidos", t, func() {
 		a := new(Agreement)
 		a.AgencyDigit = "2sssss"
@@ -178,9 +189,7 @@ func TestCalculateAgencyDigit(t *testing.T) {
 			So(a.AgencyDigit, ShouldEqual, "1")
 		})
 	})
-}
 
-func TestCalculateAccountDigit(t *testing.T) {
 	Convey("Deve ajustar o dígito da Conta quando ela tiver caracteres inválidos", t, func() {
 		a := new(Agreement)
 		a.AccountDigit = "2sssss"
@@ -195,9 +204,7 @@ func TestCalculateAccountDigit(t *testing.T) {
 			So(a.AccountDigit, ShouldEqual, "1")
 		})
 	})
-}
 
-func TestIsAccountValid(t *testing.T) {
 	Convey("Verifica se a conta é valida e formata para o tamanho correto", t, func() {
 		a := Agreement{
 			Account: "1234fff",
