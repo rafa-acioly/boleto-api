@@ -1,25 +1,20 @@
 package bank
 
 import (
-	"encoding/json"
 	"errors"
-	"net/http"
-	"strings"
 
-	"bitbucket.org/mundipagg/boletoapi/auth"
+	"github.com/PMoneda/gonnie"
+
 	"bitbucket.org/mundipagg/boletoapi/config"
 	"bitbucket.org/mundipagg/boletoapi/letters"
 	"bitbucket.org/mundipagg/boletoapi/log"
 	"bitbucket.org/mundipagg/boletoapi/models"
-	"bitbucket.org/mundipagg/boletoapi/parser"
 	"bitbucket.org/mundipagg/boletoapi/tmpl"
-	"bitbucket.org/mundipagg/boletoapi/util"
 )
 
 type bankBB struct {
 	validate *models.Validator
 	log      *log.Log
-	token    auth.Token
 }
 
 //Cria uma nova instância do objeto que implementa os serviços do Banco do Brasil e configura os validadores que serão utilizados
@@ -32,10 +27,10 @@ func newBB() bankBB {
 	b.validate.Push(bbValidateAgencyAndDigit)
 	b.validate.Push(bbValidateOurNumber)
 	b.validate.Push(bbValidateWalletVariation)
-	b.validate.Push(bbValidateAmountInCents)
-	b.validate.Push(bbValidateExpireDate)
-	b.validate.Push(bbValidateBuyerDocumentNumber)
-	b.validate.Push(bbValidateRecipientDocumentNumber)
+	b.validate.Push(baseValidateAmountInCents)
+	b.validate.Push(baseValidateExpireDate)
+	b.validate.Push(baseValidateBuyerDocumentNumber)
+	b.validate.Push(baseValidateRecipientDocumentNumber)
 	b.validate.Push(bbValidateTitleInstructions)
 	b.validate.Push(bbValidateTitleDocumentNumber)
 	return b
@@ -45,38 +40,29 @@ func newBB() bankBB {
 func (b bankBB) Log() *log.Log {
 	return b.log
 }
-func (b *bankBB) login(user, password string) (auth.Token, error) {
 
-	body := "grant_type=client_credentials&scope=cobranca.registro-boletos"
-	header := make(map[string]string)
-	header["Content-Type"] = "application/x-www-form-urlencoded"
-	header["Cache-Control"] = "no-cache"
-	header["Authorization"] = "Basic " + util.Base64(user+":"+password)
-	resp, st, err := util.Post(config.Get().URLBBToken, body, header)
-	if err != nil {
-		return auth.Token{}, err
+func (b *bankBB) login(boleto *models.BoletoRequest) (string, error) {
+	type errorAuth struct {
+		Error            string `json:"error"`
+		ErrorDescription string `json:"error_description"`
 	}
-	b.log.Request(struct {
-		Username string
-		Password string
-		Body     string
-	}{
-		Username: user,
-		Password: password,
-		Body:     body,
-	}, config.Get().URLBBToken, header)
-
-	tok := auth.Token{Status: st}
-	errParser := json.Unmarshal([]byte(resp), &tok)
-	if errParser != nil {
-		return auth.Token{}, errParser
+	r := gonnie.NewPipe()
+	url := config.Get().URLBBToken
+	from, resp := letters.GetBBAuthLetters()
+	bod := r.From("message://?source=inline", boleto, from, tmpl.GetFuncMaps())
+	r = r.To("logseq://?type=request&url="+url, b.log)
+	bod = bod.To(url, map[string]string{"method": "POST", "insecureSkipVerify": "true"})
+	r = r.To("logseq://?type=response&url="+url, b.log)
+	ch := bod.Choice().When(gonnie.Header("status").IsEqualTo("200")).To("transform://?format=json", resp, `{{.authToken}}`)
+	ch = ch.Otherwise().To("unmarshall://?format=json", new(errorAuth))
+	result := bod.GetBody()
+	switch t := result.(type) {
+	case string:
+		return t, nil
+	case *errorAuth:
+		return "", errors.New(t.ErrorDescription)
 	}
-	b.log.Response(tok, config.Get().URLBBToken)
-	if tok.Status != http.StatusOK {
-		return tok, errors.New(tok.ErrorDescription)
-	}
-	b.token = tok
-	return tok, nil
+	return "", errors.New("Saída inválida")
 }
 
 //ProcessBoleto faz o processamento de registro de boleto
@@ -85,43 +71,26 @@ func (b bankBB) ProcessBoleto(boleto *models.BoletoRequest) (models.BoletoRespon
 	if len(errs) > 0 {
 		return models.BoletoResponse{Errors: errs}, nil
 	}
-	_, err := b.login(boleto.Authentication.Username, boleto.Authentication.Password)
+	tok, err := b.login(boleto)
 	if err != nil {
-		return models.BoletoResponse{}, models.NewErrorResponse("MP500", err.Error())
+		return models.BoletoResponse{}, err
 	}
+	boleto.Authentication.AuthorizationToken = tok
 	return b.RegisterBoleto(boleto)
 }
 
 func (b bankBB) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
-	builder := tmpl.New()
-	soap, err := builder.From(boleto).To(letters.GetRegisterBoletoBBTmpl()).XML().Transform()
-	if err != nil {
-		return models.BoletoResponse{}, err
-	}
-	response, status, errRegister := b.doRequest(soap, b.token)
-	if errRegister != nil {
-		return models.BoletoResponse{}, errRegister
-	}
-	if status != http.StatusOK {
-		value, _ := parser.ExtractValues(response, letters.GetRegisterBoletoError())
-		j := models.BoletoResponse{
-			StatusCode: http.StatusBadRequest,
-			Errors:     models.NewSingleErrorCollection(value["faultCode"], value["messageString"]),
-		}
-		return j, nil
-	}
-
-	value, _ := parser.ExtractValues(response, letters.GetRegisterBoletoReponseTranslator())
-	j, errJSON := builder.From(value).To(letters.GetRegisterBoletoAPIResponseTmpl()).Transform()
-	if errJSON != nil {
-		return models.BoletoResponse{}, errJSON
-	}
-	resp := models.BoletoResponse{}
-	errParse := json.Unmarshal([]byte(j), &resp)
-	if errParse != nil {
-		return models.BoletoResponse{}, errParse
-	}
-	return resp, nil
+	r := gonnie.NewPipe()
+	url := config.Get().URLBBRegisterBoleto
+	from := letters.GetRegisterBoletoBBTmpl()
+	r = r.From("message://?source=inline", boleto, from, tmpl.GetFuncMaps())
+	r = r.To("logseq://?type=request&url="+url, b.log)
+	r = r.To(url, map[string]string{"method": "POST", "insecureSkipVerify": "true"})
+	r = r.To("logseq://?type=response&url="+url, b.log)
+	r = r.To("transform://?format=xml", letters.GetBBregisterLetter(), letters.GetRegisterBoletoAPIResponseTmpl(), tmpl.GetFuncMaps())
+	r = r.To("unmarshall://?format=json", new(models.BoletoResponse))
+	body := r.GetBody().(*models.BoletoResponse)
+	return *body, nil
 }
 
 func (b bankBB) ValidateBoleto(boleto *models.BoletoRequest) models.Errors {
@@ -131,90 +100,4 @@ func (b bankBB) ValidateBoleto(boleto *models.BoletoRequest) models.Errors {
 //GetBankNumber retorna o codigo do banco
 func (b bankBB) GetBankNumber() models.BankNumber {
 	return models.BancoDoBrasil
-}
-
-//registerBoletoRequest faz a requisição no serviço do banco para registro de boleto
-func (b bankBB) doRequest(message string, token auth.Token) (string, int, error) {
-	header := make(map[string]string)
-	header["SOAPACTION"] = "registrarBoleto"
-	header["Authorization"] = "Bearer " + token.AccessToken
-	header["Content-Type"] = "text/xml; charset=utf-8"
-	b.log.Request(message, config.Get().URLBBRegisterBoleto, header)
-	resp, status, err := util.Post(config.Get().URLBBRegisterBoleto, message, header)
-	b.log.Response(resp, config.Get().URLBBRegisterBoleto)
-	return resp, status, err
-
-}
-
-func (b bankBB) doMockSuccess(message string, token auth.Token) (string, int, error) {
-	errMock := `
-		<?xml version="1.0" encoding="UTF-8"?>
-		<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
-		<SOAP-ENV:Body>
-			<ns0:resposta xmlns:ns0="http://www.tibco.com/schemas/bws_registro_cbr/Recursos/XSD/Schema.xsd">
-				<ns0:siglaSistemaMensagem />
-				<ns0:codigoRetornoPrograma>5</ns0:codigoRetornoPrograma>
-				<ns0:nomeProgramaErro>CBRSR005</ns0:nomeProgramaErro>
-				<ns0:textoMensagemErro>?CPF do pagador nao encontrado na base.</ns0:textoMensagemErro>
-				<ns0:numeroPosicaoErroPrograma>5</ns0:numeroPosicaoErroPrograma>
-				<ns0:codigoTipoRetornoPrograma>0</ns0:codigoTipoRetornoPrograma>
-				<ns0:textoNumeroTituloCobrancaBb />
-				<ns0:numeroCarteiraCobranca>17</ns0:numeroCarteiraCobranca>
-				<ns0:numeroVariacaoCarteiraCobranca>19</ns0:numeroVariacaoCarteiraCobranca>
-				<ns0:codigoPrefixoDependenciaBeneficiario>3851</ns0:codigoPrefixoDependenciaBeneficiario>
-				<ns0:numeroContaCorrenteBeneficiario>8570</ns0:numeroContaCorrenteBeneficiario>
-				<ns0:codigoCliente>932131545</ns0:codigoCliente>
-				<ns0:linhaDigitavel />
-				<ns0:codigoBarraNumerico />
-				<ns0:codigoTipoEnderecoBeneficiario>0</ns0:codigoTipoEnderecoBeneficiario>
-				<ns0:nomeLogradouroBeneficiario />
-				<ns0:nomeBairroBeneficiario />
-				<ns0:nomeMunicipioBeneficiario />
-				<ns0:codigoMunicipioBeneficiario>0</ns0:codigoMunicipioBeneficiario>
-				<ns0:siglaUfBeneficiario />
-				<ns0:codigoCepBeneficiario>0</ns0:codigoCepBeneficiario>
-				<ns0:indicadorComprovacaoBeneficiario />
-				<ns0:numeroContratoCobranca>17414296</ns0:numeroContratoCobranca>
-			</ns0:resposta>
-		</SOAP-ENV:Body>
-		</SOAP-ENV:Envelope>
-	`
-
-	sData := `
-		<?xml version="1.0" encoding="UTF-8"?>
-		<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
-		<SOAP-ENV:Body>
-			<ns0:resposta xmlns:ns0="http://www.tibco.com/schemas/bws_registro_cbr/Recursos/XSD/Schema.xsd">
-				<ns0:siglaSistemaMensagem />
-				<ns0:codigoRetornoPrograma>0</ns0:codigoRetornoPrograma>
-				<ns0:nomeProgramaErro />
-				<ns0:textoMensagemErro />
-				<ns0:numeroPosicaoErroPrograma>0</ns0:numeroPosicaoErroPrograma>
-				<ns0:codigoTipoRetornoPrograma>0</ns0:codigoTipoRetornoPrograma>
-				<ns0:textoNumeroTituloCobrancaBb>00010140510000066673</ns0:textoNumeroTituloCobrancaBb>
-				<ns0:numeroCarteiraCobranca>17</ns0:numeroCarteiraCobranca>
-				<ns0:numeroVariacaoCarteiraCobranca>19</ns0:numeroVariacaoCarteiraCobranca>
-				<ns0:codigoPrefixoDependenciaBeneficiario>3851</ns0:codigoPrefixoDependenciaBeneficiario>
-				<ns0:numeroContaCorrenteBeneficiario>8570</ns0:numeroContaCorrenteBeneficiario>
-				<ns0:codigoCliente>932131545</ns0:codigoCliente>
-				<ns0:linhaDigitavel>00190000090101405100500066673179971340000010000</ns0:linhaDigitavel>
-				<ns0:codigoBarraNumerico>00199713400000100000000001014051000006667317</ns0:codigoBarraNumerico>
-				<ns0:codigoTipoEnderecoBeneficiario>0</ns0:codigoTipoEnderecoBeneficiario>
-				<ns0:nomeLogradouroBeneficiario>Cliente nao informado.</ns0:nomeLogradouroBeneficiario>
-				<ns0:nomeBairroBeneficiario />
-				<ns0:nomeMunicipioBeneficiario />
-				<ns0:codigoMunicipioBeneficiario>0</ns0:codigoMunicipioBeneficiario>
-				<ns0:siglaUfBeneficiario />
-				<ns0:codigoCepBeneficiario>0</ns0:codigoCepBeneficiario>
-				<ns0:indicadorComprovacaoBeneficiario />
-				<ns0:numeroContratoCobranca>17414296</ns0:numeroContratoCobranca>
-			</ns0:resposta>
-		</SOAP-ENV:Body>
-		</SOAP-ENV:Envelope>
-	`
-	s := sData
-	if strings.Contains(message, "<sch:valorOriginalTitulo>100</sch:valorOriginalTitulo>") {
-		s = errMock
-	}
-	return s, 200, nil
 }

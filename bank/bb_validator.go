@@ -9,13 +9,7 @@ import (
 var bb bankBB
 
 func modElevenCalculator(a string, m []int) string {
-	sum := 0
-
-	for idx, c := range a {
-		i, _ := strconv.Atoi(string(c))
-
-		sum += i * m[idx]
-	}
+	sum := sumAccountDigits(a, m)
 
 	digit := 11 - sum%11
 
@@ -96,58 +90,10 @@ func bbValidateWalletVariation(b interface{}) error {
 	}
 }
 
-func bbValidateAmountInCents(b interface{}) error {
-	switch t := b.(type) {
-	case *models.BoletoRequest:
-		return t.Title.IsAmountInCentsValid()
-	default:
-		return invalidType(t)
-	}
-}
-
-func bbValidateExpireDate(b interface{}) error {
-	switch t := b.(type) {
-	case *models.BoletoRequest:
-		return t.Title.IsExpireDateValid()
-	default:
-		return invalidType(t)
-	}
-}
-
-func bbValidateBuyerDocumentNumber(b interface{}) error {
-	switch t := b.(type) {
-	case *models.BoletoRequest:
-		if t.Buyer.Document.IsCPF() {
-			return t.Buyer.Document.ValidateCPF()
-		}
-		if t.Buyer.Document.IsCNPJ() {
-			return t.Buyer.Document.ValidateCNPJ()
-		}
-		return models.NewErrorResponse("MPBuyerDocumentType", "Tipo de Documento inválido")
-	default:
-		return invalidType(t)
-	}
-}
-
-func bbValidateRecipientDocumentNumber(b interface{}) error {
-	switch t := b.(type) {
-	case *models.BoletoRequest:
-		if t.Recipient.Document.IsCPF() {
-			return t.Recipient.Document.ValidateCPF()
-		}
-		if t.Recipient.Document.IsCNPJ() {
-			return t.Recipient.Document.ValidateCNPJ()
-		}
-		return models.NewErrorResponse("MPRecipientDocumentType", "Tipo de Documento inválido")
-	default:
-		return invalidType(t)
-	}
-}
-
 func bbValidateTitleInstructions(b interface{}) error {
 	switch t := b.(type) {
 	case *models.BoletoRequest:
-		return t.Title.ValidateInstructionsLength()
+		return t.Title.ValidateInstructionsLength(220)
 	default:
 		return invalidType(t)
 	}

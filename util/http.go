@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-var DefaultDialer = &net.Dialer{Timeout: 16 * time.Second, KeepAlive: 16 * time.Second}
+var defaultDialer = &net.Dialer{Timeout: 16 * time.Second, KeepAlive: 16 * time.Second}
 
 var cfg *tls.Config = &tls.Config{
 	InsecureSkipVerify: true,
@@ -17,7 +17,7 @@ var cfg *tls.Config = &tls.Config{
 var client *http.Client = &http.Client{
 	Transport: &http.Transport{
 		TLSClientConfig:     cfg,
-		Dial:                DefaultDialer.Dial,
+		Dial:                defaultDialer.Dial,
 		TLSHandshakeTimeout: 16 * time.Second,
 	},
 }
@@ -28,15 +28,17 @@ func DefaultHTTPClient() *http.Client {
 	return client
 }
 
+//Post faz um requisição POST para uma URL e retorna o response, status e erro
 func Post(url, body string, header map[string]string) (string, int, error) {
-	return DoRequest("POST", url, body, header)
+	return doRequest("POST", url, body, header)
 }
 
+//Get faz um requisição GET para uma URL e retorna o response, status e erro
 func Get(url, body string, header map[string]string) (string, int, error) {
-	return DoRequest("GET", url, body, header)
+	return doRequest("GET", url, body, header)
 }
 
-func DoRequest(method, url, body string, header map[string]string) (string, int, error) {
+func doRequest(method, url, body string, header map[string]string) (string, int, error) {
 	client := DefaultHTTPClient()
 	message := strings.NewReader(body)
 	req, err := http.NewRequest(method, url, message)
@@ -61,6 +63,7 @@ func DoRequest(method, url, body string, header map[string]string) (string, int,
 	return sData, resp.StatusCode, nil
 }
 
+//HeaderToMap converte um http Header para um dicionário string -> string
 func HeaderToMap(h http.Header) map[string]string {
 	m := make(map[string]string)
 	for k, v := range h {
