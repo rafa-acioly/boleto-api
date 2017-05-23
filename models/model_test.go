@@ -3,6 +3,8 @@ package models
 import (
 	"testing"
 
+	"time"
+
 	"bitbucket.org/mundipagg/boletoapi/test"
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -76,7 +78,52 @@ func TestTitle(t *testing.T) {
 			err = h.ValidateInstructionsLength(1)
 			So(err, ShouldNotBeNil)
 		})
+	})
 
+	Convey("A valor em centavos deve ser válido", t, func() {
+		h := Title{AmountInCents: 100}
+		err := h.IsAmountInCentsValid()
+		So(err, ShouldBeNil)
+
+		Convey("O valor em centavos deve ser inválido", func() {
+			h.AmountInCents = 0
+			err = h.IsAmountInCentsValid()
+			So(err, ShouldNotBeNil)
+		})
+	})
+
+	Convey("Deve transformar uma string no padrão 'AAAA-MM-DD' para um tipo time.Time", t, func() {
+		t, err := parseDate("2017-06-23")
+		So(err, ShouldBeNil)
+		y, m, d := t.Date()
+		So(d, ShouldEqual, 23)
+		So(m, ShouldEqual, 6)
+		So(y, ShouldEqual, 2017)
+
+		Convey("Deve retornar um erro porque o padrão de data estará errado", func() {
+			_, err := parseDate("2015/09/26")
+			So(err, ShouldNotBeNil)
+		})
+	})
+
+	Convey("O ExpireDate deve ser válido", t, func() {
+		c := "2006-01-02"
+		t := time.Now()
+		h := Title{ExpireDate: t.AddDate(0, 0, 5).Format(c)}
+		err := h.IsExpireDateValid()
+		So(err, ShouldBeNil)
+
+		Convey("O ExpireDate deve ser inválido com uma data menor do que a data de hoje", func() {
+			h.ExpireDate = t.AddDate(0, 0, -5).Format(c)
+			err := h.IsExpireDateValid()
+			So(err, ShouldNotBeNil)
+		})
+
+		Convey("O ExpireDate deve ser inválido, mas com um formato em string inválido (diferente de 'AAAA-MM-DD'", func() {
+			h.ExpireDate = "1994/09/26"
+			err := h.IsExpireDateValid()
+			So(err, ShouldNotBeNil)
+		})
 	})
 }
 
