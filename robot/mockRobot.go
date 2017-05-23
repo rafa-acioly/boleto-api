@@ -183,7 +183,7 @@ func registerBoletoCiti(c *gin.Context) {
    <soapenv:Header/>
    <soapenv:Body>
       <RegisterBoletoResponse>
-         <actionCode>200</actionCode>
+         <actionCode>0</actionCode>
          <reasonMessage>OK</reasonMessage>
       </RegisterBoletoResponse>
    </soapenv:Body>
@@ -195,7 +195,7 @@ func registerBoletoCiti(c *gin.Context) {
    <soapenv:Header/>
    <soapenv:Body>
       <RegisterBoletoResponse>
-         <actionCode>500</actionCode>
+         <actionCode>99</actionCode>
          <reasonMessage>Erro ao Registrar boleto</reasonMessage>
       </RegisterBoletoResponse>
    </soapenv:Body>
