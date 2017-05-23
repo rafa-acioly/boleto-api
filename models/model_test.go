@@ -126,6 +126,15 @@ func TestTitle(t *testing.T) {
 	})
 }
 
+func TestBoleto(t *testing.T) {
+	Convey("NewBoletoView deve retornar uma instância nova da View de Boleto", t, func() {
+		b := NewBoletoView(BoletoRequest{}, "1234", "12345")
+		So(b.UID, ShouldNotBeEmpty)
+		So(b.Barcode, ShouldEqual, "1234")
+		So(b.DigitableLine, ShouldEqual, "12345")
+	})
+}
+
 func TestShouldReturnBankNumberIsValid(t *testing.T) {
 	var b BankNumber = 237
 
