@@ -18,6 +18,7 @@ type IHttpNotFound interface {
 	Message() string
 }
 
+//IGatewayTimeout interface para implementar um timeout do Gateway
 type IGatewayTimeout interface {
 	Error() string
 	Message() string
@@ -58,25 +59,25 @@ func NewInternalServerError(err, msg string) InternalServerError {
 	return InternalServerError{Err: err, Msg: msg}
 }
 
-// HttpNotFound objeto para erros 404 da aplicação: ex boleto não encontrado
-type HttpNotFound struct {
+// HTTPNotFound objeto para erros 404 da aplicação: ex boleto não encontrado
+type HTTPNotFound struct {
 	Err string
 	Msg string
 }
 
 // Message retorna a mensagem final para o usuário
-func (e HttpNotFound) Message() string {
+func (e HTTPNotFound) Message() string {
 	return e.Msg
 }
 
 // Error retorna o erro original
-func (e HttpNotFound) Error() string {
+func (e HTTPNotFound) Error() string {
 	return e.Err
 }
 
-//NewHttpNotFound cria um novo objeto NewHttpNotFound a partir de uma mensagem original e final
-func NewHttpNotFound(err, msg string) HttpNotFound {
-	return HttpNotFound{Err: err, Msg: msg}
+//NewHTTPNotFound cria um novo objeto NewHTTPNotFound a partir de uma mensagem original e final
+func NewHTTPNotFound(err, msg string) HTTPNotFound {
+	return HTTPNotFound{Err: err, Msg: msg}
 }
 
 // GatewayTimeout objeto para erros 404 da aplicação: ex boleto não encontrado
