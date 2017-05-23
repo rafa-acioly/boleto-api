@@ -124,7 +124,7 @@ func (l Log) defaultProperties(messageType string, content interface{}) goseq.Pr
 
 //Close fecha a conexao com o SEQ
 func Close() {
-	if config.Get().DisableLog {
+	if config.Get().DisableLog || !logger.Async {
 		return
 	}
 	fmt.Println("Closing SEQ Connection")
