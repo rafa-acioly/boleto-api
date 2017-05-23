@@ -96,11 +96,6 @@ func (e GatewayTimeout) Error() string {
 	return e.Err
 }
 
-//NewGatewayTimeout cria um novo objeto NewGatewayTimeout a partir de uma mensagem original e final
-func NewGatewayTimeout(err, msg string) GatewayTimeout {
-	return GatewayTimeout{Err: err, Msg: msg}
-}
-
 //NewErrorResponse cria um novo objeto de ErrorReponse com código e mensagem
 func NewErrorResponse(code, msg string) ErrorResponse {
 	return ErrorResponse{Code: code, Message: msg}
@@ -128,16 +123,6 @@ func (e ErrorResponse) ErrorCode() string {
 
 // Errors coleção de erros
 type Errors []ErrorResponse
-
-// NewErrorCollection cria nova coleção de erros
-func NewErrorCollection(errorResponse ErrorResponse) Errors {
-	return []ErrorResponse{errorResponse}
-}
-
-// NewSingleErrorCollection cria nova coleção de erros com 1 item
-func NewSingleErrorCollection(code, msg string) Errors {
-	return NewErrorCollection(NewErrorResponse(code, msg))
-}
 
 // NewErrors cria nova coleção de erros vazia
 func NewErrors() Errors {
