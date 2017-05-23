@@ -5,6 +5,8 @@ import (
 	"strconv"
 	"unicode"
 
+	"encoding/json"
+
 	"golang.org/x/text/transform"
 	"golang.org/x/text/unicode/norm"
 )
@@ -24,4 +26,15 @@ func RemoveDiacritics(s string) string {
 func PadLeft(value, char string, total uint) string {
 	s := "%" + char + strconv.Itoa(int(total)) + "s"
 	return fmt.Sprintf(s, value)
+}
+
+//Stringify convete objeto para JSON
+func Stringify(o interface{}) string {
+	b, _ := json.Marshal(o)
+	return string(b)
+}
+
+//ParseJSON converte string para um objeto GO
+func ParseJSON(s string, o interface{}) {
+	json.Unmarshal([]byte(s), &o)
 }

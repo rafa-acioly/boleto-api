@@ -1,7 +1,11 @@
 package db
 
-import "bitbucket.org/mundipagg/boletoapi/models"
-import "bitbucket.org/mundipagg/boletoapi/cache"
+import (
+	"errors"
+
+	"bitbucket.org/mundipagg/boletoapi/cache"
+	"bitbucket.org/mundipagg/boletoapi/models"
+)
 
 type mock struct{}
 
@@ -13,7 +17,11 @@ func (m *mock) SaveBoleto(boleto models.BoletoView) error {
 
 //GetBoletoById retorna o boleto por id do cache em memoria
 func (m *mock) GetBoletoByID(id string) (models.BoletoView, error) {
-	return cache.Get(id).(models.BoletoView), nil
+	c, ok := cache.Get(id)
+	if !ok {
+		return models.BoletoView{}, errors.New("Boleto não encontrado")
+	}
+	return c.(models.BoletoView), nil
 }
 
 func (m *mock) Close() {}
