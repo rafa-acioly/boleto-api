@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"bitbucket.org/mundipagg/boletoapi/config"
+	"bitbucket.org/mundipagg/boletoapi/models"
 	"bitbucket.org/mundipagg/boletoapi/util"
 
 	"github.com/PMoneda/gonnie"
@@ -78,7 +79,15 @@ func NewBoletoView(boleto BoletoRequest, barcode string, digitableLine string) B
 
 //EncodeURL tranforma o boleto view na forma que será escrito na url
 func (b *BoletoView) EncodeURL(format string) string {
-	url := fmt.Sprintf("%s?fmt=%s&id=%s", config.Get().AppURL, format, b.ID)
+	var url string
+	switch b.BankID {
+	case models.Citibank:
+		citiURL := "https://corporate.brazil.citibank.com/ebillpayer/jspInformaDadosConsulta.jsp?seuNumero=%s&cpfSacado=%s&cpfCedente=%s"
+		url = fmt.Sprintf(citiURL, b.Boleto.Title.OurNumber, b.Boleto.Recipient.Document.Number, b.Boleto.Buyer.Document.Number)
+	default:
+		url = fmt.Sprintf("%s?fmt=%s&id=%s", config.Get().AppURL, format, b.ID)
+	}
+
 	return url
 }
 
