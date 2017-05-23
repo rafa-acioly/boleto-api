@@ -22,7 +22,7 @@ type Title struct {
 //ValidateInstructionsLength valida se texto das instruções possui quantidade de caracteres corretos
 func (t Title) ValidateInstructionsLength(max int) error {
 	if len(t.Instructions) > max {
-		return NewErrorResponse("MPInstructions", "Instruções não podem passar de 220 caracteres")
+		return NewErrorResponse("MPInstructions", fmt.Sprintf("Instruções não podem passar de %d caracteres", max))
 	}
 	return nil
 }
