@@ -64,11 +64,6 @@ func (t *Title) IsAmountInCentsValid() error {
 	return nil
 }
 
-// GetCreateDate Retorna a data de crição do título
-func (t *Title) GetCreateDate() time.Time {
-	return t.CreateDate
-}
-
 func parseDate(t string) (time.Time, error) {
 	date, err := time.Parse("2006-01-02", t)
 	if err != nil {
