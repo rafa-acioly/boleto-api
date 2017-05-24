@@ -25,7 +25,7 @@ type Log struct {
 
 //Install instala o "servico" de log do SEQ
 func Install() error {
-	_logger, err := goseq.GetLogger(config.Get().SEQUrl, config.Get().SEQAPIKey, 40)
+	_logger, err := goseq.GetLogger(config.Get().SEQUrl, config.Get().SEQAPIKey)
 	if err != nil {
 		return err
 	}
@@ -124,9 +124,8 @@ func (l Log) defaultProperties(messageType string, content interface{}) goseq.Pr
 
 //Close fecha a conexao com o SEQ
 func Close() {
-	if config.Get().DisableLog {
-		return
+	if !config.Get().DisableLog && logger.Async {
+		fmt.Println("Closing SEQ Connection")
+		logger.Close()
 	}
-	fmt.Println("Closing SEQ Connection")
-	logger.Close()
 }
