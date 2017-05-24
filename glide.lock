@@ -30,7 +30,7 @@ imports:
 - name: github.com/mattn/go-isatty
   version: fc9e8d8ef48496124e79ae0df75490096eccf6fe
 - name: github.com/mundipagg/goseq
-  version: 1cc9c18494a98432fe441990cd63bfe457a80597
+  version: 176bf5a6c48e4195cc8dee503981ec47c7f9e7be
 - name: github.com/Pallinder/go-randomdata
   version: 8c3362a5e6781e0d1046f1267b3c1f19b2cde334
 - name: github.com/PMoneda/gonnie
