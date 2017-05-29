@@ -87,8 +87,12 @@ func (b bankBB) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRespo
 	r = r.To("logseq://?type=request&url="+url, b.log)
 	r = r.To(url, map[string]string{"method": "POST", "insecureSkipVerify": "true"})
 	r = r.To("logseq://?type=response&url="+url, b.log)
-	r = r.To("transform://?format=xml", letters.GetBBregisterLetter(), letters.GetRegisterBoletoAPIResponseTmpl(), tmpl.GetFuncMaps())
-	r = r.To("unmarshall://?format=json", new(models.BoletoResponse))
+	ch := r.Choice()
+	ch = ch.When(gonnie.Header("status").IsEqualTo("200"))
+	ch = ch.To("transform://?format=xml", letters.GetBBregisterLetter(), letters.GetRegisterBoletoAPIResponseTmpl(), tmpl.GetFuncMaps())
+	ch = ch.To("unmarshall://?format=json", new(models.BoletoResponse))
+	ch = ch.Otherwise()
+	ch = ch.To("logseq://?type=response&url="+url, b.log).To("apierro://")
 	body := r.GetBody().(*models.BoletoResponse)
 	return *body, nil
 }
