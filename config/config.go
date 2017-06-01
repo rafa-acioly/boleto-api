@@ -20,6 +20,7 @@ type Config struct {
 	URLBBRegisterBoleto    string
 	URLCaixaRegisterBoleto string
 	URLBBToken             string
+	URLCiti                string
 	MockMode               bool
 	DevMode                bool
 	AppURL                 string
@@ -53,6 +54,7 @@ func Install(mockMode, devMode, disableLog bool) {
 		URLBBRegisterBoleto:    os.Getenv("URL_BB_REGISTER_BOLETO"),
 		URLCaixaRegisterBoleto: os.Getenv("URL_CAIXA"),
 		URLBBToken:             os.Getenv("URL_BB_TOKEN"),
+		URLCiti:                os.Getenv("URL_CITI"),
 		MockMode:               mockMode,
 		AppURL:                 os.Getenv("APP_URL"),
 		ElasticURL:             os.Getenv("ELASTIC_URL"),

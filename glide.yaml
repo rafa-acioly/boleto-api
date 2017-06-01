@@ -18,3 +18,4 @@ import:
 - package: github.com/jtolds/gls
   version: ~4.2.0
 - package: github.com/PMoneda/gonnie
+  version: v0.1

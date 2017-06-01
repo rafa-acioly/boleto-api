@@ -10,4 +10,5 @@ func InstallV1(router *gin.Engine) {
 	v1.Use(ReturnHeaders())
 	v1.Use(ParseBoleto())
 	v1.POST("/boleto/register", registerBoleto)
+	v1.GET("/boleto/:id", getBoletoByID)
 }
