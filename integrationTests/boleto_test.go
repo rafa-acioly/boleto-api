@@ -283,7 +283,7 @@ func TestRegisterBoletoRequest(t *testing.T) {
 		So(len(boleto.Errors), ShouldBeGreaterThan, 0)
 	})
 
-	Convey("Deve-se retornar um erro quando o campo de instruções é tem mais de 40 caracteres", t, func() {
+	Convey("Deve-se retornar um erro quando o campo de instruções tem mais de 40 caracteres", t, func() {
 		m := getModelBody(models.Caixa, 200)
 		m.Title.Instructions = "Senhor caixa, após o vencimento não aceitar o pagamento"
 		response, st, err := util.Post("http://localhost:3000/v1/boleto/register", stringify(m), nil)
