@@ -13,8 +13,9 @@ func init() {
 }
 
 //Get item do cache
-func Get(key string) interface{} {
-	return memcache[key]
+func Get(key string) (interface{}, bool) {
+	k, ok := memcache[key]
+	return k, ok
 }
 
 //Set item no cache

@@ -26,21 +26,26 @@ func InstallRestAPI() {
 }
 
 func checkError(c *gin.Context, err error, l *log.Log) bool {
+
 	if err != nil {
 		errResp := models.BoletoResponse{
 			Errors: models.NewErrors(),
 		}
-		if e, ok := err.(models.IErrorResponse); ok {
-			errResp.Errors.Append(e.ErrorCode(), e.Error())
+		switch v := err.(type) {
+		case models.IErrorResponse:
+			errResp.Errors.Append(v.ErrorCode(), v.Error())
 			c.JSON(http.StatusBadRequest, errResp)
-		} else if e, ok := err.(models.IFormatError); ok {
-			errResp.Errors.Append("MP400", e.Error())
+		case models.IHttpNotFound:
+			errResp.Errors.Append("MP404", v.Error())
+			c.JSON(http.StatusNotFound, errResp)
+		case models.IFormatError:
+			errResp.Errors.Append("MP400", v.Error())
 			c.JSON(http.StatusBadRequest, errResp)
-		} else if e, ok := err.(models.IServerError); ok {
+		case models.IServerError:
 			errResp.Errors.Append("MP500", "Erro interno")
-			l.Fatal(e.Error(), e.Message())
+			l.Fatal(v.Error(), v.Message())
 			c.JSON(http.StatusInternalServerError, errResp)
-		} else {
+		default:
 			l.Fatal(err.Error(), "")
 			errResp.Errors.Append("MP500", "Erro interno")
 			c.JSON(http.StatusInternalServerError, errResp)

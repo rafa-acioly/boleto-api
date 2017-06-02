@@ -12,6 +12,17 @@ type IServerError interface {
 	Message() string
 }
 
+// IHttpNotFound interface para implementar Error
+type IHttpNotFound interface {
+	Error() string
+	Message() string
+}
+
+type IGatewayTimeout interface {
+	Error() string
+	Message() string
+}
+
 // IFormatError interface para implementar Error
 type IFormatError interface {
 	Error() string
@@ -45,6 +56,48 @@ func (e InternalServerError) Error() string {
 //NewInternalServerError cria um novo objeto InternalServerError a partir de uma mensagem original e final
 func NewInternalServerError(err, msg string) InternalServerError {
 	return InternalServerError{Err: err, Msg: msg}
+}
+
+// HttpNotFound objeto para erros 404 da aplicação: ex boleto não encontrado
+type HttpNotFound struct {
+	Err string
+	Msg string
+}
+
+// Message retorna a mensagem final para o usuário
+func (e HttpNotFound) Message() string {
+	return e.Msg
+}
+
+// Error retorna o erro original
+func (e HttpNotFound) Error() string {
+	return e.Err
+}
+
+//NewHttpNotFound cria um novo objeto NewHttpNotFound a partir de uma mensagem original e final
+func NewHttpNotFound(err, msg string) HttpNotFound {
+	return HttpNotFound{Err: err, Msg: msg}
+}
+
+// GatewayTimeout objeto para erros 404 da aplicação: ex boleto não encontrado
+type GatewayTimeout struct {
+	Err string
+	Msg string
+}
+
+// Message retorna a mensagem final para o usuário
+func (e GatewayTimeout) Message() string {
+	return e.Msg
+}
+
+// Error retorna o erro original
+func (e GatewayTimeout) Error() string {
+	return e.Err
+}
+
+//NewGatewayTimeout cria um novo objeto NewGatewayTimeout a partir de uma mensagem original e final
+func NewGatewayTimeout(err, msg string) GatewayTimeout {
+	return GatewayTimeout{Err: err, Msg: msg}
 }
 
 //NewErrorResponse cria um novo objeto de ErrorReponse com código e mensagem

@@ -23,6 +23,8 @@ func Get(number models.BankNumber) (Bank, error) {
 		return newBB(), nil
 	case models.Caixa:
 		return newCaixa(), nil
+	case models.Citibank:
+		return newCiti(), nil
 	default:
 		return nil, models.NewErrorResponse("MPBankNumber", fmt.Sprintf("Banco %d não existe", number))
 	}

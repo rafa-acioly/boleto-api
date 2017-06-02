@@ -5,8 +5,6 @@ import (
 
 	wkhtmltopdf "github.com/SebastiaanKlippert/go-wkhtmltopdf"
 
-	"errors"
-
 	"strings"
 
 	"encoding/json"
@@ -46,10 +44,13 @@ func registerBoleto(c *gin.Context) {
 	if checkError(c, errR, lg) {
 		return
 	}
-
 	st := http.StatusOK
 	if len(resp.Errors) > 0 {
-		st = http.StatusBadRequest
+		if resp.StatusCode > 0 {
+			st = resp.StatusCode
+		} else {
+			st = http.StatusBadRequest
+		}
 	} else {
 		boView := models.NewBoletoView(boleto, resp.BarCodeNumber, resp.DigitableLine)
 		resp.Links = boView.CreateLinks()
@@ -64,7 +65,7 @@ func registerBoleto(c *gin.Context) {
 }
 
 func saveBoletoJSONFile(boView models.BoletoView, lg *log.Log, err error) {
-	lg.Warn(err.Error(), "I could not save your boleto at Database")
+	lg.Warn(err.Error(), "Boleto cannot be saved at Database")
 	fd, errOpen := os.Create(config.Get().BoletoJSONFileStore + "/boleto_" + boView.UID + ".json")
 	if errOpen != nil {
 		lg.Fatal(boView, "[BOLETO_ONLINE_CONTINGENCIA]"+errOpen.Error())
@@ -91,12 +92,12 @@ func getBoleto(c *gin.Context) {
 		uid := util.Decrypt(id)
 		fd, err := os.Open(config.Get().BoletoJSONFileStore + "/boleto_" + uid + ".json")
 		if err != nil {
-			checkError(c, errors.New("Boleto não encontrado na base de dados"), log.CreateLog())
+			checkError(c, models.NewHttpNotFound("Boleto não encontrado na base de dados", "MP404"), log.CreateLog())
 			return
 		}
 		data, errR := ioutil.ReadAll(fd)
 		if errR != nil {
-			checkError(c, errors.New("Boleto não encontrado na base de dados"), log.CreateLog())
+			checkError(c, models.NewHttpNotFound("Boleto não encontrado na base de dados", "MP404"), log.CreateLog())
 			return
 		}
 		json.Unmarshal(data, &bleto)
@@ -129,4 +130,18 @@ func toPdf(page string) ([]byte, error) {
 		return nil, err
 	}
 	return pdfg.Bytes(), nil
+}
+
+func getBoletoByID(c *gin.Context) {
+	id := c.Param("id")
+	db, errDb := db.GetDB()
+	if errDb != nil {
+		checkError(c, models.NewInternalServerError("MP500", "Erro interno"), log.CreateLog())
+	}
+	boleto, err := db.GetBoletoByID(id)
+	if err != nil {
+		checkError(c, models.NewHttpNotFound("MP404", "Boleto não encontrado"), nil)
+		return
+	}
+	c.JSON(http.StatusOK, boleto)
 }

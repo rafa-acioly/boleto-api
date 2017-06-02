@@ -14,9 +14,14 @@ type mongoDb struct {
 	m sync.RWMutex
 }
 
+var dbName = "boletoapi"
+
 //CreateMongo cria uma nova intancia de conexão com o mongodb
 func CreateMongo() (DB, error) {
 	db := new(mongoDb)
+	if config.Get().MockMode {
+		dbName = "boletoapi_mock"
+	}
 	return db, nil
 }
 
@@ -30,7 +35,7 @@ func (e *mongoDb) SaveBoleto(boleto models.BoletoView) error {
 		return models.NewInternalServerError(err.Error(), "Falha ao conectar com o banco de dados")
 	}
 	defer session.Close()
-	c := session.DB("boletoapi").C("boletos")
+	c := session.DB(dbName).C("boletos")
 	err = c.Insert(boleto)
 	return err
 }
@@ -45,7 +50,7 @@ func (e *mongoDb) GetBoletoByID(id string) (models.BoletoView, error) {
 		return result, models.NewInternalServerError(err.Error(), "Falha ao conectar com o banco de dados")
 	}
 	defer session.Close()
-	c := session.DB("boletoapi").C("boletos")
+	c := session.DB(dbName).C("boletos")
 	errF := c.Find(bson.M{"id": id}).One(&result)
 	if errF != nil {
 		return models.BoletoView{}, err

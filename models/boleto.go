@@ -7,11 +7,13 @@ import (
 	"bitbucket.org/mundipagg/boletoapi/config"
 	"bitbucket.org/mundipagg/boletoapi/util"
 
+	"github.com/PMoneda/gonnie"
 	"github.com/google/uuid"
 
 	"fmt"
 
 	"encoding/json"
+	"strconv"
 )
 
 // BoletoRequest entidade de entrada para o boleto
@@ -76,8 +78,16 @@ func NewBoletoView(boleto BoletoRequest, barcode string, digitableLine string) B
 
 //EncodeURL tranforma o boleto view na forma que será escrito na url
 func (b *BoletoView) EncodeURL(format string) string {
-	url := fmt.Sprintf("%s?fmt=%s&id=%s", config.Get().AppURL, format, b.ID)
-	return url
+	var _url string
+	switch b.BankID {
+	case Citibank:
+		citiURL := "https://corporate.brazil.citibank.com/ebillpayer/jspInformaDadosConsulta.jsp"
+		query := "?seuNumero=%d&cpfSacado=%s&cpfCedente=%s"
+		_url = citiURL + fmt.Sprintf(query, b.Boleto.Title.OurNumber, b.Boleto.Recipient.Document.Number, b.Boleto.Buyer.Document.Number)
+	default:
+		_url = fmt.Sprintf("%s?fmt=%s&id=%s", config.Get().AppURL, format, b.ID)
+	}
+	return _url
 }
 
 //CreateLinks cria a lista de links com os formatos suportados
@@ -159,4 +169,27 @@ const (
 
 	// Caixa constante do Caixa
 	Caixa = 104
+
+	// Citi constante do Citi
+	Citibank = 745
 )
+
+// BoletoErrorConector é um connector gonnie para criar um objeto de erro
+func BoletoErrorConector(next func(), e *gonnie.ExchangeMessage, out gonnie.Message, u gonnie.Uri, params ...interface{}) error {
+	b := e.GetBody().(string)
+	if b == "" {
+		b = "Erro interno"
+	}
+	st, err := strconv.Atoi(e.GetHeader("status"))
+	if err != nil {
+		st = 0
+	}
+	resp := BoletoResponse{}
+	resp.Errors = make(Errors, 0, 0)
+	resp.Errors.Append("MP"+e.GetHeader("status"), b)
+	resp.StatusCode = st
+	e.SetBody(resp)
+	out <- e
+	next()
+	return nil
+}
