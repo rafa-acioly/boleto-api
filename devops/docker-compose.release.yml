@@ -19,6 +19,8 @@ services:
      - MONGODB_URL=#{CONF_MONGODB_URL}#
      - APP_URL=#{CONF_APP_URL}#
      - BOLETO_JSON_STORE=#{CONF_BOLETO_JSON_STORE}#
+     - URL_CAIXA=#{CONF_URL_CAIXA}#
+     - URL_CITI=#{CONF_URL_CITI}#
   mongodb:
     image: mongo:latest
     container_name: "mongodb"
