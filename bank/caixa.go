@@ -50,11 +50,11 @@ func (b bankCaixa) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRe
 	ch = ch.To("transform://?format=xml", from, to, tmpl.GetFuncMaps())
 	ch = ch.Otherwise()
 	ch = ch.To("logseq://?type=response&url="+urlCaixa, b.log).To("apierro://")
+
 	switch t := bod.GetBody().(type) {
 	case string:
-		response := models.BoletoResponse{}
-		util.ParseJSON(t, &response)
-		return response, nil
+		response := util.ParseJSON(t, new(models.BoletoResponse)).(*models.BoletoResponse)
+		return *response, nil
 	case models.BoletoResponse:
 		return t, nil
 	}

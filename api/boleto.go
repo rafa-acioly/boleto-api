@@ -131,3 +131,17 @@ func toPdf(page string) ([]byte, error) {
 	}
 	return pdfg.Bytes(), nil
 }
+
+func getBoletoByID(c *gin.Context) {
+	id := c.Param("id")
+	db, errDb := db.GetDB()
+	if errDb != nil {
+		checkError(c, models.NewInternalServerError("MP500", "Erro interno"), log.CreateLog())
+	}
+	boleto, err := db.GetBoletoByID(id)
+	if err != nil {
+		checkError(c, models.NewHttpNotFound("MP404", "Boleto não encontrado"), nil)
+		return
+	}
+	c.JSON(http.StatusOK, boleto)
+}

@@ -19,6 +19,8 @@ services:
      - MONGODB_URL=10.0.2.15:27017
      - APP_URL=http://localhost:8080/boleto
      - BOLETO_JSON_STORE=/home/upMongo
+     - URL_CAIXA=https://des.barramento.caixa.gov.br/sibar/ManutencaoCobrancaBancaria/Boleto/Externo
+     - URL_CITI=https://citigroupsoa.citigroup.com/comercioeletronico/registerboleto/RegisterBoletoSOAP     
   mongodb:
         image: mongo:latest
         container_name: "mongodb"
