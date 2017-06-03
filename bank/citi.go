@@ -1,7 +1,7 @@
 package bank
 
 import (
-	"github.com/PMoneda/gonnie"
+	"github.com/PMoneda/flow"
 
 	"bitbucket.org/mundipagg/boletoapi/config"
 	"bitbucket.org/mundipagg/boletoapi/letters"
@@ -33,7 +33,7 @@ func (b bankCiti) Log() *log.Log {
 	return b.log
 }
 func (b bankCiti) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
-	r := gonnie.NewPipe()
+	r := flow.NewPipe()
 	serviceURL := config.Get().URLCiti
 	from := letters.GetResponseTemplateCiti()
 	to := letters.GetRegisterBoletoAPIResponseTmpl()
@@ -42,7 +42,7 @@ func (b bankCiti) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRes
 	bod = bod.To(serviceURL, map[string]string{"method": "POST", "insecureSkipVerify": "true"})
 	bod = bod.To("logseq://?type=response&url="+serviceURL, b.log)
 	ch := bod.Choice()
-	ch = ch.When(gonnie.Header("status").IsEqualTo("200"))
+	ch = ch.When(flow.Header("status").IsEqualTo("200"))
 	ch = ch.To("transform://?format=xml", from, to, tmpl.GetFuncMaps())
 	ch = ch.Otherwise()
 	ch = ch.To("logseq://?type=response&url="+serviceURL, b.log).To("apierro://")

@@ -7,7 +7,7 @@ import (
 	"bitbucket.org/mundipagg/boletoapi/config"
 	"bitbucket.org/mundipagg/boletoapi/util"
 
-	"github.com/PMoneda/gonnie"
+	"github.com/PMoneda/flow"
 	"github.com/google/uuid"
 
 	"fmt"
@@ -174,8 +174,8 @@ const (
 	Citibank = 745
 )
 
-// BoletoErrorConector é um connector gonnie para criar um objeto de erro
-func BoletoErrorConector(next func(), e *gonnie.ExchangeMessage, out gonnie.Message, u gonnie.Uri, params ...interface{}) error {
+// BoletoErrorConector é um connector flow para criar um objeto de erro
+func BoletoErrorConector(next func(), e *flow.ExchangeMessage, out flow.Message, u flow.URI, params ...interface{}) error {
 	b := e.GetBody().(string)
 	if b == "" {
 		b = "Erro interno"
