@@ -35,8 +35,6 @@ imports:
   version: 8c3362a5e6781e0d1046f1267b3c1f19b2cde334
 - name: github.com/PMoneda/flow
   version: 134026d5592fa5ecac53408f2c79d9051f51d06a
-- name: github.com/PMoneda/gonnie
-  version: 25388e1f8037c79a491a1119d73b25e70faf5c46
 - name: github.com/SebastiaanKlippert/go-wkhtmltopdf
   version: 476a1aaadffdb573c921d380cd43a956cef430d4
 - name: github.com/smartystreets/goconvey
