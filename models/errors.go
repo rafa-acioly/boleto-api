@@ -59,7 +59,7 @@ func NewInternalServerError(err, msg string) InternalServerError {
 	return InternalServerError{Err: err, Msg: msg}
 }
 
-// HttpNotFound objeto para erros 404 da aplicação: ex boleto nÃ£o encontrado
+// HttpNotFound objeto para erros 404 da aplicação: ex boleto não encontrado
 type HttpNotFound struct {
 	Err string
 	Msg string
@@ -80,7 +80,7 @@ func NewHTTPNotFound(err, msg string) HttpNotFound {
 	return HttpNotFound{Err: err, Msg: msg}
 }
 
-// GatewayTimeout objeto para erros 404 da aplicação: ex boleto nÃ£o encontrado
+// GatewayTimeout objeto para erros 404 da aplicação: ex boleto não encontrado
 type GatewayTimeout struct {
 	Err string
 	Msg string
