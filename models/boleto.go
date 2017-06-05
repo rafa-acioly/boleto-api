@@ -170,7 +170,7 @@ const (
 	// Caixa constante do Caixa
 	Caixa = 104
 
-	// Citi constante do Citi
+	// Citibank constante do Citi
 	Citibank = 745
 )
 
