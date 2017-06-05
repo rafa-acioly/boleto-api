@@ -33,8 +33,8 @@ func installLog() {
 }
 
 func installflowConnectors() {
-	flow.RegisterConector("logseq", util.SeqLogConector)
-	flow.RegisterConector("apierro", models.BoletoErrorConector)
+	flow.RegisterConnector("logseq", util.SeqLogConector)
+	flow.RegisterConnector("apierro", models.BoletoErrorConector)
 }
 
 func configFlags(devMode, mockMode, disableLog bool) {

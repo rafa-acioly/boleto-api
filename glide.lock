@@ -1,6 +1,8 @@
-hash: 10a60bf1f8e583ee95d8fa0836b5e8cccac13becd9f80abec6e31964c1f31527
-updated: 2017-06-03T11:47:04.547135855-03:00
+hash: 202b9ec593b3998657dff1e7387c844181f15ffcadfd7b2740ca568c17dfaa84
+updated: 2017-06-05T17:14:11.060975918-03:00
 imports:
+- name: github.com/andybalholm/cascadia
+  version: 349dd0209470eabd9514242c688c403c0926d266
 - name: github.com/beevik/etree
   version: abae5fc32af8862e420d52e686a7e6ec14111685
 - name: github.com/boombuler/barcode
@@ -20,7 +22,7 @@ imports:
 - name: github.com/google/uuid
   version: 064e2069ce9c359c118179501254f67d7d37ba24
 - name: github.com/Jeffail/gabs
-  version: c9fb5b700cddb62013b2ee9dfc9ce011caea55e0
+  version: 2a3aa15961d5fee6047b8151b67ac2f08ba2c48c
 - name: github.com/jtolds/gls
   version: 8ddce2a84170772b95dd5d576c48d517b22cac63
 - name: github.com/jung-kurt/gofpdf
@@ -34,7 +36,9 @@ imports:
 - name: github.com/Pallinder/go-randomdata
   version: 8c3362a5e6781e0d1046f1267b3c1f19b2cde334
 - name: github.com/PMoneda/flow
-  version: 134026d5592fa5ecac53408f2c79d9051f51d06a
+  version: 69d3942f6f0cb6b9a9c0ebc6ead1e3c5354cdb58
+- name: github.com/PuerkitoBio/goquery
+  version: e1271ee34c6a305e38566ecd27ae374944907ee9
 - name: github.com/SebastiaanKlippert/go-wkhtmltopdf
   version: 476a1aaadffdb573c921d380cd43a956cef430d4
 - name: github.com/smartystreets/goconvey
@@ -47,6 +51,8 @@ imports:
   version: f315505cf3349909cdf013ea56690da34e96a451
   subpackages:
   - context
+  - html
+  - html/atom
 - name: golang.org/x/sys
   version: 9ccfe848b9db8435a24c424abbc07a921adf1df5
   subpackages:
