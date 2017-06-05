@@ -3,7 +3,7 @@ package bank
 import (
 	"errors"
 
-	"github.com/PMoneda/gonnie"
+	"github.com/PMoneda/flow"
 
 	"bitbucket.org/mundipagg/boletoapi/config"
 	"bitbucket.org/mundipagg/boletoapi/letters"
@@ -46,14 +46,14 @@ func (b *bankBB) login(boleto *models.BoletoRequest) (string, error) {
 		Error            string `json:"error"`
 		ErrorDescription string `json:"error_description"`
 	}
-	r := gonnie.NewPipe()
+	r := flow.NewPipe()
 	url := config.Get().URLBBToken
 	from, resp := letters.GetBBAuthLetters()
 	bod := r.From("message://?source=inline", boleto, from, tmpl.GetFuncMaps())
 	r = r.To("logseq://?type=request&url="+url, b.log)
 	bod = bod.To(url, map[string]string{"method": "POST", "insecureSkipVerify": "true"})
 	r = r.To("logseq://?type=response&url="+url, b.log)
-	ch := bod.Choice().When(gonnie.Header("status").IsEqualTo("200")).To("transform://?format=json", resp, `{{.authToken}}`)
+	ch := bod.Choice().When(flow.Header("status").IsEqualTo("200")).To("transform://?format=json", resp, `{{.authToken}}`)
 	ch = ch.Otherwise().To("unmarshall://?format=json", new(errorAuth))
 	result := bod.GetBody()
 	switch t := result.(type) {
@@ -80,7 +80,7 @@ func (b bankBB) ProcessBoleto(boleto *models.BoletoRequest) (models.BoletoRespon
 }
 
 func (b bankBB) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
-	r := gonnie.NewPipe()
+	r := flow.NewPipe()
 	url := config.Get().URLBBRegisterBoleto
 	from := letters.GetRegisterBoletoBBTmpl()
 	r = r.From("message://?source=inline", boleto, from, tmpl.GetFuncMaps())
@@ -88,7 +88,7 @@ func (b bankBB) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRespo
 	r = r.To(url, map[string]string{"method": "POST", "insecureSkipVerify": "true"})
 	r = r.To("logseq://?type=response&url="+url, b.log)
 	ch := r.Choice()
-	ch = ch.When(gonnie.Header("status").IsEqualTo("200"))
+	ch = ch.When(flow.Header("status").IsEqualTo("200"))
 	ch = ch.To("transform://?format=xml", letters.GetBBregisterLetter(), letters.GetRegisterBoletoAPIResponseTmpl(), tmpl.GetFuncMaps())
 	ch = ch.To("unmarshall://?format=json", new(models.BoletoResponse))
 	ch = ch.Otherwise()

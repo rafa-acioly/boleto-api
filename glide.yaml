@@ -17,5 +17,5 @@ import:
   version: ~1.6.2
 - package: github.com/jtolds/gls
   version: ~4.2.0
-- package: github.com/PMoneda/gonnie
-  version: v0.1
+- package: github.com/PMoneda/flow
+  version: ~0.2.0
