@@ -6,11 +6,11 @@ import (
 
 	"bitbucket.org/mundipagg/boletoapi/log"
 
-	"github.com/PMoneda/gonnie"
+	"github.com/PMoneda/flow"
 )
 
-// SeqLogConector é um connector gonnie para logar no Seq
-func SeqLogConector(next func(), e *gonnie.ExchangeMessage, out gonnie.Message, u gonnie.Uri, params ...interface{}) error {
+// SeqLogConector é um connector flow para logar no Seq
+func SeqLogConector(next func(), e *flow.ExchangeMessage, out flow.Message, u flow.URI, params ...interface{}) error {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println("Fudeu!")

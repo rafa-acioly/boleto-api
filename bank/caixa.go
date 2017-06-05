@@ -3,7 +3,7 @@ package bank
 import (
 	"fmt"
 
-	"github.com/PMoneda/gonnie"
+	"github.com/PMoneda/flow"
 
 	"bitbucket.org/mundipagg/boletoapi/config"
 	"bitbucket.org/mundipagg/boletoapi/letters"
@@ -38,16 +38,16 @@ func (b bankCaixa) Log() *log.Log {
 	return b.log
 }
 func (b bankCaixa) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
-	r := gonnie.NewPipe()
+	r := flow.NewPipe()
 	urlCaixa := config.Get().URLCaixaRegisterBoleto
-	from := gonnie.Transform(letters.GetResponseTemplateCaixa())
-	to := gonnie.Transform(letters.GetRegisterBoletoAPIResponseTmpl())
+	from := flow.Transform(letters.GetResponseTemplateCaixa())
+	to := flow.Transform(letters.GetRegisterBoletoAPIResponseTmpl())
 	bod := r.From("message://?source=inline", boleto, letters.GetRegisterBoletoCaixaTmpl(), tmpl.GetFuncMaps())
 	bod = bod.To("logseq://?type=request&url="+urlCaixa, b.log)
 	bod = bod.To(urlCaixa, map[string]string{"method": "POST", "insecureSkipVerify": "true"})
 	bod = bod.To("logseq://?type=response&url="+urlCaixa, b.log)
 	ch := bod.Choice()
-	ch = ch.When(gonnie.Header("status").IsEqualTo("200"))
+	ch = ch.When(flow.Header("status").IsEqualTo("200"))
 	ch = ch.To("transform://?format=xml", from, to, tmpl.GetFuncMaps())
 	ch = ch.Otherwise()
 	ch = ch.To("logseq://?type=response&url="+urlCaixa, b.log).To("apierro://")

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/PMoneda/gonnie"
+	"github.com/PMoneda/flow"
 
 	"bitbucket.org/mundipagg/boletoapi/api"
 	"bitbucket.org/mundipagg/boletoapi/config"
@@ -17,7 +17,7 @@ import (
 //Run starts boleto api Application
 func Run(devMode, mockMode, disableLog bool) {
 	configFlags(devMode, mockMode, disableLog)
-	installGonnieConnectors()
+	installflowConnectors()
 	robot.GoRobots()
 	installLog()
 	api.InstallRestAPI()
@@ -32,9 +32,9 @@ func installLog() {
 	}
 }
 
-func installGonnieConnectors() {
-	gonnie.RegisterConector("logseq", util.SeqLogConector)
-	gonnie.RegisterConector("apierro", models.BoletoErrorConector)
+func installflowConnectors() {
+	flow.RegisterConector("logseq", util.SeqLogConector)
+	flow.RegisterConector("apierro", models.BoletoErrorConector)
 }
 
 func configFlags(devMode, mockMode, disableLog bool) {
