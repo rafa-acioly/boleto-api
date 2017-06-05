@@ -14,8 +14,8 @@ import:
 - package: gopkg.in/mgo.v2
 - package: github.com/SebastiaanKlippert/go-wkhtmltopdf
 - package: github.com/smartystreets/goconvey
-  version: ~1.6.2
+  version: v1.6.2
 - package: github.com/jtolds/gls
-  version: ~4.2.0
+  version: v4.2.0
 - package: github.com/PMoneda/flow
-  version: ~0.2.0
+  version: v0.2.2

@@ -18,6 +18,7 @@ type IHttpNotFound interface {
 	Message() string
 }
 
+// IGatewayTimeout interface para timeout
 type IGatewayTimeout interface {
 	Error() string
 	Message() string
@@ -74,8 +75,8 @@ func (e HttpNotFound) Error() string {
 	return e.Err
 }
 
-//NewHttpNotFound cria um novo objeto NewHttpNotFound a partir de uma mensagem original e final
-func NewHttpNotFound(err, msg string) HttpNotFound {
+//NewHTTPNotFound cria um novo objeto NewHttpNotFound a partir de uma mensagem original e final
+func NewHTTPNotFound(err, msg string) HttpNotFound {
 	return HttpNotFound{Err: err, Msg: msg}
 }
 

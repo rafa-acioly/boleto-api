@@ -22,7 +22,7 @@ type Title struct {
 //ValidateInstructionsLength valida se texto das instruções possui quantidade de caracteres corretos
 func (t Title) ValidateInstructionsLength(max int) error {
 	if len(t.Instructions) > max {
-		return NewErrorResponse("MPInstructions", "Instruções não podem passar de 220 caracteres")
+		return NewErrorResponse("MPInstructions", fmt.Sprintf("Instruções não podem passar de %d caracteres", max))
 	}
 	return nil
 }
@@ -62,11 +62,6 @@ func (t *Title) IsAmountInCentsValid() error {
 		return NewErrorResponse("MPAmountInCents", "Valor não pode ser menor do que 1 centavo")
 	}
 	return nil
-}
-
-// GetCreateDate Retorna a data de crição do título
-func (t *Title) GetCreateDate() time.Time {
-	return t.CreateDate
 }
 
 func parseDate(t string) (time.Time, error) {

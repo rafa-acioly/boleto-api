@@ -92,12 +92,12 @@ func getBoleto(c *gin.Context) {
 		uid := util.Decrypt(id)
 		fd, err := os.Open(config.Get().BoletoJSONFileStore + "/boleto_" + uid + ".json")
 		if err != nil {
-			checkError(c, models.NewHttpNotFound("Boleto não encontrado na base de dados", "MP404"), log.CreateLog())
+			checkError(c, models.NewHTTPNotFound("Boleto não encontrado na base de dados", "MP404"), log.CreateLog())
 			return
 		}
 		data, errR := ioutil.ReadAll(fd)
 		if errR != nil {
-			checkError(c, models.NewHttpNotFound("Boleto não encontrado na base de dados", "MP404"), log.CreateLog())
+			checkError(c, models.NewHTTPNotFound("Boleto não encontrado na base de dados", "MP404"), log.CreateLog())
 			return
 		}
 		json.Unmarshal(data, &bleto)
@@ -140,7 +140,7 @@ func getBoletoByID(c *gin.Context) {
 	}
 	boleto, err := db.GetBoletoByID(id)
 	if err != nil {
-		checkError(c, models.NewHttpNotFound("MP404", "Boleto não encontrado"), nil)
+		checkError(c, models.NewHTTPNotFound("MP404", "Boleto não encontrado"), nil)
 		return
 	}
 	c.JSON(http.StatusOK, boleto)
