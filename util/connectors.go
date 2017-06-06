@@ -2,7 +2,6 @@ package util
 
 import (
 	"fmt"
-	"os"
 
 	"bitbucket.org/mundipagg/boletoapi/log"
 
@@ -13,8 +12,7 @@ import (
 func SeqLogConector(next func(), e *flow.ExchangeMessage, out flow.Message, u flow.URI, params ...interface{}) error {
 	defer func() {
 		if r := recover(); r != nil {
-			fmt.Println("Fudeu!")
-			os.Exit(-20)
+			fmt.Println(r)
 		}
 	}()
 	var b string
@@ -25,8 +23,10 @@ func SeqLogConector(next func(), e *flow.ExchangeMessage, out flow.Message, u fl
 		} else {
 			b = t
 		}
+	case error:
+		b = t.Error()
 	default:
-		b = "Deu ruim"
+		b = fmt.Sprintln(t)
 	}
 	if len(params) > 0 {
 		l := params[0].(*log.Log)
