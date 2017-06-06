@@ -59,6 +59,8 @@ func (b *bankBB) login(boleto *models.BoletoRequest) (string, error) {
 	switch t := result.(type) {
 	case string:
 		return t, nil
+	case error:
+		return "", t
 	case *errorAuth:
 		return "", errors.New(t.ErrorDescription)
 	}
