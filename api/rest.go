@@ -3,10 +3,10 @@ package api
 import (
 	"net/http"
 
-	"bitbucket.org/mundipagg/boletoapi/config"
-	"bitbucket.org/mundipagg/boletoapi/log"
+	"github.com/mundipagg/boleto-api/config"
+	"github.com/mundipagg/boleto-api/log"
 
-	"bitbucket.org/mundipagg/boletoapi/models"
+	"github.com/mundipagg/boleto-api/models"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 

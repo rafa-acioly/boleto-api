@@ -24,9 +24,9 @@ O Go pode ser baixado [aqui](https://golang.org/dl/)
 
 Antes de fazer o clone do Projeto, deve ser criado o caminho de pastas dentro do $GOPATH
 
-	% mkdir -p "$GOPATH/src/bitbucket.org/mundipagg"
-	% cd $GOPATH/src/bitbucket.org/mundipagg 
-	% git clone https://bitbucket.org/mundipagg/boletoapi
+	% mkdir -p "$GOPATH/src/github.com/mundipagg"
+	% cd $GOPATH/src/github.com/mundipagg 
+	% git clone https://github.com/mundipagg/boleto-api
 
 Antes de compilar a aplicação deve-se instalar o [Glide](http://glide.sh/) que é o gerenciador de dependências da aplicação.
 
@@ -46,27 +46,27 @@ Ex:
 
 Linux (*NIX):
 
-	% ./boletoapi
+	% ./boleto-api
 	
 Windows:
 
-	% boletoapi.exe
+	% boleto-api.exe
 
 Se você quiser rodar a API em modo dev, que irá carregar todas as variáveis de ambiente padrão, você deve executar a aplicação da seguinte forma:
 
-	% ./boletoapi -dev
+	% ./boleto-api -dev
 
 Caso queira executar a aplicação em modo mock, para não realizar diretamente a integração com o banco e usar uma base de dados em memória, deve-se usar a opção mock:
 
-	% ./boletoapi -mock
+	% ./boleto-api -mock
 
 Caso queira executar a aplicação com o log desligado, deve-se usar a opção -nolog:
 
-	% ./boletoapi -nolog
+	% ./boleto-api -nolog
 
 Você pode combinar essas opções como quiser e caso queira usar todas elas juntas, basta usar a opção -airplane-mode
 
-	% ./boletoapi -airplane-mode
+	% ./boleto-api -airplane-mode
 	
 
 Usando a API de boleto online
@@ -185,7 +185,7 @@ Edite o arquivo $HOME/.bashrc.sh
     export MONGODB_URL="10.0.2.15:27017"
     export APP_URL="http://localhost:8080/boleto"
 ```
-    % go build && mv boletoapi /usr/local/bin
+    % go build && mv boleto-api /usr/local/bin
 
 Desta forma a aplicação será instalada de forma local na máquina.
 
@@ -214,7 +214,7 @@ Para realizar o backup da base do MongoDB execute o seguinte comando:
     % cd devops
     % ./doBackup.sh
 
-Os backups gerados, por padrão, serão armazenados no diretório `$HOME/backups` com o nome `bck_boletoapi-YYYY-MM-DD.tar`.
+Os backups gerados, por padrão, serão armazenados no diretório `$HOME/backups` com o nome `bck_boleto-api-YYYY-MM-DD.tar`.
 Para restaurar um backup:
     
     % cd devops

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"sync"
 
-	"bitbucket.org/mundipagg/boletoapi/config"
-	"bitbucket.org/mundipagg/boletoapi/models"
+	"github.com/mundipagg/boleto-api/config"
+	"github.com/mundipagg/boleto-api/models"
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )

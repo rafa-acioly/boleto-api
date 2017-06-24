@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"bitbucket.org/mundipagg/boletoapi/models"
+	"github.com/mundipagg/boleto-api/models"
 )
 
 func caixaAccountDigitCalculator(agency, account string) string {

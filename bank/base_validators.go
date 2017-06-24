@@ -3,7 +3,7 @@ package bank
 import (
 	"strconv"
 
-	"bitbucket.org/mundipagg/boletoapi/models"
+	"github.com/mundipagg/boleto-api/models"
 )
 
 func baseValidateRecipientDocumentNumber(b interface{}) error {

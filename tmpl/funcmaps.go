@@ -10,8 +10,8 @@ import (
 
 	"fmt"
 
-	"bitbucket.org/mundipagg/boletoapi/models"
-	"bitbucket.org/mundipagg/boletoapi/util"
+	"github.com/mundipagg/boleto-api/models"
+	"github.com/mundipagg/boleto-api/util"
 )
 
 var funcMap = template.FuncMap{

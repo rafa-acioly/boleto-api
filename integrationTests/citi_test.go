@@ -5,9 +5,9 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/mundipagg/boletoapi/app"
-	"bitbucket.org/mundipagg/boletoapi/models"
-	"bitbucket.org/mundipagg/boletoapi/util"
+	"github.com/mundipagg/boleto-api/app"
+	"github.com/mundipagg/boleto-api/models"
+	"github.com/mundipagg/boleto-api/util"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

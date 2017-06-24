@@ -3,7 +3,7 @@ package util
 import (
 	"fmt"
 
-	"bitbucket.org/mundipagg/boletoapi/log"
+	"github.com/mundipagg/boleto-api/log"
 
 	"github.com/PMoneda/flow"
 )

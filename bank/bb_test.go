@@ -3,7 +3,7 @@ package bank
 import (
 	"testing"
 
-	"bitbucket.org/mundipagg/boletoapi/test"
+	"github.com/mundipagg/boleto-api/test"
 )
 
 func TestShouldCalculateAgencyDigitFromBb(t *testing.T) {

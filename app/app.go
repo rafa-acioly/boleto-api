@@ -6,12 +6,12 @@ import (
 
 	"github.com/PMoneda/flow"
 
-	"bitbucket.org/mundipagg/boletoapi/api"
-	"bitbucket.org/mundipagg/boletoapi/config"
-	"bitbucket.org/mundipagg/boletoapi/log"
-	"bitbucket.org/mundipagg/boletoapi/models"
-	"bitbucket.org/mundipagg/boletoapi/robot"
-	"bitbucket.org/mundipagg/boletoapi/util"
+	"github.com/mundipagg/boleto-api/api"
+	"github.com/mundipagg/boleto-api/config"
+	"github.com/mundipagg/boleto-api/log"
+	"github.com/mundipagg/boleto-api/models"
+	"github.com/mundipagg/boleto-api/robot"
+	"github.com/mundipagg/boleto-api/util"
 )
 
 //Run starts boleto api Application
