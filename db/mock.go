@@ -3,8 +3,8 @@ package db
 import (
 	"errors"
 
-	"bitbucket.org/mundipagg/boletoapi/cache"
-	"bitbucket.org/mundipagg/boletoapi/models"
+	"github.com/mundipagg/boleto-api/cache"
+	"github.com/mundipagg/boleto-api/models"
 )
 
 type mock struct{}

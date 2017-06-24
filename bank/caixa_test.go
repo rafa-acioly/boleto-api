@@ -3,8 +3,8 @@ package bank
 import (
 	"testing"
 
-	"bitbucket.org/mundipagg/boletoapi/models"
-	"bitbucket.org/mundipagg/boletoapi/util"
+	"github.com/mundipagg/boleto-api/models"
+	"github.com/mundipagg/boleto-api/util"
 
 	"time"
 

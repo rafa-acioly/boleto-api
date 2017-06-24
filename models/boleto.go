@@ -4,8 +4,8 @@ import (
 	"html/template"
 	"time"
 
-	"bitbucket.org/mundipagg/boletoapi/config"
-	"bitbucket.org/mundipagg/boletoapi/util"
+	"github.com/mundipagg/boleto-api/config"
+	"github.com/mundipagg/boleto-api/util"
 
 	"github.com/PMoneda/flow"
 	"github.com/google/uuid"

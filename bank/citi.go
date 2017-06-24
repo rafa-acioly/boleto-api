@@ -3,12 +3,12 @@ package bank
 import (
 	"github.com/PMoneda/flow"
 
-	"bitbucket.org/mundipagg/boletoapi/config"
-	"bitbucket.org/mundipagg/boletoapi/letters"
-	"bitbucket.org/mundipagg/boletoapi/log"
-	"bitbucket.org/mundipagg/boletoapi/models"
-	"bitbucket.org/mundipagg/boletoapi/tmpl"
-	"bitbucket.org/mundipagg/boletoapi/util"
+	"github.com/mundipagg/boleto-api/config"
+	"github.com/mundipagg/boleto-api/letters"
+	"github.com/mundipagg/boleto-api/log"
+	"github.com/mundipagg/boleto-api/models"
+	"github.com/mundipagg/boleto-api/tmpl"
+	"github.com/mundipagg/boleto-api/util"
 )
 
 type bankCiti struct {

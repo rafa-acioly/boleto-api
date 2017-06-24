@@ -3,7 +3,7 @@ package log
 import (
 	"fmt"
 
-	"bitbucket.org/mundipagg/boletoapi/config"
+	"github.com/mundipagg/boleto-api/config"
 	"github.com/mundipagg/goseq"
 )
 

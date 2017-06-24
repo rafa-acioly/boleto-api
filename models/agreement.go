@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"regexp"
 
-	"bitbucket.org/mundipagg/boletoapi/util"
+	"github.com/mundipagg/boleto-api/util"
 )
 
 // Agreement afiliação do cliente com o bano

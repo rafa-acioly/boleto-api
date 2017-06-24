@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"time"
 
-	"bitbucket.org/mundipagg/boletoapi/util"
+	"github.com/mundipagg/boleto-api/util"
 )
 
 // Title título de cobrança de entrada

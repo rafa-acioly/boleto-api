@@ -3,8 +3,8 @@ package bank
 import (
 	"fmt"
 
-	"bitbucket.org/mundipagg/boletoapi/log"
-	"bitbucket.org/mundipagg/boletoapi/models"
+	"github.com/mundipagg/boleto-api/log"
+	"github.com/mundipagg/boleto-api/models"
 )
 
 //Bank é a interface que vai oferecer os serviços em comum entre os bancos

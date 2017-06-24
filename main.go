@@ -11,10 +11,10 @@ import (
 
 	"os"
 
-	"bitbucket.org/mundipagg/boletoapi/app"
-	"bitbucket.org/mundipagg/boletoapi/config"
-	"bitbucket.org/mundipagg/boletoapi/log"
-	"bitbucket.org/mundipagg/boletoapi/robot"
+	"github.com/mundipagg/boleto-api/app"
+	"github.com/mundipagg/boleto-api/config"
+	"github.com/mundipagg/boleto-api/log"
+	"github.com/mundipagg/boleto-api/robot"
 )
 
 var (
