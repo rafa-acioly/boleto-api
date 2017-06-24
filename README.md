@@ -79,14 +79,14 @@ Pode-ser usar o [Postman](https://chrome.google.com/webstore/detail/postman/fhbj
   http://localhost:3000/v1/boleto/register \
   -d '{
     "Authentication" : {
-        "Username":"eyJpZCI6IjgwNDNiNTMtZjQ5Mi00YyIsImNvZGlnb1B1YmxpY2Fkb3IiOjEwOSwiY29kaWdvU29mdHdhcmUiOjEsInNlcXVlbmNpYWxJbnN0YWxhY2FvIjoxfQ",
-        "Password":"eyJpZCI6ImY1NzViYjgtYjBiNy00YSIsImNvZGlnb1B1YmxpY2Fkb3IiOjEwOSwiY29kaWdvU29mdHdhcmUiOjEsInNlcXVlbmNpYWxJbnN0YWxhY2FvIjoxLCJzZXF1ZW5jaWFsQ3JlZGVuY2lhbCI6MX0"
+        "Username":"user",
+        "Password":"pass"
     },
     "Agreement":{
-        "AgreementNumber":1014051,
+        "AgreementNumber":11111,
         "WalletVariation":19,
         "Wallet":17,
-        "Agency":"1233",
+        "Agency":"123",
         "AgencyDigit":"2",
         "Account":"1231231",
         "AccountDigit":"3"

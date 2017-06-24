@@ -10,8 +10,8 @@ services:
      - API_PORT=3000
      - API_VERSION=0.0.1
      - ENVIRONMENT=Development
-     - SEQ_URL=http://stglog.mundipagg.com
-     - SEQ_API_KEY=4jZzTybZ9bUHtJiPdh6
+     - SEQ_URL=http://example.mundipagg.com
+     - SEQ_API_KEY=xxxxxxxxxxxxx
      - ENABLE_REQUEST_LOG=false
      - ENABLE_PRINT_REQUEST=true
      - URL_BB_REGISTER_BOLETO=https://cobranca.desenv.bb.com.br:7101/registrarBoleto
