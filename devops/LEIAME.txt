@@ -7,8 +7,8 @@ Primeiros passos:
      - API_PORT=3000 // Esta é a porta que a aplicação vai subir dentro do container. OBS: NÃO É A PORTA QUE SERÁ EXPOSTA PELO DOCKER
      - API_VERSION=0.0.1 //Versão da aplicação
      - ENVIRONMENT=Development
-     - SEQ_URL=http://stglog.mundipagg.com/ //URL do SEQ para o registro de logs, OBS: Sem o SEQ a api não funciona!
-     - SEQ_API_KEY=4jZzTybZ9bUHtJiPdh6 //API Key do SEQ 
+     - SEQ_URL=<SEQ_URL> //URL do SEQ para o registro de logs, OBS: Sem o SEQ a api não funciona!
+     - SEQ_API_KEY=<SEQ_API_KEY> //API Key do SEQ 
      - ENABLE_REQUEST_LOG=false //Habilita o log por requisição
      - ENABLE_PRINT_REQUEST=true //Habilita o print de casa requisição com o tempo de execução geral
      - URL_BB_REGISTER_BOLETO=https://cobranca.desenv.bb.com.br:7101/registrarBoleto  //URL de registro de boleto do banco do brasil
