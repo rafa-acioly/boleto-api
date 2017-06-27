@@ -1,9 +1,9 @@
-What is the Online "Boleto" API?
+What is the Online Registered "Boleto" API?
 --------------
 
 BoletoOnline is an API for boleto's online register in banks and boleto's creation for payments.
 
-Currently, we support the banks below:
+Currently, we support the following banks:
 * Banco do Brasil
 * Caixa(coming soon)
 * Citi (coming soon)
@@ -20,26 +20,26 @@ The API was developed using GO language and therefore it is necessary to install
 
 GO can be downloaded [here](https://golang.org/dl/)
 
-Before cloning the Project, it should be created the file path inside $GOPATH
+Before cloning the Project, you should create the file path inside $GOPATH
 
 	% mkdir -p "$GOPATH/src/github.com/mundipagg"
 	% cd $GOPATH/src/github.com/mundipagg 
 	% git clone https://github.com/mundipagg/boleto-api
 
 
-Before compiling the application, it should be installed the [Glide](http://glide.sh/), which is the application dependency manager.
+Before compiling the application, you should install the [Glide](http://glide.sh/), which is the application dependency manager.
 
 After installing GO, do:
 
 	% cd devops
 	% ./build
 
-The script build.sh will download the application dependency and install wkhtmltox, necessary to the boleto's creation in PDF format.
+The build.sh script will download the application dependencies and install wkhtmltox, which is necessary to create boleto's in PDF format.
 
 Running the application
 -------------
 
-To run the API with default configuration
+Running the API with default configurations
 Eg:
 
 Linux (*NIX):
@@ -50,11 +50,11 @@ Windows:
 
 	% boleto-api.exe
 
-If you want to run the API in dev mode, which will reload all variables in standard environment, you should execute the application like this:
+If you want to run the API in dev mode, which will load all standard environment variables, you should execute the application like this:
 
 	% ./boleto-api -dev
 
-In case you want to run the application in mock mode, not using the bank integration but a local database, you should use mock option:
+In case you want to run the application in mock mode using in memory database instead of bank integration, you should use the mock option:
 
 	% ./boleto-api -mock
 
@@ -67,7 +67,7 @@ You can combine all these options and, in case you want to use them altogether, 
 	% ./boleto-api -airplane-mode
 	
 
-Using Online "Boleto" API
+Using Boleto API Online
 ------------------
 
 You can use [Postman](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop) to request the API's services or even the curl
@@ -152,7 +152,7 @@ API's success response
 }
 
 ```
-In case of any error in the register proccess, the API's response will follow the pattern below:
+The API's response will have the following pattern if any error occur:
 ```
 {
   "Errors": [
@@ -164,10 +164,10 @@ In case of any error in the register proccess, the API's response will follow th
 }
 ```
 
-Installing the API
+API Installation
 -----------------
 
-To install the API's executable, it is only necessary to compile the application  and configure the necessary environment variables.
+For installation of the executable it's only necessary environment variables configured and the compiled application.
 
 Edit file $HOME/.bashrc.sh
 ```
@@ -187,7 +187,7 @@ Edit file $HOME/.bashrc.sh
 
 Then the application will be installed locally.
 
-Instaling the API via Docker
+API Installation using Docker
 -----------------
 
 Before deploying, you should open the file [docker-compose](/devops/docker-compose.yml) and configure the information which is relevant to the environment. After setting up the docker-compose, you can install the application using the file deploy.sh
@@ -209,7 +209,7 @@ After being deployed, the application can be stoped or started.
 Backup & Restore
 ----------------- 
 
-To backup the MongoDB datebase, run the following command:
+Run the following command to backup the database:
 
     % cd devops
     % ./doBackup.sh
@@ -220,9 +220,9 @@ To restore a backup:
     % cd devops
     % ./doRestore.sh
 
-When doing the restore, the script will aks for the restore file date and it should be informed a valid date of the backup in pattern: `YYYY-MM-DD`.
+To do the restoration of the database it'll be asked for the restoration file date in the following pattern: `YYYY-MM-DD`.
     
-How to contribute
+Contributing
 -----------------
 
 To contribute, see [CONTRIBUTING](CONTRIBUTING.md)
@@ -238,11 +238,11 @@ In the root, we have the following packages:
 * `auth`: Bank authentication
 * `bank`: Boleto's register
 * `boleto`: User boleto's creation
-* `cache`: Database (key value) in-memory used only when the applicatio in runned in mock mode
+* `cache`: Database (key value) in-memory used only when the application is running in mock mode
 * `config`: Application config
 * `db`: Database persistency
 * `devops`: Contains the upload, deploy, backup and restore files from the application
-* `letters`: Integration banks layouts
+* `letters`: Bank's integration layout
 * `log`: Application log
 * `models`: Application's data structure
 * `parser`: XML parser
