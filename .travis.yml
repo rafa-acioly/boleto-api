@@ -9,7 +9,7 @@ before_install:
   - glide install
 
 script:
-  - go test -race -coverprofile=coverage.txt -covermode=atomic
+  - ./travis_test.sh
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
