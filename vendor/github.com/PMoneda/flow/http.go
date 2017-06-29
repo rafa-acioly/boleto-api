@@ -92,6 +92,10 @@ func httpConnector(next func(), e *ExchangeMessage, out Message, u URI, params .
 	}
 	header := e.head
 	keys := header.ListKeys()
+	req.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36")
+	req.Header.Add("Accept", "*/*")
+	req.Header.Add("Accept-Encoding", "gzip, deflate")
+	req.Header.Add("Accept-Language", "pt-BR,pt;q=0.8,en-US;q=0.6,en;q=0.4")
 	for _, key := range keys {
 		req.Header.Add(key, header.Get(key))
 	}

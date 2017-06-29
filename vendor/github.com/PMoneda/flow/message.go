@@ -44,7 +44,7 @@ func messageConnector(next func(), e *ExchangeMessage, out Message, u URI, param
 			}
 		} else if str != "" {
 			buff.Write(line)
-			buff.WriteString("\n")
+			//buff.WriteString("\n")
 		}
 		line, _, err = buf.ReadLine()
 	}
