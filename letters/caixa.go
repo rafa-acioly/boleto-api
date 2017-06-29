@@ -18,9 +18,11 @@ const responseCaixa = `
             <DADOS>
                 <EXCECAO>{{exception}}</EXCECAO>
                 <CODIGO_BARRAS>{{barcodeNumber}}</CODIGO_BARRAS>
-                <LINHA_DIGITAVEL>{{digitableLine}}</LINHA_DIGITAVEL>
-                <NOSSO_NUMERO>{{ourNumber}}</NOSSO_NUMERO>
-                <URL>{{url}}</URL>
+                <INCLUI_BOLETO>
+                    <LINHA_DIGITAVEL>{{digitableLine}}</LINHA_DIGITAVEL>
+                    <NOSSO_NUMERO>{{ourNumber}}</NOSSO_NUMERO>
+                    <URL>{{url}}</URL>
+                </INCLUI_BOLETO>                
             </DADOS>
         </manutencaocobrancabancaria:SERVICO_SAIDA>
     </soapenv:Body>
@@ -39,8 +41,7 @@ const incluiBoleto = `
          <sib:HEADER>
             <VERSAO>1.0</VERSAO>
             <!--Optional:-->
-            <AUTENTICACAO>{{.Authentication.AuthorizationToken}}</AUTENTICACAO>
-            <USUARIO>1234567</USUARIO>
+            <AUTENTICACAO>{{unscape .Authentication.AuthorizationToken}}</AUTENTICACAO>
             <OPERACAO>INCLUI_BOLETO</OPERACAO>
             <SISTEMA_ORIGEM>SIGCB</SISTEMA_ORIGEM>
             <DATA_HORA>{{fullDate today}}</DATA_HORA>
@@ -53,16 +54,18 @@ const incluiBoleto = `
                   <NOSSO_NUMERO>{{.Title.OurNumber}}</NOSSO_NUMERO>
                   <NUMERO_DOCUMENTO>{{.Title.DocumentNumber}}</NUMERO_DOCUMENTO>
                   <DATA_VENCIMENTO>{{enDate .Title.ExpireDateTime "-"}}</DATA_VENCIMENTO>
-                  <VALOR>{{.Title.AmountInCents}}</VALOR>
+                  <VALOR>{{toFloatStr .Title.AmountInCents}}</VALOR>
                   <TIPO_ESPECIE>17</TIPO_ESPECIE>
                   <FLAG_ACEITE>S</FLAG_ACEITE>   
                   <JUROS_MORA>
                      <TIPO>ISENTO</TIPO>
-                     <VALOR>0</VALOR>                                                        
+                     <VALOR>0</VALOR>
+                     <DATA>{{enDate today "-"}}</DATA>                                                        
                   </JUROS_MORA>
+                  <VALOR_ABATIMENTO>0</VALOR_ABATIMENTO>
                   <POS_VENCIMENTO>
                      <ACAO>DEVOLVER</ACAO>
-                     <NUMERO_DIAS>30</NUMERO_DIAS>
+                     <NUMERO_DIAS>0</NUMERO_DIAS>
                   </POS_VENCIMENTO>                       
                   <CODIGO_MOEDA>9</CODIGO_MOEDA>
                   <PAGADOR>
@@ -81,13 +84,9 @@ const incluiBoleto = `
                         <UF>{{.Buyer.Address.StateCode}}</UF>
                         <CEP>{{.Buyer.Address.ZipCode}}</CEP>
                      </ENDERECO>
-                  </PAGADOR>                                                                       
-                  <FICHA_COMPENSACAO>
-                     <MENSAGENS>
-                        <MENSAGEM>{{.Title.Instructions}}</MENSAGEM>
-                     </MENSAGENS>
-                  </FICHA_COMPENSACAO>                  
+                  </PAGADOR>                  
                </TITULO>
+               <FLAG_REGISTRO>S</FLAG_REGISTRO>
             </INCLUI_BOLETO>
          </DADOS>
       </ext:SERVICO_ENTRADA>
