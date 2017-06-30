@@ -95,8 +95,15 @@ func (b bankBB) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRespo
 	ch = ch.To("unmarshall://?format=json", new(models.BoletoResponse))
 	ch = ch.Otherwise()
 	ch = ch.To("logseq://?type=response&url="+url, b.log).To("apierro://")
-	body := r.GetBody().(*models.BoletoResponse)
-	return *body, nil
+	switch t := r.GetBody().(type) {
+	case *models.BoletoResponse:
+		return *t, nil
+	case models.BoletoResponse:
+		return t, nil
+	default:
+		return models.BoletoResponse{}, errors.New("erro")
+	}
+
 }
 
 func (b bankBB) ValidateBoleto(boleto *models.BoletoRequest) models.Errors {
