@@ -35,6 +35,7 @@ var funcMap = template.FuncMap{
 	"toFloatStr":             toFloatStr,
 	"concat":                 concat,
 	"base64":                 base64,
+	"unscape":                unscape,
 }
 
 func GetFuncMaps() template.FuncMap {
@@ -43,7 +44,9 @@ func GetFuncMaps() template.FuncMap {
 func padLeft(value, char string, total uint) string {
 	return util.PadLeft(value, char, total)
 }
-
+func unscape(s string) template.HTML {
+	return template.HTML(s)
+}
 func hasErrorTags(mapValues map[string]string, errorTags ...string) bool {
 	hasError := false
 	for _, v := range errorTags {

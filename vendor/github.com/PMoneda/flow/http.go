@@ -95,7 +95,6 @@ func httpConnector(next func(), e *ExchangeMessage, out Message, u URI, params .
 	for _, key := range keys {
 		req.Header.Add(key, header.Get(key))
 	}
-	req.Close = true
 	resp, errResp := client.Do(req)
 	if errResp != nil {
 		newData.SetHeader("error", errResp.Error())

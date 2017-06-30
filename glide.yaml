@@ -18,4 +18,4 @@ import:
 - package: github.com/jtolds/gls
   version: v4.2.0
 - package: github.com/PMoneda/flow
-  version: v0.2.2
+  version: ^v0.2.2

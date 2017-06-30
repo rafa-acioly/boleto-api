@@ -157,7 +157,7 @@ func registerBoletoCaixa(c *gin.Context) {
                 <DATA_HORA>2017052012121212</DATA_HORA>
             </sibar_base:HEADER>
             <COD_RETORNO>X(50) ERRO</COD_RETORNO>
-            <MSG_RETORNO>USUÁRIO NÃO CADASTRADO</MSG_RETORNO>
+            <MSG_RETORNO>MOCK USUÁRIO NÃO CADASTRADO</MSG_RETORNO>
             <DADOS>
 				<EXCECAO>Stacktrace de Erro na Caixa</EXCECAO>	
             </DADOS>
@@ -167,9 +167,9 @@ func registerBoletoCaixa(c *gin.Context) {
 	`
 	d, _ := ioutil.ReadAll(c.Request.Body)
 	xml := string(d)
-	if strings.Contains(xml, "<VALOR>504</VALOR>") {
+	if strings.Contains(xml, "<VALOR>5.04</VALOR>") {
 		c.AbortWithError(504, errors.New("Teste de Erro"))
-	} else if strings.Contains(xml, "<VALOR>200</VALOR>") {
+	} else if strings.Contains(xml, "<VALOR>2.00</VALOR>") {
 		c.Data(200, "text/xml", []byte(sData))
 	} else {
 		c.Data(200, "text/xml", []byte(sDataErr))
