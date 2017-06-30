@@ -12,13 +12,13 @@ import (
 
 	"io/ioutil"
 
-	"bitbucket.org/mundipagg/boletoapi/bank"
-	"bitbucket.org/mundipagg/boletoapi/boleto"
-	"bitbucket.org/mundipagg/boletoapi/config"
-	"bitbucket.org/mundipagg/boletoapi/db"
-	"bitbucket.org/mundipagg/boletoapi/log"
-	"bitbucket.org/mundipagg/boletoapi/models"
-	"bitbucket.org/mundipagg/boletoapi/util"
+	"github.com/mundipagg/boleto-api/bank"
+	"github.com/mundipagg/boleto-api/boleto"
+	"github.com/mundipagg/boleto-api/config"
+	"github.com/mundipagg/boleto-api/db"
+	"github.com/mundipagg/boleto-api/log"
+	"github.com/mundipagg/boleto-api/models"
+	"github.com/mundipagg/boleto-api/util"
 	gin "gopkg.in/gin-gonic/gin.v1"
 )
 

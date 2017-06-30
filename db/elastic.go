@@ -10,9 +10,9 @@ import (
 
 	"encoding/json"
 
-	"bitbucket.org/mundipagg/boletoapi/config"
-	"bitbucket.org/mundipagg/boletoapi/models"
-	"bitbucket.org/mundipagg/boletoapi/util"
+	"github.com/mundipagg/boleto-api/config"
+	"github.com/mundipagg/boleto-api/models"
+	"github.com/mundipagg/boleto-api/util"
 )
 
 type elasticDb struct{}

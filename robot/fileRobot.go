@@ -7,10 +7,10 @@ import (
 
 	"encoding/json"
 
-	"bitbucket.org/mundipagg/boletoapi/config"
-	"bitbucket.org/mundipagg/boletoapi/db"
-	"bitbucket.org/mundipagg/boletoapi/log"
-	"bitbucket.org/mundipagg/boletoapi/models"
+	"github.com/mundipagg/boleto-api/config"
+	"github.com/mundipagg/boleto-api/db"
+	"github.com/mundipagg/boleto-api/log"
+	"github.com/mundipagg/boleto-api/models"
 )
 
 type list []string

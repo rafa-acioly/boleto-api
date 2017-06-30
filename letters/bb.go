@@ -5,12 +5,10 @@ package letters
 @date 10/04/2017
 Descreve o padrão de mensagem para Boletos do Banco do Brasil
 */
-const authBB = `
-## Content-Type:application/x-www-form-urlencoded
+const authBB = `## Content-Type:application/x-www-form-urlencoded
 ## Cache-Control:no-cache
 ## Authorization:Basic {{base64 (concat .Authentication.Username ":" .Authentication.Password)}}
-grant_type=client_credentials&scope=cobranca.registro-boletos
-`
+grant_type=client_credentials&scope=cobranca.registro-boletos`
 
 const authLetterBBResponse = `
 {

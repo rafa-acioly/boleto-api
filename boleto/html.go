@@ -11,8 +11,8 @@ import (
 
 	"image/jpeg"
 
-	"bitbucket.org/mundipagg/boletoapi/models"
-	"bitbucket.org/mundipagg/boletoapi/tmpl"
+	"github.com/mundipagg/boleto-api/models"
+	"github.com/mundipagg/boleto-api/tmpl"
 )
 
 const templateBoleto = `

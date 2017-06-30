@@ -1,92 +1,93 @@
-O que é a API de Registro de Boleto Online?
+[![GoDoc](https://godoc.org/github.com/mundipagg/boleto-api?status.svg)](https://godoc.org/github.com/mundipagg/boleto-api)
+[![Go Report Card](https://goreportcard.com/badge/github.com/mundipagg/boleto-api)](https://goreportcard.com/report/github.com/mundipagg/boleto-api)
+
+What is the Online Registered "Boleto" API?
 --------------
 
-BoletoOnline é uma API para registro online de boletos junto ao banco e geração de boletos para pagamento.
+BoletoOnline is an API for boleto's online register in banks and boleto's creation for payments.
 
-
-Atualmente os bancos suportados são:
-
+Currently, we support the following banks:
 * Banco do Brasil
-* Caixa(em breve)
-* Citi (em breve)
-* Santander (em breve)
-* Bradesco (em breve)
-* Itau (em breve)
+* Caixa(coming soon)
+* Citi (coming soon)
+* Santander (coming soon)
+* Bradesco (coming soon)
+* Itaú (coming soon)
 
-A ordem de integração seguirá a lista acima mas poderá haver modificações na prioridade dependendo do cliente.
+The integration order will follow the list above but we may have changes considering our clients demands.
 
-Construindo a API
+API Building
 --------------
 
-A API foi desenvolvida utilizando a linguagem GO e portanto é necessário instalar as ferramentas da linguagem caso queira compilar a aplicação a partir do fonte.
+The API was developed using GO language and therefore it is necessary to install the language tools in case you need to compile the application from the source.
 
-O Go pode ser baixado [aqui](https://golang.org/dl/)
+GO can be downloaded [here](https://golang.org/dl/)
 
-Antes de fazer o clone do Projeto, deve ser criado o caminho de pastas dentro do $GOPATH
+Before cloning the Project, you should create the file path inside $GOPATH
 
-	% mkdir -p "$GOPATH/src/bitbucket.org/mundipagg"
-	% cd $GOPATH/src/bitbucket.org/mundipagg 
-	% git clone https://bitbucket.org/mundipagg/boletoapi
+	% mkdir -p "$GOPATH/src/github.com/mundipagg"
+	% cd $GOPATH/src/github.com/mundipagg 
+	% git clone https://github.com/mundipagg/boleto-api
 
-Antes de compilar a aplicação deve-se instalar o [Glide](http://glide.sh/) que é o gerenciador de dependências da aplicação.
 
-Após instalar o GO, faça:
+Before compiling the application, you should install the [Glide](http://glide.sh/), which is the application dependency manager.
+
+After installing GO, do:
 
 	% cd devops
 	% ./build
 
-O script build.sh irá baixar todas as dependências da aplicação e instalar o wkhtmltox, necessário para a geração do boleto em PDF.
+The build.sh script will download the application dependencies and install wkhtmltox, which is necessary to create boleto's in PDF format.
 
-Executando a aplicação
+Running the application
 -------------
 
-Para executar a API com as configurações default
-
-Ex: 
+Running the API with default configurations
+Eg:
 
 Linux (*NIX):
 
-	% ./boletoapi
+	% ./boleto-api
 	
 Windows:
 
-	% boletoapi.exe
+	% boleto-api.exe
 
-Se você quiser rodar a API em modo dev, que irá carregar todas as variáveis de ambiente padrão, você deve executar a aplicação da seguinte forma:
+If you want to run the API in dev mode, which will load all standard environment variables, you should execute the application like this:
 
-	% ./boletoapi -dev
+	% ./boleto-api -dev
 
-Caso queira executar a aplicação em modo mock, para não realizar diretamente a integração com o banco e usar uma base de dados em memória, deve-se usar a opção mock:
+In case you want to run the application in mock mode using in memory database instead of bank integration, you should use the mock option:
 
-	% ./boletoapi -mock
+	% ./boleto-api -mock
 
-Caso queira executar a aplicação com o log desligado, deve-se usar a opção -nolog:
+In case you want to run the application with log turned off, you should use the option -nolog:
 
-	% ./boletoapi -nolog
+	% ./boleto-api -nolog
 
-Você pode combinar essas opções como quiser e caso queira usar todas elas juntas, basta usar a opção -airplane-mode
+You can combine all these options and, in case you want to use them altogether, you can simply use the -airplane-mode option
 
-	% ./boletoapi -airplane-mode
+	% ./boleto-api -airplane-mode
 	
 
-Usando a API de boleto online
+Using Boleto API Online
 ------------------
 
-Pode-ser usar o [Postman](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop) para criar chamar os serviços da API ou mesmo o curl
+You can use [Postman](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop) to request the API's services or even the curl
 
 ```
 % curl -X POST \
   http://localhost:3000/v1/boleto/register \
   -d '{
     "Authentication" : {
-        "Username":"eyJpZCI6IjgwNDNiNTMtZjQ5Mi00YyIsImNvZGlnb1B1YmxpY2Fkb3IiOjEwOSwiY29kaWdvU29mdHdhcmUiOjEsInNlcXVlbmNpYWxJbnN0YWxhY2FvIjoxfQ",
-        "Password":"eyJpZCI6ImY1NzViYjgtYjBiNy00YSIsImNvZGlnb1B1YmxpY2Fkb3IiOjEwOSwiY29kaWdvU29mdHdhcmUiOjEsInNlcXVlbmNpYWxJbnN0YWxhY2FvIjoxLCJzZXF1ZW5jaWFsQ3JlZGVuY2lhbCI6MX0"
+        "Username":"user",
+        "Password":"pass"
     },
     "Agreement":{
-        "AgreementNumber":1014051,
+        "AgreementNumber":11111,
         "WalletVariation":19,
         "Wallet":17,
-        "Agency":"1233",
+        "Agency":"123",
         "AgencyDigit":"2",
         "Account":"1231231",
         "AccountDigit":"3"
@@ -133,7 +134,7 @@ Pode-ser usar o [Postman](https://chrome.google.com/webstore/detail/postman/fhbj
 }
 
 ```
-Resposta de sucesso da API
+API's success response
 ```
 {
   "Url": "http://localhost:3000/boleto?fmt=html&id=g8HXWatft9oMLdTMAqzxbnPYFv3sqgV_KD0W7j8Cy9nkCLZMIK1WH2p9JwP1Jzz4ZtohmQ==",
@@ -154,7 +155,7 @@ Resposta de sucesso da API
 }
 
 ```
-Caso aconteça algum erro no processo de registro online a resposta entregue pela API seguirá o seguinte padrão.
+The API's response will have the following pattern if any error occur:
 ```
 {
   "Errors": [
@@ -166,18 +167,18 @@ Caso aconteça algum erro no processo de registro online a resposta entregue pel
 }
 ```
 
-Instalando a API
+API Installation
 -----------------
 
-Para instalar o executável da API precisa-se apenas compilar a aplicação e configurar as variáveis de ambiente necessárias.
+For installation of the executable it's only necessary environment variables configured and the compiled application.
 
-Edite o arquivo $HOME/.bashrc.sh
+Edit file $HOME/.bashrc.sh
 ```
     export API_PORT="3000"
     export API_VERSION="0.0.1"
     export ENVIRONMENT="Development"
-    export SEQ_URL="http://192.168.8.119:5341"
-    export SEQ_API_KEY="4jZzTybZ9bUHtJiPdh6"
+    export SEQ_URL="http://example.mundipagg.com"
+    export SEQ_API_KEY="API_KEY"
     export ENABLE_REQUEST_LOG="false"
     export ENABLE_PRINT_REQUEST="true"
     export URL_BB_REGISTER_BOLETO="https://cobranca.desenv.bb.com.br:7101/registrarBoleto"
@@ -185,72 +186,74 @@ Edite o arquivo $HOME/.bashrc.sh
     export MONGODB_URL="10.0.2.15:27017"
     export APP_URL="http://localhost:8080/boleto"
 ```
-    % go build && mv boletoapi /usr/local/bin
+    % go build && mv boleto-api /usr/local/bin
 
-Desta forma a aplicação será instalada de forma local na máquina.
+Then the application will be installed locally.
 
-Instalando a API via Docker
+API Installation using Docker
 -----------------
 
-Antes de fazer o deploy deve-se abrir o arquivo [docker-compose](/devops/docker-compose.yml) e configurar as informações que sejam pertinentes ao ambiente. Após ajustar o docker-compose pode-se instalar a aplicação usando o arquivo deploy.sh
+Before deploying, you should open the file [docker-compose](/devops/docker-compose.yml) and configure the information which is relevant to the environment. After setting up the docker-compose, you can install the application using the file deploy.sh
 
     % cd devops
     % ./deploy.sh . local
 
-O script irá criar os diretórios de volume do Docker, compilar a aplicação, montar as imagens da API e do MongoDB e subir os containers. Para mais informações sobre docker-compose consulte a [doc](https://docs.docker.com/compose/). 
-Os parâmetros passados para o script dizem que o deploy será feito de forma local e não via TFS, caso não passe o argumento "local", o script irá utilizar o docker-compose.release.yml.
+The script will create the Docker's volume directories, compile the application, mount the API's and MongoDB's images and upload the containers.
+For more information about docker-compose, see [doc](https://docs.docker.com/compose/). 
 
-Após levantada, aplicação poderá ser parada ou iniciada.
+The parameters sent to the script show that the deploy will run locally and not via TFS. In case you don't send the argument "local", the script will use docker-compose.release.yml.
+
+After being deployed, the application can be stoped or started.
     
     % cd devops/
     % ./stop.sh
     % ./start.sh
  
-Backup e Restore
+Backup & Restore
 ----------------- 
 
-Para realizar o backup da base do MongoDB execute o seguinte comando:
+Run the following command to backup the database:
 
     % cd devops
     % ./doBackup.sh
 
-Os backups gerados, por padrão, serão armazenados no diretório `$HOME/backups` com o nome `bck_boletoapi-YYYY-MM-DD.tar`.
-Para restaurar um backup:
+The generated backups, by default, will be stored in the diretory `$HOME/backups` with the name `bck_boleto-api-YYYY-MM-DD.tar`.
+To restore a backup:
     
     % cd devops
     % ./doRestore.sh
 
-Quando fizer o restore, o script irá solicitar a data do arquivo de restore e deverá ser informada uma data válida do backup no padrão: `YYYY-MM-DD`.
+To do the restoration of the database it'll be asked for the restoration file date in the following pattern: `YYYY-MM-DD`.
     
-Como contrubuir
+Contributing
 -----------------
 
-Para contrubuir dê uma olhada no arquivo [CONTRIBUTING](CONTRIBUTING.md)
+To contribute, see [CONTRIBUTING](CONTRIBUTING.md)
 
-Layout do Código Fonte
+Source Code Layout
 ---
 
-A Raiz da aplicação contém apenas o arquivo main.go e alguns arquivos de configuração e documentação.
+The application root contains only the file main.go and some config and documentation files.
 
-Dentro da raiz temos alguns pacotes:
+In the root, we have the following packages:
 
-* `api`: Controladores Rest
-* `auth`: Autenticação com os bancos
-* `bank`: Registro de boletos
-* `boleto`: Geração do boleto para o usuário
-* `cache`: Banco de dados (chave-valor) in-memory utilizado apenas quando roda a aplicação em modo mock
-* `config`: Configuração da aplicação
-* `db`: Persistência de dados
-* `devops`: Contém os arquivos de subida, deploy, backup e restore da aplicação
-* `letters`: Layouts de integração com os bancos
-* `log`: Log da Aplicação
-* `models`: Estruturas de dados da aplicação
+* `api`: Rest Controllers
+* `auth`: Bank authentication
+* `bank`: Boleto's register
+* `boleto`: User boleto's creation
+* `cache`: Database (key value) in-memory used only when the application is running in mock mode
+* `config`: Application config
+* `db`: Database persistency
+* `devops`: Contains the upload, deploy, backup and restore files from the application
+* `letters`: Bank's integration layout
+* `log`: Application log
+* `models`: Application's data structure
 * `parser`: XML parser
-* `test`: Utilitários de testes
-* `tmpl`: Utilitário de template
-* `util`: Utilitários de forma geral
+* `test`: Tests utilitaries
+* `tmpl`: Template utilitaries
+* `util`: Miscellaneous utilitaries
 
-Para mais informações
+For more information
 -----------------
 
-Consulte o [FAQ](./FAQ.md)
+See [FAQ](./FAQ.md)

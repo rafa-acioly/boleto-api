@@ -1,5 +1,5 @@
-vendor/
-boletoapi
+boleto-api
 *.pid
 *.exe
 debug
+.DS_Store

@@ -3,8 +3,8 @@ package db
 import (
 	"sync"
 
-	"bitbucket.org/mundipagg/boletoapi/config"
-	"bitbucket.org/mundipagg/boletoapi/models"
+	"github.com/mundipagg/boleto-api/config"
+	"github.com/mundipagg/boleto-api/models"
 )
 
 //DB é a interface basica para os métodos de persistência
