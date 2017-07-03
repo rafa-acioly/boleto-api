@@ -1,7 +1,7 @@
 FROM golang:1.8
 
 RUN mkdir -p "/home/mundipagg/"
-ADD boletoapi /home/mundipagg/
+ADD boleto-api /home/mundipagg/
 ADD wkhtmltox.tar.xz /usr/local/
 RUN chmod +x /home/mundipagg/boleto-api
 RUN mkdir  -p "/home/upMongo"
