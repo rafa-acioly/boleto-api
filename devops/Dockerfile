@@ -1,9 +1,9 @@
 FROM golang:1.8
 
 RUN mkdir -p "/home/mundipagg/"
-ADD boletoapi /home/mundipagg/
+ADD boleto-api /home/mundipagg/
 ADD wkhtmltox.tar.xz /usr/local/
-RUN chmod +x /home/mundipagg/boletoapi
+RUN chmod +x /home/mundipagg/boleto-api
 RUN mkdir  -p "/home/upMongo"
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl \
@@ -17,5 +17,5 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 ENV PATH $PATH:/usr/local/wkhtmltox/bin
 
-ENTRYPOINT ["/home/mundipagg/boletoapi"]
+ENTRYPOINT ["/home/mundipagg/boleto-api"]
 EXPOSE 3000
