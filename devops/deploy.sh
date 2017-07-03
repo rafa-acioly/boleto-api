@@ -26,7 +26,7 @@ if [ "$2" == 'local' ]; then
 else
     docker-compose -f ./docker-compose.release.yml up -d
 fi
-rm boletoapi
+rm boleto-api
 echo "Containers started"
 echo ""
 echo "(•‿•) - Enjoy!"
