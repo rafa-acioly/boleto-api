@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PROJECTPATH=$GOPATH/src/github.com/mundipagg/boletoapi
+PROJECTPATH=$GOPATH/src/github.com/mundipagg/boleto-api
 echo "Changing directory to path $PROJECTPATH"
 cd $PROJECTPATH
 echo "Starting tests"
