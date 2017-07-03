@@ -11,7 +11,7 @@ type mock struct{}
 
 //SaveBoleto salva o boleto num cache local em memoria
 func (m *mock) SaveBoleto(boleto models.BoletoView) error {
-	cache.Set(boleto.ID, boleto)
+	//cache.Set(boleto.ID, boleto)
 	return nil
 }
 

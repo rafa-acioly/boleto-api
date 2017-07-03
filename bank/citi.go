@@ -33,7 +33,7 @@ func (b bankCiti) Log() *log.Log {
 	return b.log
 }
 func (b bankCiti) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
-	r := flow.NewPipe()
+	r := flow.NewFlow()
 	serviceURL := config.Get().URLCiti
 	from := letters.GetResponseTemplateCiti()
 	to := letters.GetRegisterBoletoAPIResponseTmpl()

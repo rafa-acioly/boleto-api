@@ -38,7 +38,7 @@ func (b bankCaixa) Log() *log.Log {
 	return b.log
 }
 func (b bankCaixa) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
-	r := flow.NewPipe()
+	r := flow.NewFlow()
 	urlCaixa := config.Get().URLCaixaRegisterBoleto
 	from := flow.Transform(letters.GetResponseTemplateCaixa())
 	to := flow.Transform(letters.GetRegisterBoletoAPIResponseTmpl())
