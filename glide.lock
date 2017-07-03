@@ -1,5 +1,5 @@
 hash: e28ba24e924b7ea05053d4cf2d887911e719c1869c7ff862706e4214ac3154c9
-updated: 2017-06-30T09:27:01.761172426-03:00
+updated: 2017-07-03T16:08:17.6641271-03:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 349dd0209470eabd9514242c688c403c0926d266
@@ -36,7 +36,7 @@ imports:
 - name: github.com/Pallinder/go-randomdata
   version: 8c3362a5e6781e0d1046f1267b3c1f19b2cde334
 - name: github.com/PMoneda/flow
-  version: e91e8d2e48c3132fab0f68a9c3c399adf22ce7b4
+  version: 4aa5b710bf23b59160a1e957d3de385dca7924d0
 - name: github.com/PuerkitoBio/goquery
   version: e1271ee34c6a305e38566ecd27ae374944907ee9
 - name: github.com/SebastiaanKlippert/go-wkhtmltopdf

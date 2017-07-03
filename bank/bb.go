@@ -46,7 +46,7 @@ func (b *bankBB) login(boleto *models.BoletoRequest) (string, error) {
 		Error            string `json:"error"`
 		ErrorDescription string `json:"error_description"`
 	}
-	r := flow.NewPipe()
+	r := flow.NewFlow()
 	url := config.Get().URLBBToken
 	from, resp := letters.GetBBAuthLetters()
 	bod := r.From("message://?source=inline", boleto, from, tmpl.GetFuncMaps())
@@ -82,7 +82,7 @@ func (b bankBB) ProcessBoleto(boleto *models.BoletoRequest) (models.BoletoRespon
 }
 
 func (b bankBB) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
-	r := flow.NewPipe()
+	r := flow.NewFlow()
 	url := config.Get().URLBBRegisterBoleto
 	from := letters.GetRegisterBoletoBBTmpl()
 	r = r.From("message://?source=inline", boleto, from, tmpl.GetFuncMaps())
