@@ -175,7 +175,7 @@ const (
 )
 
 // BoletoErrorConector é um connector flow para criar um objeto de erro
-func BoletoErrorConector(next func(), e *flow.ExchangeMessage, out flow.Message, u flow.URI, params ...interface{}) error {
+func BoletoErrorConector(e *flow.ExchangeMessage, u flow.URI, params ...interface{}) error {
 	b := "Erro interno"
 	switch t := e.GetBody().(type) {
 	case error:
@@ -193,7 +193,5 @@ func BoletoErrorConector(next func(), e *flow.ExchangeMessage, out flow.Message,
 	resp.Errors.Append("MP"+e.GetHeader("status"), b)
 	resp.StatusCode = st
 	e.SetBody(resp)
-	out <- e
-	next()
 	return nil
 }
