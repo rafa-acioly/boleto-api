@@ -94,7 +94,7 @@ You can use [Postman](https://chrome.google.com/webstore/detail/postman/fhbjgbif
     },
     "Title":{
       "ExpireDate": "2017-05-25",
-        "AmountInCents":30000,
+        "AmountInCents":200,
         "OurNumber":101405187,
         "Instructions":"Instruções"
     },
