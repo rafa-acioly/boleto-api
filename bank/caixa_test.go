@@ -17,7 +17,7 @@ func TestGetCaixaCheckSumInfo(t *testing.T) {
 			AgreementNumber: 2004001,
 		},
 		Title: models.Title{
-			OurNumber:      1352634,
+			OurNumber:      0,
 			ExpireDateTime: time.Date(2017, 5, 20, 12, 12, 12, 12, time.Local),
 			AmountInCents:  13567,
 		},
@@ -30,10 +30,10 @@ func TestGetCaixaCheckSumInfo(t *testing.T) {
 	caixa := newCaixa()
 	Convey("Geração do token de autorização da Caixa", t, func() {
 		Convey("Deve-se formar uma string seguindo o padrão da documentação", func() {
-			So(caixa.getCheckSumCode(boleto), ShouldEqual, "2004001000200400113526342005201700000000001356710497233000103")
+			So(caixa.getCheckSumCode(boleto), ShouldEqual, "2004001000000000000000002005201700000000001356710497233000103")
 		})
 		Convey("Deve-se fazer um hash sha256 e encodar com base64", func() {
-			hash := util.Sha256("2004001000200400113526342005201700000000001356710497233000103")
+			hash := util.Sha256("2004001000000000000000002005201700000000001356710497233000103")
 			So(hash, ShouldEqual, caixa.getAuthToken(caixa.getCheckSumCode(boleto)))
 		})
 	})

@@ -156,21 +156,29 @@ func registerBoletoCaixa(c *gin.Context) {
 
 	sDataErr := `
 <?xml version="1.0" encoding="utf-8"?>
-<soapenv:Envelope 
-    xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
     <soapenv:Body>
-        <manutencaocobrancabancaria:SERVICO_SAIDA 
-            xmlns:manutencaocobrancabancaria="http://caixa.gov.br/sibar/manutencao_cobranca_bancaria/boleto/externo" 
-            xmlns:sibar_base="http://caixa.gov.br/sibar">
+        <manutencaocobrancabancaria:SERVICO_SAIDA xmlns:manutencaocobrancabancaria="http://caixa.gov.br/sibar/manutencao_cobranca_bancaria/boleto/externo" xmlns:sibar_base="http://caixa.gov.br/sibar">
             <sibar_base:HEADER>
                 <VERSAO>1.0</VERSAO>
-                <OPERACAO>IncluiBoleto</OPERACAO>
-                <DATA_HORA>2017052012121212</DATA_HORA>
+                <AUTENTICACAO>LvWr1op5Ayibn6jsCQ3/2bW4KwThVAlLK5ftxABlq201=</AUTENTICACAO>
+                <USUARIO_SERVICO>SGCBS01D</USUARIO_SERVICO>
+                <OPERACAO>INCLUI_BOLETO</OPERACAO>
+                <SISTEMA_ORIGEM>SIGCB</SISTEMA_ORIGEM>
+                <UNIDADE>1679</UNIDADE>
+                <DATA_HORA>20170503102800</DATA_HORA>
             </sibar_base:HEADER>
-            <COD_RETORNO>X(50) ERRO</COD_RETORNO>
-            <MSG_RETORNO>MOCK USUÁRIO NÃO CADASTRADO</MSG_RETORNO>
+            <COD_RETORNO>00</COD_RETORNO>
+            <ORIGEM_RETORNO>MANUTENCAO_COBRANCA_BANCARIA</ORIGEM_RETORNO>
+            <MSG_RETORNO></MSG_RETORNO>
             <DADOS>
-				<EXCECAO>Stacktrace de Erro na Caixa</EXCECAO>	
+                <CONTROLE_NEGOCIAL>
+                    <ORIGEM_RETORNO>SIGCB</ORIGEM_RETORNO>
+                    <COD_RETORNO>1</COD_RETORNO>
+                    <MENSAGENS>
+                        <RETORNO>(54) OPERACAO NAO PERMITIDA - HASH DIVERGENTE</RETORNO>
+                    </MENSAGENS>
+                </CONTROLE_NEGOCIAL>
             </DADOS>
         </manutencaocobrancabancaria:SERVICO_SAIDA>
     </soapenv:Body>

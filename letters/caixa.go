@@ -30,7 +30,8 @@ const responseCaixa = `
 </soapenv:Envelope>
 `
 
-//{{unscape .Authentication.AuthorizationToken}}
+//LvWr1op5Ayibn6jsCQ3/2bW4KwThVAlLK5ftxABlq20=
+//
 const incluiBoleto = `
 
 ## SOAPAction:IncluiBoleto
@@ -41,7 +42,7 @@ const incluiBoleto = `
 <ext:SERVICO_ENTRADA >
          <sib:HEADER>
             <VERSAO>1.0</VERSAO>
-            <AUTENTICACAO>LvWr1op5Ayibn6jsCQ3/2bW4KwThVAlLK5ftxABlq20=</AUTENTICACAO>
+            <AUTENTICACAO>{{unscape .Authentication.AuthorizationToken}}</AUTENTICACAO>
             <USUARIO_SERVICO>SGCBS01D</USUARIO_SERVICO>
             <OPERACAO>INCLUI_BOLETO</OPERACAO>
             <SISTEMA_ORIGEM>SIGCB</SISTEMA_ORIGEM>

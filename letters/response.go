@@ -1,6 +1,23 @@
 package letters
 
-const registerBoletoResponse = `{
+import "github.com/mundipagg/boleto-api/models"
+
+const registerBoletoResponseBB = `{
+    {{if (hasErrorTags . "errorCode")}}
+        "Errors": [
+            {                    
+                "Code": "{{trim .errorCode}}",
+                "Message": "{{trim .errorMessage}}"
+            }
+        ]
+    {{else}}
+        "DigitableLine": "{{fmtDigitableLine (trim .digitableLine)}}",
+        "BarCodeNumber": "{{trim .barcodeNumber}}"
+    {{end}}
+}
+`
+
+const registerBoletoResponseCiti = `{
     {{if (hasErrorTags . "errorCode" "errorMessage" "exception")}}
         {{if (hasErrorTags . "exception")}}
             "Errors": [
@@ -25,22 +42,41 @@ const registerBoletoResponse = `{
         {{if .barcodeNumber}}
             "BarCodeNumber": "{{trim .barcodeNumber}}"
         {{end}}
-        {{if .url}}
-            ,"Links": [{
-                "href":"{{trim .url}}",
-                "rel": "pdf",
-                "method":"GET"
-            }], 
-        {{end}}
-        {{if .ourNumber}}
-            "OurNumber": "{{trim .ourNumber}}"
-        {{end}}
         
     {{end}}
 }
 `
 
+//Response focado sna integracao com a Caixa
+const registerBoletoResponseCaixa = `{
+    {{if (eq .returnCode "1")}}
+        "Errors":[{
+            "Code":"{{trim .returnCode}}",
+            "Message":"{{trim .returnMessage}}"
+        }]
+    {{else}}
+        "DigitableLine": "{{fmtDigitableLine (trim .digitableLine)}}",
+        "BarCodeNumber": "{{trim .barcodeNumber}}",
+        "Links": [{
+            "href":"{{trim .url}}",
+            "rel": "pdf",
+            "method":"GET"
+        }],        
+        "OurNumber": "{{trim .ourNumber}}"
+    {{end}}
+}
+`
+
 //GetRegisterBoletoAPIResponseTmpl retorna o template de resposta para a Api
-func GetRegisterBoletoAPIResponseTmpl() string {
-	return registerBoletoResponse
+func GetRegisterBoletoAPIResponseTmpl(bank models.BankNumber) string {
+	switch bank {
+	case models.Caixa:
+		return registerBoletoResponseCaixa
+	case models.BancoDoBrasil:
+		return registerBoletoResponseBB
+	case models.Citibank:
+		return registerBoletoResponseCiti
+	default:
+		return ""
+	}
 }

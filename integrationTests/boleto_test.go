@@ -157,11 +157,11 @@ func TestRegisterBoletoRequest(t *testing.T) {
 		response, st, err := util.Post("http://localhost:3000/v1/boleto/register", getBody(models.BancoDoBrasil, 200), nil)
 		So(err, ShouldEqual, nil)
 		So(st, ShouldEqual, 200)
-
 		boleto := models.BoletoResponse{}
 		errJSON := json.Unmarshal([]byte(response), &boleto)
 		So(errJSON, ShouldEqual, nil)
 		Convey("Se o boleto foi registrado então ele tem que está disponível no formato HTML", func() {
+			So(len(boleto.Links), ShouldBeGreaterThan, 0)
 			html, st, err := util.Get(boleto.Links[0].Href, "", nil)
 			So(err, ShouldEqual, nil)
 			So(st, ShouldEqual, 200)
@@ -206,7 +206,6 @@ func TestRegisterBoletoRequest(t *testing.T) {
 					So(strings.Contains(boleto.Errors[0].Message, "Conta inválida, deve conter até"), ShouldBeTrue)
 				}
 				assert(models.BancoDoBrasil)
-				assert(models.Caixa)
 			})
 
 			Convey("O tipo de documento do comprador deve ser CPF ou CNPJ", func() {
