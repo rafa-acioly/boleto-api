@@ -25,6 +25,16 @@ const registerBoletoResponse = `{
         {{if .barcodeNumber}}
             "BarCodeNumber": "{{trim .barcodeNumber}}"
         {{end}}
+        {{if .url}}
+            ,"Links": [{
+                "href":"{{trim .url}}",
+                "rel": "pdf",
+                "method":"GET"
+            }], 
+        {{end}}
+        {{if .ourNumber}}
+            "OurNumber": "{{trim .ourNumber}}"
+        {{end}}
         
     {{end}}
 }

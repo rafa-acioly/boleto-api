@@ -33,6 +33,7 @@ type BoletoResponse struct {
 	ID            string `json:"id,omitempty"`
 	DigitableLine string `json:"digitableLine,omitempty"`
 	BarCodeNumber string `json:"barCodeNumber,omitempty"`
+	OurNumber     string `json:"ourNumber,omitempty"`
 	Links         []Link `json:"links,omitempty"`
 }
 

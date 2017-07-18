@@ -27,7 +27,7 @@ func newCaixa() bankCaixa {
 	b.validate.Push(baseValidateExpireDate)
 	b.validate.Push(baseValidateBuyerDocumentNumber)
 	b.validate.Push(baseValidateRecipientDocumentNumber)
-	b.validate.Push(caixaValidateAccountAndDigit)
+	//b.validate.Push(caixaValidateAccountAndDigit)
 	b.validate.Push(caixaValidateAgency)
 	b.validate.Push(validateInstructions)
 	return b
@@ -43,8 +43,10 @@ func (b bankCaixa) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRe
 	from := flow.Transform(letters.GetResponseTemplateCaixa())
 	to := flow.Transform(letters.GetRegisterBoletoAPIResponseTmpl())
 	bod := r.From("message://?source=inline", boleto, letters.GetRegisterBoletoCaixaTmpl(), tmpl.GetFuncMaps())
+	//bod = bod.To("print://?msg=${body}")
 	bod = bod.To("logseq://?type=request&url="+urlCaixa, b.log)
 	bod = bod.To(urlCaixa, map[string]string{"method": "POST", "insecureSkipVerify": "true"})
+	//bod = bod.To("print://?msg=${body}")
 	bod = bod.To("logseq://?type=response&url="+urlCaixa, b.log)
 	ch := bod.Choice()
 	ch = ch.When(flow.Header("status").IsEqualTo("200"))
@@ -58,6 +60,8 @@ func (b bankCaixa) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRe
 		return *response, nil
 	case models.BoletoResponse:
 		return t, nil
+	default:
+		fmt.Println(t)
 	}
 	return models.BoletoResponse{}, models.NewInternalServerError("MP500", "Erro interno")
 }
@@ -77,10 +81,10 @@ func (b bankCaixa) ValidateBoleto(boleto *models.BoletoRequest) models.Errors {
 
 //getCheckSumCode Código do Cedente (7 posições) + Nosso Número (17 posições) + Data de Vencimento (DDMMAAAA) + Valor (15 posições) + CPF/CNPJ (14 Posições)
 func (b bankCaixa) getCheckSumCode(boleto models.BoletoRequest) string {
-	ourNumber := fmt.Sprintf("%d%d", boleto.Agreement.AgreementNumber, boleto.Title.OurNumber)
+	//ourNumber := fmt.Sprintf("%d%d", boleto.Agreement.AgreementNumber, boleto.Title.OurNumber)
 	return fmt.Sprintf("%07d%017s%s%015d%014s",
 		boleto.Agreement.AgreementNumber,
-		ourNumber,
+		boleto.Title.OurNumber,
 		boleto.Title.ExpireDateTime.Format("02012006"),
 		boleto.Title.AmountInCents,
 		boleto.Recipient.Document.Number)
