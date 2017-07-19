@@ -36,7 +36,7 @@ func (b bankCiti) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRes
 	r := flow.NewFlow()
 	serviceURL := config.Get().URLCiti
 	from := letters.GetResponseTemplateCiti()
-	to := letters.GetRegisterBoletoAPIResponseTmpl()
+	to := letters.GetRegisterBoletoAPIResponseTmpl(models.Citibank)
 	bod := r.From("message://?source=inline", boleto, letters.GetRegisterBoletoCitiTmpl(), tmpl.GetFuncMaps())
 	bod = bod.To("logseq://?type=request&url="+serviceURL, b.log)
 	bod = bod.To(serviceURL, map[string]string{"method": "POST", "insecureSkipVerify": "true"})

@@ -91,7 +91,7 @@ func (b bankBB) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRespo
 	r = r.To("logseq://?type=response&url="+url, b.log)
 	ch := r.Choice()
 	ch = ch.When(flow.Header("status").IsEqualTo("200"))
-	ch = ch.To("transform://?format=xml", letters.GetBBregisterLetter(), letters.GetRegisterBoletoAPIResponseTmpl(), tmpl.GetFuncMaps())
+	ch = ch.To("transform://?format=xml", letters.GetBBregisterLetter(), letters.GetRegisterBoletoAPIResponseTmpl(models.BancoDoBrasil), tmpl.GetFuncMaps())
 	ch = ch.To("unmarshall://?format=json", new(models.BoletoResponse))
 	ch = ch.Otherwise()
 	ch = ch.To("logseq://?type=response&url="+url, b.log).To("apierro://")

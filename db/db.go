@@ -20,7 +20,7 @@ var err error
 
 //GetDB retorna o objeto concreto que implementa as funções de persistência
 func GetDB() (DB, error) {
-	if config.Get().MockMode {
+	if config.Get().MockMode || config.Get().DevMode {
 		return new(mock), nil
 	}
 	return CreateMongo()
