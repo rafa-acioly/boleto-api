@@ -128,7 +128,11 @@ func TestTitle(t *testing.T) {
 
 func TestBoleto(t *testing.T) {
 	Convey("NewBoletoView deve retornar uma instância nova da View de Boleto", t, func() {
-		b := NewBoletoView(BoletoRequest{}, "1234", "12345")
+		resp := BoletoResponse{
+			BarCodeNumber: "1234",
+			DigitableLine: "12345",
+		}
+		b := NewBoletoView(BoletoRequest{}, resp)
 		So(b.UID, ShouldNotBeEmpty)
 		So(b.Barcode, ShouldEqual, "1234")
 		So(b.DigitableLine, ShouldEqual, "12345")
