@@ -5,7 +5,10 @@ import (
 
 	"github.com/mundipagg/boleto-api/log"
 
+	"errors"
 	"github.com/PMoneda/flow"
+	"net/http"
+	"strings"
 )
 
 // SeqLogConector é um connector flow para logar no Seq
@@ -36,6 +39,43 @@ func SeqLogConector(e *flow.ExchangeMessage, u flow.URI, params ...interface{}) 
 		if u.GetOption("type") == "response" {
 			l.Response(b, u.GetOption("url"))
 		}
+	}
+	return nil
+}
+
+//Params[0] *http.Transport (http.Transport configuration with certificate files config)
+//TlsConector is a connector to send https request client certificate
+func TlsConector(e *flow.ExchangeMessage, u flow.URI, params ...interface{}) error {
+	var b string
+	switch t := e.GetBody().(type) {
+	case string:
+		if t == "" {
+			b = "Nenhum retorno do serviço"
+		} else {
+			b = t
+		}
+	case error:
+		b = t.Error()
+	default:
+		b = fmt.Sprintln(t)
+	}
+	if len(params) > 0 {
+		switch t := params[0].(type) {
+		case *http.Transport:
+			url := strings.Replace(u.GetRaw(), "tls", "https", 1)
+			response, status, err := PostTLS(url, b, nil, t)
+			if err != nil {
+				e.SetHeader("error", err.Error())
+				e.SetBody(err)
+				return err
+			}
+			e.SetHeader("status", fmt.Sprintf("%d",status))
+			e.SetBody(response)
+		default:
+			return errors.New("invalid data type")
+		}
+	} else {
+		return errors.New("Http Transport is required")
 	}
 	return nil
 }
