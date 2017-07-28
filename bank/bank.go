@@ -3,6 +3,9 @@ package bank
 import (
 	"fmt"
 
+	"github.com/mundipagg/boleto-api/bb"
+	"github.com/mundipagg/boleto-api/caixa"
+	"github.com/mundipagg/boleto-api/citibank"
 	"github.com/mundipagg/boleto-api/log"
 	"github.com/mundipagg/boleto-api/models"
 )
@@ -20,11 +23,11 @@ type Bank interface {
 func Get(number models.BankNumber) (Bank, error) {
 	switch number {
 	case models.BancoDoBrasil:
-		return newBB(), nil
+		return bb.New(), nil
 	case models.Caixa:
-		return newCaixa(), nil
+		return caixa.New(), nil
 	case models.Citibank:
-		return newCiti(), nil
+		return citibank.New(), nil
 	default:
 		return nil, models.NewErrorResponse("MPBankNumber", fmt.Sprintf("Banco %d não existe", number))
 	}

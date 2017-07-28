@@ -1,15 +1,15 @@
-package bank
+package bb
 
 import (
 	"errors"
 
 	"github.com/PMoneda/flow"
-
 	"github.com/mundipagg/boleto-api/config"
-	"github.com/mundipagg/boleto-api/letters"
 	"github.com/mundipagg/boleto-api/log"
 	"github.com/mundipagg/boleto-api/models"
 	"github.com/mundipagg/boleto-api/tmpl"
+
+	"github.com/mundipagg/boleto-api/validations"
 )
 
 type bankBB struct {
@@ -18,7 +18,7 @@ type bankBB struct {
 }
 
 //Cria uma nova instância do objeto que implementa os serviços do Banco do Brasil e configura os validadores que serão utilizados
-func newBB() bankBB {
+func New() bankBB {
 	b := bankBB{
 		validate: models.NewValidator(),
 		log:      log.CreateLog(),
@@ -27,10 +27,10 @@ func newBB() bankBB {
 	b.validate.Push(bbValidateAgencyAndDigit)
 	b.validate.Push(bbValidateOurNumber)
 	b.validate.Push(bbValidateWalletVariation)
-	b.validate.Push(baseValidateAmountInCents)
-	b.validate.Push(baseValidateExpireDate)
-	b.validate.Push(baseValidateBuyerDocumentNumber)
-	b.validate.Push(baseValidateRecipientDocumentNumber)
+	b.validate.Push(validations.ValidateAmount)
+	b.validate.Push(validations.ValidateExpireDate)
+	b.validate.Push(validations.ValidateBuyerDocumentNumber)
+	b.validate.Push(validations.ValidateRecipientDocumentNumber)
 	b.validate.Push(bbValidateTitleInstructions)
 	b.validate.Push(bbValidateTitleDocumentNumber)
 	return b
@@ -48,7 +48,7 @@ func (b *bankBB) login(boleto *models.BoletoRequest) (string, error) {
 	}
 	r := flow.NewFlow()
 	url := config.Get().URLBBToken
-	from, resp := letters.GetBBAuthLetters()
+	from, resp := GetBBAuthLetters()
 	bod := r.From("message://?source=inline", boleto, from, tmpl.GetFuncMaps())
 	r = r.To("logseq://?type=request&url="+url, b.log)
 	bod = bod.To(url, map[string]string{"method": "POST", "insecureSkipVerify": "true"})
@@ -84,14 +84,14 @@ func (b bankBB) ProcessBoleto(boleto *models.BoletoRequest) (models.BoletoRespon
 func (b bankBB) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
 	r := flow.NewFlow()
 	url := config.Get().URLBBRegisterBoleto
-	from := letters.GetRegisterBoletoBBTmpl()
+	from := getRequest()
 	r = r.From("message://?source=inline", boleto, from, tmpl.GetFuncMaps())
 	r = r.To("logseq://?type=request&url="+url, b.log)
 	r = r.To(url, map[string]string{"method": "POST", "insecureSkipVerify": "true"})
 	r = r.To("logseq://?type=response&url="+url, b.log)
 	ch := r.Choice()
 	ch = ch.When(flow.Header("status").IsEqualTo("200"))
-	ch = ch.To("transform://?format=xml", letters.GetBBregisterLetter(), letters.GetRegisterBoletoAPIResponseTmpl(models.BancoDoBrasil), tmpl.GetFuncMaps())
+	ch = ch.To("transform://?format=xml", getResponseBB(), getAPIResponse(), tmpl.GetFuncMaps())
 	ch = ch.To("unmarshall://?format=json", new(models.BoletoResponse))
 	ch = ch.Otherwise()
 	ch = ch.To("logseq://?type=response&url="+url, b.log).To("apierro://")
