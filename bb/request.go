@@ -1,4 +1,4 @@
-package letters
+package bb
 
 /*
 @author Philippe Moneda
@@ -61,8 +61,8 @@ const registerBoleto = `
 </soapenv:Envelope>
  `
 
-//GetRegisterBoletoBBTmpl retorna o template do Banco do Brasil
-func GetRegisterBoletoBBTmpl() string {
+//getRequest retorna o template do Banco do Brasil
+func getRequest() string {
 	return registerBoleto
 }
 
@@ -84,6 +84,6 @@ const registerBoletoBBResponse = `
 
 `
 
-func GetBBregisterLetter() string {
+func getResponseBB() string {
 	return registerBoletoBBResponse
 }
