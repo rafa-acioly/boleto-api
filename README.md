@@ -196,6 +196,7 @@ API Installation using Docker
 Before deploying, you should open the file [docker-compose](/devops/docker-compose.yml) and configure the information which is relevant to the environment. After setting up the docker-compose, you can install the application using the file deploy.sh
 
     % cd devops
+    % ./build.sh
     % ./deploy.sh . local
 
 The script will create the Docker's volume directories, compile the application, mount the API's and MongoDB's images and upload the containers.
