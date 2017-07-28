@@ -68,6 +68,10 @@ In case you want to run the application with log turned off, you should use the 
 You can combine all these options and, in case you want to use them altogether, you can simply use the -airplane-mode option
 
 	% ./boleto-api -airplane-mode
+
+By default, boleto api will up and running a https server but you can run in http mode with the following option
+
+	% ./boleto-api -http-only
 	
 
 Using Boleto API Online
