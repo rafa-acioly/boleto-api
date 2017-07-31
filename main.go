@@ -25,6 +25,7 @@ var (
 	disableLog   = flag.Bool("nolog", false, "-nolog disable seq log")
 	airPlaneMode = flag.Bool("airplane-mode", false, "-airplane-mode run api in dev, mock and nolog mode")
 	mockOnly     = flag.Bool("mockonly", false, "-mockonly run just mock service")
+	httpOnly     = flag.Bool("http-only", false, "-http-only run api using HTTP")
 )
 
 func init() {
@@ -56,16 +57,24 @@ func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	if *mockOnly {
 		w := make(chan int)
-		config.Install(true, true, true)
+		config.Install(true, true, true, true)
 		robot.GoRobots()
 		<-w
 	} else {
 		logo1()
+		params := app.NewParams()
 		if *airPlaneMode {
-			app.Run(true, true, true)
+			params.DevMode = true
+			params.DisableLog = true
+			params.MockMode = true
+			params.HTTPOnly = true
 		} else {
-			app.Run(*devMode, *mockMode, *disableLog)
+			params.DevMode = *devMode
+			params.DisableLog = *disableLog
+			params.MockMode = *mockMode
+			params.HTTPOnly = *httpOnly
 		}
+		app.Run(params)
 	}
 
 }
