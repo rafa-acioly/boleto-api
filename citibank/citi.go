@@ -28,6 +28,7 @@ func New() bankCiti {
 	b.validate.Push(citiValidateAgency)
 	b.validate.Push(citiValidateAccount)
 	b.validate.Push(citiValidateAccountDigit)
+	b.validate.Push(citiValidateWallet)
 	return b
 }
 
@@ -45,9 +46,9 @@ func (b bankCiti) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRes
 	to := getAPIResponseCiti()
 	bod := r.From("message://?source=inline", boleto, getRequestCiti(), tmpl.GetFuncMaps())
 	bod = bod.To("logseq://?type=request&url="+serviceURL, b.log)
-	responseCiti, status := util.PostSecure(serviceURL, bod.GetBody().(string), map[string]string{"Soapaction":"RegisterBoleto"})
-	bod = bod.To("set://?prop=header", map[string]string{"status" : strconv.Itoa(status)})
-	bod = bod.To("set://?prop=body",responseCiti)
+	responseCiti, status := util.PostSecure(serviceURL, bod.GetBody().(string), map[string]string{"Soapaction": "RegisterBoleto"})
+	bod = bod.To("set://?prop=header", map[string]string{"status": strconv.Itoa(status)})
+	bod = bod.To("set://?prop=body", responseCiti)
 	ch := bod.Choice()
 	ch = ch.When(flow.Header("status").IsEqualTo("200"))
 	ch = ch.To("transform://?format=xml", from, to, tmpl.GetFuncMaps())
@@ -86,6 +87,3 @@ func calculateOurNumber(boleto *models.BoletoRequest) uint {
 	value, _ := strconv.Atoi(ourNumberWithDigit)
 	return uint(value)
 }
-
-
-

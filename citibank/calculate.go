@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func mod11(valueSequence string) string  {
+func mod11(valueSequence string) string {
 	digit := 0
 	sum := 0
 	weight := 2
@@ -18,7 +18,7 @@ func mod11(valueSequence string) string  {
 		values = append(values, n)
 	}
 
-	for  i := len(values)-1; i >= 0; i-- {
+	for i := len(values) - 1; i >= 0; i-- {
 		sum += values[i] * weight
 
 		if weight < 9 {
@@ -68,7 +68,6 @@ func mod11Base9(valueSequence string) string {
 	return strconv.Itoa(digit)
 }
 
-
 func mod10(valueSequence string) string {
 	digit := 0
 	sum := 0
@@ -83,7 +82,7 @@ func mod10(valueSequence string) string {
 		values = append(values, n)
 	}
 
-	for i := len(values)-1; i >= 0; i-- {
+	for i := len(values) - 1; i >= 0; i-- {
 		rest = values[i] * weight
 
 		if rest > 9 {

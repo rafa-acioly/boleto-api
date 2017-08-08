@@ -2,14 +2,14 @@ package util
 
 import (
 	"crypto/tls"
+	"crypto/x509"
+	"github.com/mundipagg/boleto-api/config"
 	"io/ioutil"
+	"log"
 	"net"
 	"net/http"
 	"strings"
 	"time"
-	"crypto/x509"
-	"log"
-	"github.com/mundipagg/boleto-api/config"
 )
 
 var defaultDialer = &net.Dialer{Timeout: 16 * time.Second, KeepAlive: 16 * time.Second}
@@ -35,7 +35,7 @@ func Post(url, body string, header map[string]string) (string, int, error) {
 	return doRequest("POST", url, body, header)
 }
 
-func PostSecure(url, body string, header map[string]string) (string, int){
+func PostSecure(url, body string, header map[string]string) (string, int) {
 
 	return doRequestSecure("POST", url, body, header)
 }
@@ -94,7 +94,7 @@ func doRequestSecure(method, url, body string, header map[string]string) (string
 
 	client := &http.Client{Transport: transport}
 	b := strings.NewReader(body)
-	req, _ := http.NewRequest(method, url , b)
+	req, _ := http.NewRequest(method, url, b)
 
 	if header != nil {
 		for k, v := range header {

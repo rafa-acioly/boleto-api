@@ -21,7 +21,7 @@ type Config struct {
 	URLCaixaRegisterBoleto string
 	URLBBToken             string
 	URLCitiRegisterBoleto  string
-	URLCitiBoleto		   string
+	URLCitiBoleto          string
 	MockMode               bool
 	DevMode                bool
 	HTTPOnly               bool
@@ -32,9 +32,9 @@ type Config struct {
 	DisableLog             bool
 	TLSCertPath            string
 	TLSKeyPath             string
-	CertCitiPathCrt		   string
-	CertCitiPathKey		   string
-	CertCitiPathCa		   string
+	CertCitiPathCrt        string
+	CertCitiPathKey        string
+	CertCitiPathCa         string
 }
 
 var cnf Config
@@ -62,7 +62,7 @@ func Install(mockMode, devMode, disableLog, httpOnly bool) {
 		URLCaixaRegisterBoleto: os.Getenv("URL_CAIXA"),
 		URLBBToken:             os.Getenv("URL_BB_TOKEN"),
 		URLCitiRegisterBoleto:  os.Getenv("URL_CITI_REGISTER_BOLETO"),
-		URLCitiBoleto: 			os.Getenv("URL_CITI_BOLETO"),
+		URLCitiBoleto:          os.Getenv("URL_CITI_BOLETO"),
 		MockMode:               mockMode,
 		AppURL:                 os.Getenv("APP_URL"),
 		ElasticURL:             os.Getenv("ELASTIC_URL"),
@@ -73,9 +73,9 @@ func Install(mockMode, devMode, disableLog, httpOnly bool) {
 		BoletoJSONFileStore:    os.Getenv("BOLETO_JSON_STORE"),
 		TLSCertPath:            os.Getenv("TLS_CERT_PATH"),
 		TLSKeyPath:             os.Getenv("TLS_KEY_PATH"),
-		CertCitiPathCrt:		os.Getenv("CERT_CITI_CRT"),
-		CertCitiPathKey:		os.Getenv("CERT_CITI_KEY"),
-		CertCitiPathCa:			os.Getenv("CERT_CITI_CA"),
+		CertCitiPathCrt:        os.Getenv("CERT_CITI_CRT"),
+		CertCitiPathKey:        os.Getenv("CERT_CITI_KEY"),
+		CertCitiPathCa:         os.Getenv("CERT_CITI_CA"),
 	}
 }
 

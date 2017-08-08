@@ -7,35 +7,34 @@ import (
 	"time"
 )
 
-type barcodeNumber struct{
-	BankNumber string
-	Currency string
-	CodProduct string
-	DateDueFactor string
-	Value string
+type barcodeNumber struct {
+	BankNumber         string
+	Currency           string
+	CodProduct         string
+	DateDueFactor      string
+	Value              string
 	OurNumberWithDigit string
-	BankAccount string
-	Wallet string
+	BankAccount        string
+	Wallet             string
 }
 
 func casting(boleto *models.BoletoRequest) barcodeNumber {
-	Bn := barcodeNumber{}
+	bn := barcodeNumber{}
 	date, _ := time.Parse("2006-01-02", boleto.Title.ExpireDate)
+	bn.BankNumber = strconv.Itoa(int(boleto.BankNumber))
+	bn.Currency = "9"
+	bn.CodProduct = "3"
+	bn.DateDueFactor = dateDueFactor(date)
+	bn.Value = util.PadLeft(strconv.Itoa(int(boleto.Title.AmountInCents)), "0", 10)
+	bn.OurNumberWithDigit = strconv.Itoa(int(boleto.Title.OurNumber)) + mod11(strconv.Itoa(int(boleto.Title.OurNumber)))
+	bn.OurNumberWithDigit = util.PadLeft(bn.OurNumberWithDigit, "0", 12)
+	bn.BankAccount = boleto.Agreement.Account + boleto.Agreement.AccountDigit
+	bn.Wallet = strconv.Itoa(int(boleto.Agreement.Wallet))
 
-	Bn.BankNumber = strconv.Itoa(int(boleto.BankNumber))
-	Bn.Currency = "9"
-	Bn.CodProduct = "3"
-	Bn.DateDueFactor = dateDueFactor(date)
-	Bn.Value = util.PadLeft(strconv.Itoa(int(boleto.Title.AmountInCents)), "0",10)
-	Bn.OurNumberWithDigit = strconv.Itoa(int(boleto.Title.OurNumber)) + mod11(strconv.Itoa(int(boleto.Title.OurNumber)))
-	Bn.OurNumberWithDigit = util.PadLeft(Bn.OurNumberWithDigit, "0",12)
-	Bn.BankAccount = boleto.Agreement.Account + boleto.Agreement.AccountDigit
-	Bn.Wallet = strconv.Itoa(int(boleto.Agreement.Wallet))
-
-	return Bn
+	return bn
 }
 
-func generateBar (boleto *models.BoletoRequest) (string, string) {
+func generateBar(boleto *models.BoletoRequest) (string, string) {
 
 	genBar := casting(boleto)
 
@@ -55,7 +54,7 @@ func generateBar (boleto *models.BoletoRequest) (string, string) {
 	//Group 2
 	groupTwo := genBar.BankAccount[2:] + genBar.OurNumberWithDigit[:2]
 	groupTwo = groupTwo + mod10(groupTwo)
-	groupTwo =  groupTwo[:5] + "." + groupTwo[5:11]
+	groupTwo = groupTwo[:5] + "." + groupTwo[5:11]
 
 	//Group 3
 	groupThree := genBar.OurNumberWithDigit[2:]
@@ -70,12 +69,3 @@ func generateBar (boleto *models.BoletoRequest) (string, string) {
 
 	return codeb, digitableLine
 }
-
-
-
-
-
-
-
-
-

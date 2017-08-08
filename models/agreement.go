@@ -61,5 +61,3 @@ func (a *Agreement) CalculateAccountDigit(digitCalculator func(agency, account s
 		a.AccountDigit = digitCalculator(a.Agency, a.Account)
 	}
 }
-
-
