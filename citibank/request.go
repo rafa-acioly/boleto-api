@@ -24,19 +24,19 @@ const registerBoletoCiti = `
          <GrpBenf>
             <CdClrSys>745</CdClrSys>
             <CdIspb>33479023</CdIspb>
-            <CdtrId>{{.Agreement.AgreementNumber}}</CdtrId>
+            <CdtrId>0{{.Authentication.Username}}</CdtrId>
             <CdtrNm>{{.Recipient.Name}}</CdtrNm>
             <CdtrTaxId>{{.Recipient.Document.Number}}</CdtrTaxId>
             <CdtrTaxTp>J</CdtrTaxTp>
          </GrpBenf>
          <GrpClPgd>
             <DbtrNm>{{.Buyer.Name}}</DbtrNm>
-            {{if (eq .Buyer.Document.Type "CPF")}}				
+            <DbtrTaxId>{{.Buyer.Document.Number}}</DbtrTaxId>
+			{{if (eq .Buyer.Document.Type "CPF")}}
             	<DbtrTaxTp>F</DbtrTaxTp>
 			{{else}}
             	<DbtrTaxTp>J</DbtrTaxTp>
 			{{end}}
-			<DbtrTaxId>{{.Buyer.Document.Number}}</DbtrTaxId>
             <GrpClPgdAdr>
                <DbtrAdrTp>{{.Buyer.Address.Street}} {{.Buyer.Address.Number}} {{.Buyer.Address.Complement}}</DbtrAdrTp>
                <DbtrCtrySubDvsn>{{.Buyer.Address.StateCode}}</DbtrCtrySubDvsn>
@@ -45,7 +45,7 @@ const registerBoletoCiti = `
             </GrpClPgdAdr>
          </GrpClPgd>
          <CdOccTp>01</CdOccTp>
-         <DbtrGrntNm />
+         <DbtrGrntNm> </DbtrGrntNm>
          <DbtrMsg>{{.Title.Instructions}}</DbtrMsg>
          <TitlAmt>{{.Title.AmountInCents}}</TitlAmt>
          <TitlBarCdInd>0</TitlBarCdInd>
