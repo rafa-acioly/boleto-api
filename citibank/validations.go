@@ -3,6 +3,8 @@ package citibank
 import (
 	"github.com/mundipagg/boleto-api/validations"
 	"github.com/mundipagg/boleto-api/models"
+	"fmt"
+	"errors"
 )
 
 func citiValidateAgency(b interface{}) error {
@@ -31,12 +33,11 @@ func citiValidateAccount(b interface{}) error {
 	}
 }
 
-func citiValidateDigitQuantity(b interface{}) error {
+func citiValidateAccountDigit(b interface{}) error {
 	switch t := b.(type) {
 	case *models.BoletoRequest:
-		err := t.Agreement.IsQuantityDigitValidade(1)
-		if err != nil {
-			return err
+		if len(t.Agreement.AccountDigit) < 1 && len(t.Agreement.AccountDigit) > 2{
+			return errors.New(fmt.Sprintf("O digito da conta precisa ser preenchido."))
 		}
 		return nil
 	default:

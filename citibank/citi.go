@@ -27,7 +27,7 @@ func New() bankCiti {
 	b.validate.Push(validations.ValidateRecipientDocumentNumber)
 	b.validate.Push(citiValidateAgency)
 	b.validate.Push(citiValidateAccount)
-	b.validate.Push(citiValidateDigitQuantity)
+	b.validate.Push(citiValidateAccountDigit)
 	return b
 }
 

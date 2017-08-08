@@ -40,14 +40,6 @@ func (a *Agreement) CalculateAgencyDigit(digitCalculator func(agency string) str
 	}
 }
 
-// IsDigitQuantityValid retorna se a quantidade do digito da conta está preenchido.
-func (a *Agreement) IsQuantityDigitValidade(accountLength int) error {
-	if len(a.AccountDigit) < accountLength {
-		return NewErrorResponse("MPAccountDigit", fmt.Sprintf("Quantidade inválida, campo DigitAccount não pode estar vazio %d dígito", accountLength))
-	}
-	return nil
-}
-
 // IsAccountValid retorna se é uma conta válida
 func (a *Agreement) IsAccountValid(accountLength int) error {
 	re := regexp.MustCompile("(\\D+)")
