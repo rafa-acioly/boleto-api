@@ -94,7 +94,6 @@ func (b *BoletoView) EncodeURL(format string) string {
 		citiURL := config.Get().URLCitiBoleto
 		query := "?seuNumero=%s&cpfSacado=%s&cpfCedente=%s"
 		_url = citiURL + fmt.Sprintf(query, b.Boleto.Title.DocumentNumber, b.Boleto.Buyer.Document.Number, b.Boleto.Recipient.Document.Number)
-		fmt.Println(b.Boleto.Title.DocumentNumber)
 	default:
 		_url = fmt.Sprintf("%s?fmt=%s&id=%s", config.Get().AppURL, format, b.ID)
 	}
