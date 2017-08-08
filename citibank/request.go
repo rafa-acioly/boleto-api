@@ -24,7 +24,7 @@ const registerBoletoCiti = `
          <GrpBenf>
             <CdClrSys>745</CdClrSys>
             <CdIspb>33479023</CdIspb>
-            <CdtrId>0{{.Authentication.Username}}</CdtrId>
+            <CdtrId>{{.Authentication.Username}}</CdtrId>
             <CdtrNm>{{.Recipient.Name}}</CdtrNm>
             <CdtrTaxId>{{.Recipient.Document.Number}}</CdtrTaxId>
             <CdtrTaxTp>J</CdtrTaxTp>
