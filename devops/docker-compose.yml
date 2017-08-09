@@ -23,6 +23,7 @@ services:
      - BOLETO_JSON_STORE=/home/upMongo
      - URL_CAIXA=https://des.barramento.caixa.gov.br/sibar/ManutencaoCobrancaBancaria/Boleto/Externo
      - URL_CITI=https://citigroupsoauat.citigroup.com/comercioeletronico/registerboleto/RegisterBoletoSOAP
+     - URL_CITI_BOLETO=https://ebillpayer.uat.brazil.citigroup.com/ebillpayer/jspInformaDadosConsulta.jsp
      - TLS_CERT_PATH=/home/mundipagg/boleto_ssh/cert.pem
      - TLS_KEY_PATH=/home/mundipagg/boleto_ssh/key.pem
      - CERT_BOLETO_CRT=/home/mundipagg/boleto_cert/certificate.crt
