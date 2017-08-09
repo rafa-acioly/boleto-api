@@ -32,7 +32,7 @@ func New() bankSantander {
 	b.validate.Push(validations.ValidateExpireDate)
 	b.validate.Push(validations.ValidateBuyerDocumentNumber)
 	b.validate.Push(validations.ValidateRecipientDocumentNumber)
-	t, err := util.BuildTLSTransport(config.Get().SantanderCrtPath, config.Get().SantanderKeyPath, config.Get().SantanderCaPath)
+	t, err := util.BuildTLSTransport(config.Get().CertBoletoPathCrt, config.Get().CertBoletoPathKey, config.Get().CertBoletoPathCa)
 	if err != nil {
 		//TODO
 	}
@@ -55,9 +55,9 @@ func (b bankSantander) GetTicket(boleto *models.BoletoRequest) (string, error) {
 	pipe.To("logseq://?type=response&url="+url, b.log)
 	ch := pipe.Choice()
 	ch.When(flow.Header("status").IsEqualTo("200"))
-	ch.To("transform://?format=xml", getTicketResponse(), `{{.returnCode}}:::{{unscape .ticket}}:::{{.message}}`, tmpl.GetFuncMaps())
+	ch.To("transform://?format=xml", getTicketResponse(), `{{.returnCode}}:::{{.ticket}}:::{{.message}}`, tmpl.GetFuncMaps())
 	ch.When(flow.Header("status").IsEqualTo("403"))
-	ch.To("print://?msg=Hello").To("set://?prop=body", errors.New("403 Forbidden"))
+	ch.To("set://?prop=body", errors.New("403 Forbidden"))
 	ch.Otherwise()
 	ch.To("logseq://?type=request&url="+url, b.log).To("set://?prop=body", errors.New("integration error"))
 	switch t := pipe.GetBody().(type) {
@@ -65,10 +65,8 @@ func (b bankSantander) GetTicket(boleto *models.BoletoRequest) (string, error) {
 		items := pipe.GetBody().(string)
 		parts := strings.Split(items, ":::")
 		returnCode, ticket := parts[0], parts[1]
-		fmt.Println(items)
 		return ticket, checkError(returnCode)
 	case error:
-		fmt.Println(t.Error())
 		return "", t
 	}
 	return "", nil

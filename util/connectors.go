@@ -6,9 +6,10 @@ import (
 	"github.com/mundipagg/boleto-api/log"
 
 	"errors"
-	"github.com/PMoneda/flow"
 	"net/http"
 	"strings"
+
+	"github.com/PMoneda/flow"
 )
 
 // SeqLogConector é um connector flow para logar no Seq
@@ -63,13 +64,13 @@ func TlsConector(e *flow.ExchangeMessage, u flow.URI, params ...interface{}) err
 		switch t := params[0].(type) {
 		case *http.Transport:
 			url := strings.Replace(u.GetRaw(), "tls", "https", 1)
-			response, status, err := PostTLS(url, b, nil, t)
+			response, status, err := PostTLS(url, b, e.GetHeaderMap(), t)
 			if err != nil {
 				e.SetHeader("error", err.Error())
 				e.SetBody(err)
 				return err
 			}
-			e.SetHeader("status", fmt.Sprintf("%d",status))
+			e.SetHeader("status", fmt.Sprintf("%d", status))
 			e.SetBody(response)
 		default:
 			return errors.New("invalid data type")
