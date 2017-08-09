@@ -2,11 +2,14 @@ package util
 
 import (
 	"crypto/tls"
+	"crypto/x509"
 	"io/ioutil"
 	"net"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/mundipagg/boleto-api/config"
 )
 
 var defaultDialer = &net.Dialer{Timeout: 16 * time.Second, KeepAlive: 16 * time.Second}
@@ -24,13 +27,17 @@ var client *http.Client = &http.Client{
 
 // DefaultHTTPClient retorna um cliente http configurado para dar um skip na validação do certificado digital
 func DefaultHTTPClient() *http.Client {
-
 	return client
 }
 
 //Post faz um requisição POST para uma URL e retorna o response, status e erro
 func Post(url, body string, header map[string]string) (string, int, error) {
 	return doRequest("POST", url, body, header)
+}
+
+func PostSecure(url, body string, header map[string]string) (string, int, error) {
+
+	return doRequestSecure("POST", url, body, header)
 }
 
 //Get faz um requisição GET para uma URL e retorna o response, status e erro
@@ -60,6 +67,54 @@ func doRequest(method, url, body string, header map[string]string) (string, int,
 		return "", resp.StatusCode, errResponse
 	}
 	sData := string(data)
+	return sData, resp.StatusCode, nil
+}
+
+func doRequestSecure(method, url, body string, header map[string]string) (string, int, error) {
+
+	cert, err := tls.LoadX509KeyPair(config.Get().CertBoletoPathCrt, config.Get().CertBoletoPathKey)
+	if err != nil {
+		return "", 0, err
+	}
+
+	caCert, err := ioutil.ReadFile(config.Get().CertBoletoPathCa)
+	if err != nil {
+		return "", 0, err
+	}
+
+	caCertPool := x509.NewCertPool()
+	caCertPool.AppendCertsFromPEM(caCert)
+
+	tlsConfig := &tls.Config{
+		Certificates:       []tls.Certificate{cert},
+		RootCAs:            caCertPool,
+		InsecureSkipVerify: true,
+	}
+	transport := &http.Transport{TLSClientConfig: tlsConfig}
+
+	client := &http.Client{Transport: transport}
+	b := strings.NewReader(body)
+	req, _ := http.NewRequest(method, url, b)
+
+	if header != nil {
+		for k, v := range header {
+			req.Header.Add(k, v)
+		}
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", 0, err
+	}
+	defer resp.Body.Close()
+
+	// Dump response
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", 0, err
+	}
+	sData := string(data)
+
 	return sData, resp.StatusCode, nil
 }
 
