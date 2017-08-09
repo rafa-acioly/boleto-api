@@ -4,6 +4,8 @@ go:
   - 1.8.x
   - tip
 
+dist: precise
+
 before_install:
   - curl https://glide.sh/get | sh
   - glide install
