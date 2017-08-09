@@ -91,9 +91,9 @@ func (b *BoletoView) EncodeURL(format string) string {
 	var _url string
 	switch b.BankID {
 	case Citibank:
-		citiURL := "https://corporate.brazil.citibank.com/ebillpayer/jspInformaDadosConsulta.jsp"
-		query := "?seuNumero=%d&cpfSacado=%s&cpfCedente=%s"
-		_url = citiURL + fmt.Sprintf(query, b.Boleto.Title.OurNumber, b.Boleto.Recipient.Document.Number, b.Boleto.Buyer.Document.Number)
+		citiURL := config.Get().URLCitiBoleto
+		query := "?seuNumero=%s&cpfSacado=%s&cpfCedente=%s"
+		_url = citiURL + fmt.Sprintf(query, b.Boleto.Title.DocumentNumber, b.Boleto.Buyer.Document.Number, b.Boleto.Recipient.Document.Number)
 	default:
 		_url = fmt.Sprintf("%s?fmt=%s&id=%s", config.Get().AppURL, format, b.ID)
 	}

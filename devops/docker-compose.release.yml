@@ -5,6 +5,7 @@ services:
     volumes:
      - ~/boletodb/upMongo:/home/upMongo
      - ~/boleto_ssh:/home/mundipagg/boleto_ssh
+     - ~/boleto_cert:/home/mundipagg/boleto_cert
     ports:
      - "#{CONF_EXPOSEPORT}#:3000"
     environment:
@@ -24,6 +25,9 @@ services:
      - URL_CITI=#{CONF_URL_CITI}#
      - TLS_CERT_PATH=#{CONF_TLS_CERT_PATH}#
      - TLS_KEY_PATH=#{CONF_TLS_KEY_PATH}#
+     - CERT_BOLETO_CRT=#{CONF_CERT_BOLETO_CRT}#
+     - CERT_BOLETO_KEY=#{CONF_CERT_BOLETO_KEY}#
+     - CERT_BOLETO_CA=#{CONF_CERT_BOLETO_CA}#
   mongodb:
     image: mongo:latest
     container_name: "mongodb"

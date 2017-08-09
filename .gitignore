@@ -3,3 +3,4 @@ boleto-api
 *.exe
 debug
 .DS_Store
+.idea/
