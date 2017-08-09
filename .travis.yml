@@ -4,11 +4,14 @@ go:
   - 1.8.x
   - tip
 
-dist: precise
+addons:
+  apt:
+    sources:
+      - sourceline: 'ppa:masterminds/glide'
+    packages:
+      - glide
 
 before_install:
-  - mkdir -p $GOPATH/bin
-  - curl https://glide.sh/get | sh
   - glide install
 
 script:
