@@ -68,9 +68,9 @@ func configFlags(devMode, mockMode, disableLog, httpOnly bool) {
 		os.Setenv("ELASTIC_URL", "http://localhost:9200")
 		os.Setenv("MONGODB_URL", "localhost:27017")
 		os.Setenv("BOLETO_JSON_STORE", "/home/philippe/boletodb/upMongo")
-		os.Setenv("CERT_CITI_CRT", "C:\\cert_boleto_api\\certificate.crt")
-		os.Setenv("CERT_CITI_KEY", "C:\\cert_boleto_api\\mundi.key")
-		os.Setenv("CERT_CITI_CA", "C:\\cert_boleto_api\\ca-cert.ca")
+		os.Setenv("CERT_BOLETO_CRT", "C:\\cert_boleto_api\\certificate.crt")
+		os.Setenv("CERT_BOLETO_KEY", "C:\\cert_boleto_api\\mundi.key")
+		os.Setenv("CERT_BOLETO_CA", "C:\\cert_boleto_api\\ca-cert.ca")
 		if mockMode {
 			os.Setenv("URL_BB_REGISTER_BOLETO", "http://localhost:4000/registrarBoleto")
 			os.Setenv("URL_BB_TOKEN", "http://localhost:4000/oauth/token")

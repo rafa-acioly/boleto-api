@@ -24,7 +24,6 @@ func TestRegisterBoletoCiti(t *testing.T) {
 		boletoReq.Agreement.Wallet = 100
 		req := util.Stringify(boletoReq)
 		resp, st, err := util.Post("http://localhost:3000/v1/boleto/register", req, nil)
-		fmt.Println(resp)
 		boletoResp := util.ParseJSON(resp, new(models.BoletoResponse)).(*models.BoletoResponse)
 		So(err, ShouldBeNil)
 		So(st, ShouldEqual, 200)

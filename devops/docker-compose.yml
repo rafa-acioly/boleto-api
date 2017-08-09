@@ -5,7 +5,7 @@ services:
     volumes:
      - ~/boletodb/upMongo:/home/upMongo
      - ~/boleto_ssh:/home/mundipagg/boleto_ssh
-     - ~/citibank_cert:/home/mundipagg/cert_citibank
+     - ~/boleto_cert:/home/mundipagg/boleto_cert
     ports:
      - "8080:3000"
     environment:
@@ -25,9 +25,9 @@ services:
      - URL_CITI=https://citigroupsoauat.citigroup.com/comercioeletronico/registerboleto/RegisterBoletoSOAP
      - TLS_CERT_PATH=/home/mundipagg/boleto_ssh/cert.pem
      - TLS_KEY_PATH=/home/mundipagg/boleto_ssh/key.pem
-     - CERT_CITI_CRT=/home/mundipagg/citibank_cert/certificate.crt
-     - CERT_CITI_KEY=/home/mundipagg/citibank_cert/mundi.key
-     - CERT_CITI_CA=/home/mundipagg/citibank_cert/ca-cert.ca
+     - CERT_CITI_CRT=/home/mundipagg/boleto_cert/certificate.crt
+     - CERT_CITI_KEY=/home/mundipagg/boleto_cert/mundi.key
+     - CERT_CITI_CA=/home/mundipagg/boleto_cert/ca-cert.ca
 
   mongodb:
         image: mongo:latest

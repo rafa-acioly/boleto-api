@@ -32,9 +32,9 @@ type Config struct {
 	DisableLog             bool
 	TLSCertPath            string
 	TLSKeyPath             string
-	CertCitiPathCrt        string
-	CertCitiPathKey        string
-	CertCitiPathCa         string
+	CertBoletoPathCrt      string
+	CertBoletoPathKey      string
+	CertBoletoPathCa       string
 }
 
 var cnf Config
@@ -49,10 +49,10 @@ func Get() Config {
 func Install(mockMode, devMode, disableLog, httpOnly bool) {
 	atomic.StoreUint64(&running, 0)
 	cnf = Config{
-		APIPort:                ":" + os.Getenv("API_PORT"),
-		Version:                os.Getenv("API_VERSION"),
-		SEQUrl:                 os.Getenv("SEQ_URL"),                        //Pegar o SEQ de dev
-		SEQAPIKey:              os.Getenv("SEQ_API_KEY"),                    //Staging Key:
+		APIPort:             ":" + os.Getenv("API_PORT"),
+		Version:             os.Getenv("API_VERSION"),
+		SEQUrl:              os.Getenv("SEQ_URL"),                        //Pegar o SEQ de dev
+		SEQAPIKey:           os.Getenv("SEQ_API_KEY"),                    //Staging Key:
 		EnableRequestLog:       os.Getenv("ENABLE_REQUEST_LOG") == "true",   // Log a cada request no SEQ
 		EnablePrintRequest:     os.Getenv("ENABLE_PRINT_REQUEST") == "true", // Imprime algumas informacoes da request no console
 		Environment:            os.Getenv("ENVIRONMENT"),
@@ -62,20 +62,20 @@ func Install(mockMode, devMode, disableLog, httpOnly bool) {
 		URLCaixaRegisterBoleto: os.Getenv("URL_CAIXA"),
 		URLBBToken:             os.Getenv("URL_BB_TOKEN"),
 		URLCitiRegisterBoleto:  os.Getenv("URL_CITI_REGISTER_BOLETO"),
-		URLCitiBoleto:          os.Getenv("URL_CITI_BOLETO"),
-		MockMode:               mockMode,
-		AppURL:                 os.Getenv("APP_URL"),
-		ElasticURL:             os.Getenv("ELASTIC_URL"),
-		DevMode:                devMode,
-		DisableLog:             disableLog,
-		HTTPOnly:               httpOnly,
-		MongoURL:               os.Getenv("MONGODB_URL"),
-		BoletoJSONFileStore:    os.Getenv("BOLETO_JSON_STORE"),
-		TLSCertPath:            os.Getenv("TLS_CERT_PATH"),
-		TLSKeyPath:             os.Getenv("TLS_KEY_PATH"),
-		CertCitiPathCrt:        os.Getenv("CERT_CITI_CRT"),
-		CertCitiPathKey:        os.Getenv("CERT_CITI_KEY"),
-		CertCitiPathCa:         os.Getenv("CERT_CITI_CA"),
+		URLCitiBoleto:       os.Getenv("URL_CITI_BOLETO"),
+		MockMode:            mockMode,
+		AppURL:              os.Getenv("APP_URL"),
+		ElasticURL:          os.Getenv("ELASTIC_URL"),
+		DevMode:             devMode,
+		DisableLog:          disableLog,
+		HTTPOnly:            httpOnly,
+		MongoURL:            os.Getenv("MONGODB_URL"),
+		BoletoJSONFileStore: os.Getenv("BOLETO_JSON_STORE"),
+		TLSCertPath:         os.Getenv("TLS_CERT_PATH"),
+		TLSKeyPath:          os.Getenv("TLS_KEY_PATH"),
+		CertBoletoPathCrt:   os.Getenv("CERT_BOLETO_CRT"),
+		CertBoletoPathKey:   os.Getenv("CERT_BOLETO_KEY"),
+		CertBoletoPathCa:    os.Getenv("CERT_BOLETO_CA"),
 	}
 }
 

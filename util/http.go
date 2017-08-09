@@ -72,12 +72,12 @@ func doRequest(method, url, body string, header map[string]string) (string, int,
 
 func doRequestSecure(method, url, body string, header map[string]string) (string, int, error) {
 
-	cert, err := tls.LoadX509KeyPair(config.Get().CertCitiPathCrt, config.Get().CertCitiPathKey)
+	cert, err := tls.LoadX509KeyPair(config.Get().CertBoletoPathCrt, config.Get().CertBoletoPathKey)
 	if err != nil {
 		return "", 0, err
 	}
 
-	caCert, err := ioutil.ReadFile(config.Get().CertCitiPathCa)
+	caCert, err := ioutil.ReadFile(config.Get().CertBoletoPathCa)
 	if err != nil {
 		return "", 0, err
 	}
