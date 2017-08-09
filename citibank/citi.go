@@ -46,7 +46,11 @@ func (b bankCiti) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRes
 	to := getAPIResponseCiti()
 	bod := r.From("message://?source=inline", boleto, getRequestCiti(), tmpl.GetFuncMaps())
 	bod.To("logseq://?type=request&url="+serviceURL, b.log)
-	responseCiti, status := util.PostSecure(serviceURL, bod.GetBody().(string), map[string]string{"Soapaction": "RegisterBoleto"})
+	//TODO: change for tls flow connector (waiting for santander)
+	responseCiti, status, err := b.sendRequest(bod.GetBody().(string))
+	if err != nil {
+		return models.BoletoResponse{},err
+	}
 	bod.To("set://?prop=header", map[string]string{"status": strconv.Itoa(status)})
 	bod.To("set://?prop=body", responseCiti)
 	ch := bod.Choice()
@@ -75,6 +79,15 @@ func (b bankCiti) ProcessBoleto(boleto *models.BoletoRequest) (models.BoletoResp
 
 func (b bankCiti) ValidateBoleto(boleto *models.BoletoRequest) models.Errors {
 	return models.Errors(b.validate.Assert(boleto))
+}
+
+func (b bankCiti) sendRequest(body string) (string,int,error) {
+	serviceURL := config.Get().URLCitiRegisterBoleto
+	if config.Get().MockMode {
+		return util.Post(serviceURL, body, map[string]string{"Soapaction": "RegisterBoleto"})
+	}else{
+		return util.PostSecure(serviceURL, body, map[string]string{"Soapaction": "RegisterBoleto"})
+	}
 }
 
 //GetBankNumber retorna o codigo do banco

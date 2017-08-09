@@ -3,13 +3,13 @@ package util
 import (
 	"crypto/tls"
 	"crypto/x509"
-	"github.com/mundipagg/boleto-api/config"
 	"io/ioutil"
-	"log"
 	"net"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/mundipagg/boleto-api/config"
 )
 
 var defaultDialer = &net.Dialer{Timeout: 16 * time.Second, KeepAlive: 16 * time.Second}
@@ -35,7 +35,7 @@ func Post(url, body string, header map[string]string) (string, int, error) {
 	return doRequest("POST", url, body, header)
 }
 
-func PostSecure(url, body string, header map[string]string) (string, int) {
+func PostSecure(url, body string, header map[string]string) (string, int, error) {
 
 	return doRequestSecure("POST", url, body, header)
 }
@@ -70,16 +70,16 @@ func doRequest(method, url, body string, header map[string]string) (string, int,
 	return sData, resp.StatusCode, nil
 }
 
-func doRequestSecure(method, url, body string, header map[string]string) (string, int) {
+func doRequestSecure(method, url, body string, header map[string]string) (string, int, error) {
 
 	cert, err := tls.LoadX509KeyPair(config.Get().CertCitiPathCrt, config.Get().CertCitiPathKey)
 	if err != nil {
-		log.Fatal(err)
+		return "", 0, err
 	}
 
 	caCert, err := ioutil.ReadFile(config.Get().CertCitiPathCa)
 	if err != nil {
-		log.Fatal(err)
+		return "", 0, err
 	}
 
 	caCertPool := x509.NewCertPool()
@@ -104,18 +104,18 @@ func doRequestSecure(method, url, body string, header map[string]string) (string
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatal(err)
+		return "", 0, err
 	}
 	defer resp.Body.Close()
 
 	// Dump response
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		return "", 0, err
 	}
 	sData := string(data)
 
-	return sData, resp.StatusCode
+	return sData, resp.StatusCode, nil
 }
 
 //HeaderToMap converte um http Header para um dicionário string -> string
