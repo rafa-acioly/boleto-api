@@ -61,7 +61,7 @@ func Install(mockMode, devMode, disableLog, httpOnly bool) {
 		URLBBRegisterBoleto:    os.Getenv("URL_BB_REGISTER_BOLETO"),
 		URLCaixaRegisterBoleto: os.Getenv("URL_CAIXA"),
 		URLBBToken:             os.Getenv("URL_BB_TOKEN"),
-		URLCitiRegisterBoleto:  os.Getenv("URL_CITI_REGISTER_BOLETO"),
+		URLCitiRegisterBoleto:  os.Getenv("URL_CITI"),
 		URLCitiBoleto:          os.Getenv("URL_CITI_BOLETO"),
 		MockMode:               mockMode,
 		AppURL:                 os.Getenv("APP_URL"),
