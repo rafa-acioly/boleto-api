@@ -1,10 +1,9 @@
-package bank
+package caixa
 
 import (
 	"testing"
 
 	"github.com/mundipagg/boleto-api/models"
-	"github.com/mundipagg/boleto-api/util"
 
 	"time"
 
@@ -14,27 +13,26 @@ import (
 func TestGetCaixaCheckSumInfo(t *testing.T) {
 	boleto := models.BoletoRequest{
 		Agreement: models.Agreement{
-			AgreementNumber: 2004001,
+			AgreementNumber: 200656,
 		},
 		Title: models.Title{
-			OurNumber:      1352634,
-			ExpireDateTime: time.Date(2017, 5, 20, 12, 12, 12, 12, time.Local),
-			AmountInCents:  13567,
+			OurNumber:      0,
+			ExpireDateTime: time.Date(2017, 8, 30, 12, 12, 12, 12, time.Local),
+			AmountInCents:  1000,
 		},
 		Recipient: models.Recipient{
 			Document: models.Document{
-				Number: "10497233000103",
+				Number: "00732159000109",
 			},
 		},
 	}
-	caixa := newCaixa()
+	caixa := New()
 	Convey("Geração do token de autorização da Caixa", t, func() {
 		Convey("Deve-se formar uma string seguindo o padrão da documentação", func() {
-			So(caixa.getCheckSumCode(boleto), ShouldEqual, "2004001000200400113526342005201700000000001356710497233000103")
+			So(caixa.getCheckSumCode(boleto), ShouldEqual, "0200656000000000000000003008201700000000000100000732159000109")
 		})
 		Convey("Deve-se fazer um hash sha256 e encodar com base64", func() {
-			hash := util.Sha256("2004001000200400113526342005201700000000001356710497233000103")
-			So(hash, ShouldEqual, caixa.getAuthToken(caixa.getCheckSumCode(boleto)))
+			So(caixa.getAuthToken(caixa.getCheckSumCode(boleto)), ShouldEqual, "LvWr1op5Ayibn6jsCQ3/2bW4KwThVAlLK5ftxABlq20=")
 		})
 	})
 

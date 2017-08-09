@@ -1,4 +1,4 @@
-package bank
+package caixa
 
 import (
 	"fmt"
@@ -6,11 +6,11 @@ import (
 	"github.com/PMoneda/flow"
 
 	"github.com/mundipagg/boleto-api/config"
-	"github.com/mundipagg/boleto-api/letters"
 	"github.com/mundipagg/boleto-api/log"
 	"github.com/mundipagg/boleto-api/models"
 	"github.com/mundipagg/boleto-api/tmpl"
 	"github.com/mundipagg/boleto-api/util"
+	"github.com/mundipagg/boleto-api/validations"
 )
 
 type bankCaixa struct {
@@ -18,16 +18,15 @@ type bankCaixa struct {
 	log      *log.Log
 }
 
-func newCaixa() bankCaixa {
+func New() bankCaixa {
 	b := bankCaixa{
 		validate: models.NewValidator(),
 		log:      log.CreateLog(),
 	}
-	b.validate.Push(baseValidateAmountInCents)
-	b.validate.Push(baseValidateExpireDate)
-	b.validate.Push(baseValidateBuyerDocumentNumber)
-	b.validate.Push(baseValidateRecipientDocumentNumber)
-	b.validate.Push(caixaValidateAccountAndDigit)
+	b.validate.Push(validations.ValidateAmount)
+	b.validate.Push(validations.ValidateExpireDate)
+	b.validate.Push(validations.ValidateBuyerDocumentNumber)
+	b.validate.Push(validations.ValidateRecipientDocumentNumber)
 	b.validate.Push(caixaValidateAgency)
 	b.validate.Push(validateInstructions)
 	return b
@@ -38,12 +37,13 @@ func (b bankCaixa) Log() *log.Log {
 	return b.log
 }
 func (b bankCaixa) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
-	r := flow.NewPipe()
+	r := flow.NewFlow()
 	urlCaixa := config.Get().URLCaixaRegisterBoleto
-	from := flow.Transform(letters.GetResponseTemplateCaixa())
-	to := flow.Transform(letters.GetRegisterBoletoAPIResponseTmpl())
-	bod := r.From("message://?source=inline", boleto, letters.GetRegisterBoletoCaixaTmpl(), tmpl.GetFuncMaps())
+	from := getResponseCaixa()
+	to := getAPIResponseCaixa()
+	bod := r.From("message://?source=inline", boleto, getRequestCaixa(), tmpl.GetFuncMaps())
 	bod = bod.To("logseq://?type=request&url="+urlCaixa, b.log)
+	//bod = bod.To("print://?msg=${body}")
 	bod = bod.To(urlCaixa, map[string]string{"method": "POST", "insecureSkipVerify": "true"})
 	bod = bod.To("logseq://?type=response&url="+urlCaixa, b.log)
 	ch := bod.Choice()
@@ -67,6 +67,7 @@ func (b bankCaixa) ProcessBoleto(boleto *models.BoletoRequest) (models.BoletoRes
 		return models.BoletoResponse{Errors: errs}, nil
 	}
 	checkSum := b.getCheckSumCode(*boleto)
+	//fmt.Println(checkSum)
 	boleto.Authentication.AuthorizationToken = b.getAuthToken(checkSum)
 	return b.RegisterBoleto(boleto)
 }
@@ -77,10 +78,9 @@ func (b bankCaixa) ValidateBoleto(boleto *models.BoletoRequest) models.Errors {
 
 //getCheckSumCode Código do Cedente (7 posições) + Nosso Número (17 posições) + Data de Vencimento (DDMMAAAA) + Valor (15 posições) + CPF/CNPJ (14 Posições)
 func (b bankCaixa) getCheckSumCode(boleto models.BoletoRequest) string {
-	ourNumber := fmt.Sprintf("%d%d", boleto.Agreement.AgreementNumber, boleto.Title.OurNumber)
-	return fmt.Sprintf("%07d%017s%s%015d%014s",
+	return fmt.Sprintf("%07d%017d%s%015d%014s",
 		boleto.Agreement.AgreementNumber,
-		ourNumber,
+		boleto.Title.OurNumber,
 		boleto.Title.ExpireDateTime.Format("02012006"),
 		boleto.Title.AmountInCents,
 		boleto.Recipient.Document.Number)

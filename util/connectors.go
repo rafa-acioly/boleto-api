@@ -9,7 +9,7 @@ import (
 )
 
 // SeqLogConector é um connector flow para logar no Seq
-func SeqLogConector(next func(), e *flow.ExchangeMessage, out flow.Message, u flow.URI, params ...interface{}) error {
+func SeqLogConector(e *flow.ExchangeMessage, u flow.URI, params ...interface{}) error {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println(r)
@@ -37,7 +37,5 @@ func SeqLogConector(next func(), e *flow.ExchangeMessage, out flow.Message, u fl
 			l.Response(b, u.GetOption("url"))
 		}
 	}
-	out <- e
-	next()
 	return nil
 }

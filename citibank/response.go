@@ -1,6 +1,6 @@
-package letters
+package citibank
 
-const registerBoletoResponse = `{
+const registerBoletoResponseCiti = `{
     {{if (hasErrorTags . "errorCode" "errorMessage" "exception")}}
         {{if (hasErrorTags . "exception")}}
             "Errors": [
@@ -30,7 +30,6 @@ const registerBoletoResponse = `{
 }
 `
 
-//GetRegisterBoletoAPIResponseTmpl retorna o template de resposta para a Api
-func GetRegisterBoletoAPIResponseTmpl() string {
-	return registerBoletoResponse
+func getAPIResponseCiti() string {
+	return registerBoletoResponseCiti
 }

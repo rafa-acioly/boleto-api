@@ -33,6 +33,7 @@ type BoletoResponse struct {
 	ID            string `json:"id,omitempty"`
 	DigitableLine string `json:"digitableLine,omitempty"`
 	BarCodeNumber string `json:"barCodeNumber,omitempty"`
+	OurNumber     string `json:"ourNumber,omitempty"`
 	Links         []Link `json:"links,omitempty"`
 }
 
@@ -54,12 +55,14 @@ type BoletoView struct {
 	CreateDate    time.Time     `json:"createDate,omitempty"`
 	BankNumber    string        `json:"bankNumber,omitempty"`
 	DigitableLine string        `json:"digitableLine,omitempty"`
+	OurNumber     string        `json:"ourNumber,omitempty"`
 	Barcode       string        `json:"barcode,omitempty"`
 	Barcode64     string        `json:"barcode64,omitempty"`
+	Links         []Link        `json:"links,omitempty"`
 }
 
 // NewBoletoView cria um novo objeto view de boleto a partir de um boleto request, codigo de barras e linha digitavel
-func NewBoletoView(boleto BoletoRequest, barcode string, digitableLine string) BoletoView {
+func NewBoletoView(boleto BoletoRequest, response BoletoResponse) BoletoView {
 	boleto.Authentication = Authentication{}
 	uid, _ := uuid.NewUUID()
 	id := util.Encrypt(uid.String())
@@ -68,10 +71,17 @@ func NewBoletoView(boleto BoletoRequest, barcode string, digitableLine string) B
 		UID:           uid.String(),
 		BankID:        boleto.BankNumber,
 		Boleto:        boleto,
-		Barcode:       barcode,
-		DigitableLine: digitableLine,
+		Barcode:       response.BarCodeNumber,
+		DigitableLine: response.DigitableLine,
+		OurNumber:     response.OurNumber,
 		BankNumber:    boleto.BankNumber.GetBoletoBankNumberAndDigit(),
 		CreateDate:    time.Now(),
+	}
+	switch boleto.BankNumber {
+	case Caixa:
+		view.Links = response.Links
+	default:
+		view.Links = view.CreateLinks()
 	}
 	return view
 }
@@ -175,11 +185,15 @@ const (
 )
 
 // BoletoErrorConector é um connector flow para criar um objeto de erro
-func BoletoErrorConector(next func(), e *flow.ExchangeMessage, out flow.Message, u flow.URI, params ...interface{}) error {
-	b := e.GetBody().(string)
-	if b == "" {
-		b = "Erro interno"
+func BoletoErrorConector(e *flow.ExchangeMessage, u flow.URI, params ...interface{}) error {
+	b := "Erro interno"
+	switch t := e.GetBody().(type) {
+	case error:
+		b = t.Error()
+	case string:
+		b = t
 	}
+
 	st, err := strconv.Atoi(e.GetHeader("status"))
 	if err != nil {
 		st = 0
@@ -189,7 +203,5 @@ func BoletoErrorConector(next func(), e *flow.ExchangeMessage, out flow.Message,
 	resp.Errors.Append("MP"+e.GetHeader("status"), b)
 	resp.StatusCode = st
 	e.SetBody(resp)
-	out <- e
-	next()
 	return nil
 }

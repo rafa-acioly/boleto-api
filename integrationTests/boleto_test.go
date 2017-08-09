@@ -150,18 +150,23 @@ func stringify(boleto models.BoletoRequest) string {
 }
 
 func TestRegisterBoletoRequest(t *testing.T) {
-	go app.Run(true, true, true)
+	param := app.NewParams()
+	param.DevMode = true
+	param.DisableLog = true
+	param.HTTPOnly = true
+	param.MockMode = true
+	go app.Run(param)
 	time.Sleep(10 * time.Second)
 	Convey("deve-se registrar um boleto e retornar as informações de url, linha digitável e código de barras", t, func() {
 
 		response, st, err := util.Post("http://localhost:3000/v1/boleto/register", getBody(models.BancoDoBrasil, 200), nil)
 		So(err, ShouldEqual, nil)
 		So(st, ShouldEqual, 200)
-
 		boleto := models.BoletoResponse{}
 		errJSON := json.Unmarshal([]byte(response), &boleto)
 		So(errJSON, ShouldEqual, nil)
 		Convey("Se o boleto foi registrado então ele tem que está disponível no formato HTML", func() {
+			So(len(boleto.Links), ShouldBeGreaterThan, 0)
 			html, st, err := util.Get(boleto.Links[0].Href, "", nil)
 			So(err, ShouldEqual, nil)
 			So(st, ShouldEqual, 200)
@@ -206,7 +211,6 @@ func TestRegisterBoletoRequest(t *testing.T) {
 					So(strings.Contains(boleto.Errors[0].Message, "Conta inválida, deve conter até"), ShouldBeTrue)
 				}
 				assert(models.BancoDoBrasil)
-				assert(models.Caixa)
 			})
 
 			Convey("O tipo de documento do comprador deve ser CPF ou CNPJ", func() {
@@ -309,7 +313,12 @@ func TestRegisterBoletoRequest(t *testing.T) {
 }
 
 func BenchmarkRegisterBoleto(b *testing.B) {
-	go app.Run(true, true, true)
+	param := app.NewParams()
+	param.DevMode = true
+	param.DisableLog = true
+	param.HTTPOnly = true
+	param.MockMode = true
+	go app.Run(param)
 	for i := 0; i < b.N; i++ {
 		util.Post("http://localhost:3000/v1/boleto/register", body, nil)
 

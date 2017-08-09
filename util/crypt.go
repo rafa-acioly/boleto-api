@@ -68,10 +68,10 @@ func Base64Decode(s string) string {
 	return string(sDec)
 }
 
-//Sha256 converte uma string num hash sha256 e encode no formato base64
+//Sha256 converts string to hash sha256 encoded base64
 func Sha256(s string) string {
 	h := sha256.New()
 	h.Write([]byte(s))
-	sEnc := base64.StdEncoding.EncodeToString([]byte(h.Sum(nil)))
+	sEnc := base64.StdEncoding.EncodeToString(h.Sum(nil))
 	return sEnc
 }
