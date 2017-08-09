@@ -18,9 +18,6 @@ type list []string
 //GoRobots inicia os robôs da aplicação
 func GoRobots() {
 	go robotMongo(config.Get().BoletoJSONFileStore)
-	if config.Get().MockMode {
-		go mockRobot()
-	}
 }
 
 func robotMongo(path string) {
