@@ -72,7 +72,6 @@ func (b bankSantander) GetTicket(boleto *models.BoletoRequest) (string, error) {
 }
 
 func (b bankSantander) RegisterBoleto(input *models.BoletoRequest) (models.BoletoResponse, error) {
-
 	serviceURL := config.Get().URLRegisterBoletoSantander
 	fromResponse := getResponseSantander()
 	toAPI := getAPIResponseSantander()
@@ -101,6 +100,7 @@ func (b bankSantander) RegisterBoleto(input *models.BoletoRequest) (models.Bolet
 	return models.BoletoResponse{}, models.NewInternalServerError("Erro interno", "MP500")
 }
 func (b bankSantander) ProcessBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
+	boleto.Title.OurNumber = 0
 	errs := b.ValidateBoleto(boleto)
 	if len(errs) > 0 {
 		return models.BoletoResponse{Errors: errs}, nil
