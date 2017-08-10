@@ -360,9 +360,7 @@ const boletoForm = `
 //HTML renderiza HTML do boleto
 func HTML(boleto models.BoletoView, format string) string {
 	b := tmpl.New()
-	c := boleto.BankNumber
-	fmt.Println(c)
-	boleto.BankLogo = template.HTML(logoSantander)
+	boleto.BankLogo = template.HTML(GetLogo(boleto.Boleto.BankNumber))
 	boleto.Format = format
 	bcode, _ := twooffive.Encode(boleto.Barcode, true)
 	orgBounds := bcode.Bounds()
@@ -377,7 +375,6 @@ func HTML(boleto models.BoletoView, format string) string {
 	}
 	return s
 }
-
 
 //Get retorna estrategia de acordo com o banco ou erro caso o banco não exista
 func GetLogo(number models.BankNumber) string {
