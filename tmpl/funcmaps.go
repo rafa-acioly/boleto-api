@@ -45,7 +45,6 @@ func padLeft(value, char string, total uint) string {
 	return util.PadLeft(value, char, total)
 }
 func unscape(s string) template.HTML {
-	fmt.Println(s)
 	return template.HTML(s)
 }
 func hasErrorTags(mapValues map[string]string, errorTags ...string) bool {

@@ -86,10 +86,8 @@ func configFlags(devMode, mockMode, disableLog, httpOnly bool) {
 			os.Setenv("URL_BB_TOKEN", "http://localhost:4000/oauth/token")
 			os.Setenv("URL_CAIXA", "http://localhost:4000/caixa/registrarBoleto")
 			os.Setenv("URL_CITI", "http://localhost:4000/citi/registrarBoleto")
-			os.Setenv("URL_SANTANDER_TICKET", "http://localhost:4000/santander/get-ticket")
-			os.Setenv("URL_SANTANDER_REGISTER", "http://localhost:4000/santander/register")
-			os.Setenv("URL_SANTANDER_TICKET", "http://localhost:4000/santander/get-ticket")
-			os.Setenv("URL_SANTANDER_REGISTER", "http://localhost:4000/santander/register")
+			os.Setenv("URL_SANTANDER_TICKET", "tls://localhost:4000/santander/get-ticket")
+			os.Setenv("URL_SANTANDER_REGISTER", "tls://localhost:4000/santander/register")
 		}
 	}
 	config.Install(mockMode, devMode, disableLog, httpOnly)

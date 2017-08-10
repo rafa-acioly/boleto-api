@@ -3,6 +3,7 @@ package util
 import (
 	"fmt"
 
+	"github.com/mundipagg/boleto-api/config"
 	"github.com/mundipagg/boleto-api/log"
 
 	"errors"
@@ -44,8 +45,7 @@ func SeqLogConector(e *flow.ExchangeMessage, u flow.URI, params ...interface{}) 
 	return nil
 }
 
-//Params[0] *http.Transport (http.Transport configuration with certificate files config)
-//TlsConector is a connector to send https request client certificate
+//TlsConector is a connector to send https request client certificate Params[0] *http.Transport (http.Transport configuration with certificate files config)
 func TlsConector(e *flow.ExchangeMessage, u flow.URI, params ...interface{}) error {
 	var b string
 	switch t := e.GetBody().(type) {
@@ -63,8 +63,17 @@ func TlsConector(e *flow.ExchangeMessage, u flow.URI, params ...interface{}) err
 	if len(params) > 0 {
 		switch t := params[0].(type) {
 		case *http.Transport:
-			url := strings.Replace(u.GetRaw(), "tls", "https", 1)
-			response, status, err := PostTLS(url, b, e.GetHeaderMap(), t)
+			var url string
+			var response string
+			var status int
+			var err error
+			if config.Get().DevMode {
+				url = strings.Replace(u.GetRaw(), "tls", "http", 1)
+				response, status, err = Post(url, b, e.GetHeaderMap())
+			} else {
+				url = strings.Replace(u.GetRaw(), "tls", "https", 1)
+				response, status, err = PostTLS(url, b, e.GetHeaderMap(), t)
+			}
 			if err != nil {
 				e.SetHeader("error", err.Error())
 				e.SetBody(err)

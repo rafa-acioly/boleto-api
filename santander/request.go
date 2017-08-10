@@ -9,9 +9,9 @@ const registerBoleto = `
    <soapenv:Body>
       <impl:registraTitulo>
          <dto>
-            <dtNsu>?</dtNsu>
+            <dtNsu>{{today | brDateWithoutDelimiter }}</dtNsu>
             <estacao>?</estacao>
-            <nsu>?</nsu>
+            <nsu>{{.Title.NSU}}</nsu>
             <ticket>{{unscape .Authentication.AuthorizationToken}}</ticket>
             <tpAmbiente>T</tpAmbiente>
          </dto>
