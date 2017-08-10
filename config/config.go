@@ -12,9 +12,6 @@ type Config struct {
 	Version                    string
 	SEQUrl                     string
 	SEQAPIKey                  string
-	SantanderKeyPath           string
-	SantanderCaPath            string
-	SantanderCrtPath           string
 	EnableRequestLog           bool
 	EnablePrintRequest         bool
 	Environment                string
@@ -61,9 +58,6 @@ func Install(mockMode, devMode, disableLog, httpOnly bool) {
 		EnableRequestLog:           os.Getenv("ENABLE_REQUEST_LOG") == "true",   // Log a cada request no SEQ
 		EnablePrintRequest:         os.Getenv("ENABLE_PRINT_REQUEST") == "true", // Imprime algumas informacoes da request no console
 		Environment:                os.Getenv("ENVIRONMENT"),
-		SantanderKeyPath:           os.Getenv("SANTANDER_KEY_PATH"),
-		SantanderCaPath:            os.Getenv("SANTANDER_CA_PATH"),
-		SantanderCrtPath:           os.Getenv("SANTANDER_CRT_PATH"),
 		SEQDomain:                  "One",
 		ApplicationName:            "BoletoOnline",
 		URLBBRegisterBoleto:        os.Getenv("URL_BB_REGISTER_BOLETO"),

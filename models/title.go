@@ -17,6 +17,7 @@ type Title struct {
 	OurNumber      uint      `json:"ourNumber,omitempty"`
 	Instructions   string    `json:"instructions,omitempty"`
 	DocumentNumber string    `json:"documentNumber,omitempty"`
+	NSU            string    `json:"nsu,omitempty"`
 }
 
 //ValidateInstructionsLength valida se texto das instruções possui quantidade de caracteres corretos

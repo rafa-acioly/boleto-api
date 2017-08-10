@@ -87,11 +87,9 @@ func BuildTLSTransport(crtPath string, keyPath string, caPath string) (*http.Tra
 }
 
 func doRequestTLS(method, url, body string, header map[string]string, transport *http.Transport) (string, int, error) {
-	client := DefaultHTTPClient()
-	oldT := client.Transport
-	client.Transport = transport
-
-	//client := &http.Client{Transport: transport}
+	var client *http.Client = &http.Client{
+		Transport: transport,
+	}
 	b := strings.NewReader(body)
 	req, _ := http.NewRequest(method, url, b)
 
@@ -111,7 +109,6 @@ func doRequestTLS(method, url, body string, header map[string]string, transport 
 		return "", 0, err
 	}
 	sData := string(data)
-	client.Transport = oldT
 	return sData, resp.StatusCode, nil
 }
 

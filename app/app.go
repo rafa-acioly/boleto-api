@@ -76,7 +76,7 @@ func configFlags(devMode, mockMode, disableLog, httpOnly bool) {
 		os.Setenv("CERT_BOLETO_CRT", "C:\\cert_boleto_api\\certificate.crt")
 		os.Setenv("CERT_BOLETO_KEY", "C:\\cert_boleto_api\\mundi.key")
 		os.Setenv("CERT_BOLETO_CA", "C:\\cert_boleto_api\\ca-cert.ca")
-		os.Setenv("URL_SANTANDER_TICKET", "https://ymbdlb.isbanbr.dev.corp/dl-ticket-services/TicketEndpointService")
+		os.Setenv("URL_SANTANDER_TICKET", "https://ymbdlb.santander.com.br/dl-ticket-services/TicketEndpointService")
 		os.Setenv("URL_SANTANDER_REGISTER", "https://ymbcashhml.santander.com.br:443/ymbsrv/CobrancaEndpointService")
 		os.Setenv("SANTANDER_KEY_PATH", "C:\\certificados\\santander\\mundipagg.key")
 		os.Setenv("SANTANDER_CA_PATH", "C:\\certificados\\santander\\ca.pem")
@@ -86,10 +86,8 @@ func configFlags(devMode, mockMode, disableLog, httpOnly bool) {
 			os.Setenv("URL_BB_TOKEN", "http://localhost:4000/oauth/token")
 			os.Setenv("URL_CAIXA", "http://localhost:4000/caixa/registrarBoleto")
 			os.Setenv("URL_CITI", "http://localhost:4000/citi/registrarBoleto")
-			os.Setenv("URL_SANTANDER_TICKET", "http://localhost:4000/santander/get-ticket")
-			os.Setenv("URL_SANTANDER_REGISTER", "http://localhost:4000/santander/register")
-			os.Setenv("URL_SANTANDER_TICKET", "http://localhost:4000/santander/get-ticket")
-			os.Setenv("URL_SANTANDER_REGISTER", "http://localhost:4000/santander/register")
+			os.Setenv("URL_SANTANDER_TICKET", "tls://localhost:4000/santander/get-ticket")
+			os.Setenv("URL_SANTANDER_REGISTER", "tls://localhost:4000/santander/register")
 		}
 	}
 	config.Install(mockMode, devMode, disableLog, httpOnly)

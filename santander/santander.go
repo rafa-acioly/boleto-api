@@ -2,12 +2,11 @@ package santander
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 
 	"net/http"
 
-	"github.com/PMoneda/flow"
+	. "github.com/PMoneda/flow"
 	"github.com/mundipagg/boleto-api/config"
 	"github.com/mundipagg/boleto-api/log"
 	"github.com/mundipagg/boleto-api/models"
@@ -32,7 +31,7 @@ func New() bankSantander {
 	b.validate.Push(validations.ValidateExpireDate)
 	b.validate.Push(validations.ValidateBuyerDocumentNumber)
 	b.validate.Push(validations.ValidateRecipientDocumentNumber)
-	t, err := util.BuildTLSTransport(config.Get().SantanderCrtPath, config.Get().SantanderKeyPath, config.Get().SantanderCaPath)
+	t, err := util.BuildTLSTransport(config.Get().CertBoletoPathCrt, config.Get().CertBoletoPathKey, config.Get().CertBoletoPathCa)
 	if err != nil {
 		//TODO
 	}
@@ -46,18 +45,18 @@ func (b bankSantander) Log() *log.Log {
 	return b.log
 }
 func (b bankSantander) GetTicket(boleto *models.BoletoRequest) (string, error) {
-	pipe := flow.NewFlow()
+	pipe := NewFlow()
 	url := config.Get().URLTicketSantander
-	tlsUrl := strings.Replace(config.Get().URLTicketSantander, "https", "tls", 1)
+	tlsURL := strings.Replace(config.Get().URLTicketSantander, "https", "tls", 1)
 	pipe.From("message://?source=inline", boleto, getRequestTicket(), tmpl.GetFuncMaps())
 	pipe.To("logseq://?type=request&url="+url, b.log)
-	pipe.To(tlsUrl, b.transport)
+	pipe.To(tlsURL, b.transport)
 	pipe.To("logseq://?type=response&url="+url, b.log)
 	ch := pipe.Choice()
-	ch.When(flow.Header("status").IsEqualTo("200"))
-	ch.To("transform://?format=xml", getTicketResponse(), `{{.returnCode}}:::{{unscape .ticket}}:::{{.message}}`, tmpl.GetFuncMaps())
-	ch.When(flow.Header("status").IsEqualTo("403"))
-	ch.To("print://?msg=Hello").To("set://?prop=body", errors.New("403 Forbidden"))
+	ch.When(Header("status").IsEqualTo("200"))
+	ch.To("transform://?format=xml", getTicketResponse(), `{{.returnCode}}:::{{.ticket}}:::{{.message}}`, tmpl.GetFuncMaps())
+	ch.When(Header("status").IsEqualTo("403"))
+	ch.To("set://?prop=body", errors.New("403 Forbidden"))
 	ch.Otherwise()
 	ch.To("logseq://?type=request&url="+url, b.log).To("set://?prop=body", errors.New("integration error"))
 	switch t := pipe.GetBody().(type) {
@@ -65,36 +64,37 @@ func (b bankSantander) GetTicket(boleto *models.BoletoRequest) (string, error) {
 		items := pipe.GetBody().(string)
 		parts := strings.Split(items, ":::")
 		returnCode, ticket := parts[0], parts[1]
-		fmt.Println(items)
 		return ticket, checkError(returnCode)
 	case error:
-		fmt.Println(t.Error())
 		return "", t
 	}
 	return "", nil
 }
 
-func (b bankSantander) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
-	r := flow.NewFlow()
+func (b bankSantander) RegisterBoleto(input *models.BoletoRequest) (models.BoletoResponse, error) {
+
 	serviceURL := config.Get().URLRegisterBoletoSantander
-	from := getResponseSantander()
-	to := getAPIResponseSantander()
-	bod := r.From("message://?source=inline", boleto, getRequestSantander(), tmpl.GetFuncMaps())
-	bod = bod.To("logseq://?type=request&url="+serviceURL, b.log)
-	bod = bod.To(serviceURL, map[string]string{"method": "POST", "insecureSkipVerify": "true"})
-	bod = bod.To("logseq://?type=response&url="+serviceURL, b.log)
-	ch := bod.Choice()
-	ch = ch.When(flow.Header("status").IsEqualTo("200"))
-	ch = ch.To("transform://?format=xml", from, to, tmpl.GetFuncMaps())
-	//ch = ch.To("marshall://?format=json", new(models.BoletoResponse))
-	ch = ch.Otherwise()
-	ch = ch.To("logseq://?type=response&url="+serviceURL, b.log).To("apierro://")
-	switch t := bod.GetBody().(type) {
-	case string:
-		response := util.ParseJSON(t, new(models.BoletoResponse)).(*models.BoletoResponse)
-		return *response, nil
+	fromResponse := getResponseSantander()
+	toAPI := getAPIResponseSantander()
+	inputTemplate := getRequestSantander()
+	santanderURL := strings.Replace(serviceURL, "https", "tls", 1)
+
+	exec := NewFlow().From("message://?source=inline", input, inputTemplate, tmpl.GetFuncMaps())
+	exec.To("logseq://?type=request&url="+serviceURL, b.log)
+	exec.To(santanderURL, b.transport, map[string]string{"method": "POST", "insecureSkipVerify": "true"})
+	exec.To("logseq://?type=response&url="+serviceURL, b.log)
+	ch := exec.Choice()
+	ch.When(Header("status").IsEqualTo("200"))
+	ch.To("transform://?format=xml", fromResponse, toAPI, tmpl.GetFuncMaps())
+	ch.To("unmarshall://?format=json", new(models.BoletoResponse))
+	ch.Otherwise()
+	ch.To("logseq://?type=response&url="+serviceURL, b.log).To("apierro://")
+
+	switch t := exec.GetBody().(type) {
+	case *models.BoletoResponse:
+		return *t, nil
 	case error:
-		fmt.Println(t)
+		return models.BoletoResponse{}, t
 	case models.BoletoResponse:
 		return t, nil
 	}

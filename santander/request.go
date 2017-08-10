@@ -8,17 +8,11 @@ const registerBoleto = `
    <soapenv:Header/>
    <soapenv:Body>
       <impl:registraTitulo>
-         <!--Optional:-->
          <dto>
-            <!--Optional:-->
-            <dtNsu>?</dtNsu>
-            <!--Optional:-->
+            <dtNsu>{{today | brDateWithoutDelimiter }}</dtNsu>
             <estacao>?</estacao>
-            <!--Optional:-->
-            <nsu>?</nsu>
-            <!--Optional:-->
+            <nsu>{{.Title.NSU}}</nsu>
             <ticket>{{unscape .Authentication.AuthorizationToken}}</ticket>
-            <!--Optional:-->
             <tpAmbiente>T</tpAmbiente>
          </dto>
       </impl:registraTitulo>
