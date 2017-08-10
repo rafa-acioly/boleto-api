@@ -376,7 +376,7 @@ func HTML(boleto models.BoletoView, format string) string {
 	return s
 }
 
-//Get retorna estrategia de acordo com o banco ou erro caso o banco não exista
+//Seleciona a logo do banco.
 func GetLogo(number models.BankNumber) string {
 	switch number {
 	case models.BancoDoBrasil:
