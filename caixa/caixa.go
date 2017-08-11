@@ -62,6 +62,7 @@ func (b bankCaixa) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRe
 	return models.BoletoResponse{}, models.NewInternalServerError("MP500", "Erro interno")
 }
 func (b bankCaixa) ProcessBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
+	boleto.Title.OurNumber = 0
 	errs := b.ValidateBoleto(boleto)
 	if len(errs) > 0 {
 		return models.BoletoResponse{Errors: errs}, nil
