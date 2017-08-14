@@ -2,9 +2,9 @@ package mock
 
 import "github.com/gin-gonic/gin"
 
-func registerBoletoBradesco(c *gin.Context)  {
+func registerBoletoBradesco(c *gin.Context) {
 
-const tok = `
+	const tok = `
 {
     "merchant_id": "90000",
     "meio_pagamento": "800",
@@ -29,7 +29,6 @@ const tok = `
     }
 }
 `
-c.Data(200, "text/json", []byte(tok))
+	c.Data(200, "text/json", []byte(tok))
 
 }
-

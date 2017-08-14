@@ -25,6 +25,8 @@ func Get(number models.BankNumber) (Bank, error) {
 	switch number {
 	case models.BancoDoBrasil:
 		return bb.New(), nil
+	case models.Bradesco:
+		return santander.New(), nil
 	case models.Caixa:
 		return caixa.New(), nil
 	case models.Citibank:
