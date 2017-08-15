@@ -9,6 +9,7 @@ import (
 	"github.com/mundipagg/boleto-api/log"
 	"github.com/mundipagg/boleto-api/models"
 	"github.com/mundipagg/boleto-api/santander"
+	"github.com/mundipagg/boleto-api/bradesco"
 )
 
 //Bank é a interface que vai oferecer os serviços em comum entre os bancos
@@ -26,7 +27,7 @@ func Get(number models.BankNumber) (Bank, error) {
 	case models.BancoDoBrasil:
 		return bb.New(), nil
 	case models.Bradesco:
-		return santander.New(), nil
+		return bradesco.New(), nil
 	case models.Caixa:
 		return caixa.New(), nil
 	case models.Citibank:

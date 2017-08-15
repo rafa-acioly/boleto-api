@@ -1,10 +1,10 @@
 package mock
 
-import "github.com/gin-gonic/gin"
+import gin "gopkg.in/gin-gonic/gin.v1"
 
 func registerBoletoBradesco(c *gin.Context) {
 
-	const tok = `
+const tok = `
 {
     "merchant_id": "90000",
     "meio_pagamento": "800",
@@ -30,5 +30,4 @@ func registerBoletoBradesco(c *gin.Context) {
 }
 `
 	c.Data(200, "text/json", []byte(tok))
-
 }

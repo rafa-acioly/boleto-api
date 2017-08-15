@@ -1,7 +1,8 @@
 package bradesco
 
 
-const registerBoleto = `
+const registerBradesco = `
+## Authorization:Basic {{base64 (concat .Authentication.Username ":" .Authentication.Password)}}
 {
     "merchant_id": "{{.Authentication.Username}}",
     "meio_pagamento": "300",
@@ -74,30 +75,21 @@ const registerBoleto = `
 
 const responseBradesco = `
 {
-    "merchant_id": "",
-    "meio_pagamento": "",
-    "pedido": {
-        "numero": "",
-        "valor": 0,
-        "descricao": ""
-    },
     "boleto": {
-        "valor_titulo": 0,
-        "data_geracao": "{{datetime}}",
-        "data_atualizacao": null,
-        "linha_digitavel": "",
         "linha_digitavel_formatada": "{{digitableLine}}",
-        "token": "",
         "url_acesso": "{{url}}"
     },
     "status": {
-        "codigo": {{returnCode}},
-        "mensagem": "{{returnMessage}}",
-        "detalhes": null
+        "codigo": "{{returnCode}}",
+        "mensagem": "{{returnMessage}}"
     }
 }
-
-
-
-
 `
+
+func getRequestBradesco() string{
+	return registerBradesco
+}
+
+func getResponseBradesco() string  {
+	return responseBradesco
+}

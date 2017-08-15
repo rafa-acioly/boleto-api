@@ -2,7 +2,9 @@ package bradesco
 
 var apiResponse = `
 {
-    {{if (hasErrorTags . "errorCode")}}
+
+//É preciso configurar essa parte de erro e testar
+	{{if (hasErrorTags . "errorCode")}}
         "Errors": [
             {
                 "Code": "{{trim .errorCode}}",
@@ -10,13 +12,12 @@ var apiResponse = `
             }
         ]
     {{else}}
-        "DigitableLine": "{{fmtDigitableLine (trim .digitableLine)}}",
-        "BarCodeNumber": "{{trim .barcodeNumber}}",
-        "Links": [{
-            "href":"{{trim .url}}",
-            "rel": "pdf",
-            "method":"GET"
-        }],
+		"DigitableLine": "{{.digitableLine}}",
+		"Links": [{
+			"href":"{{trim .url}}",
+			"rel": "pdf",
+			"method":"GET"
+		}]
     {{end}}
 }
 `
