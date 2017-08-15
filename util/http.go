@@ -8,8 +8,6 @@ import (
 	"net/http"
 	"strings"
 	"time"
-
-	"github.com/mundipagg/boleto-api/config"
 )
 
 var defaultDialer = &net.Dialer{Timeout: 16 * time.Second, KeepAlive: 16 * time.Second}
@@ -33,11 +31,6 @@ func DefaultHTTPClient() *http.Client {
 //Post faz um requisição POST para uma URL e retorna o response, status e erro
 func Post(url, body string, header map[string]string) (string, int, error) {
 	return doRequest("POST", url, body, header)
-}
-
-func PostSecure(url, body string, header map[string]string) (string, int, error) {
-
-	return doRequestSecure("POST", url, body, header)
 }
 
 //Get faz um requisição GET para uma URL e retorna o response, status e erro
@@ -70,16 +63,16 @@ func doRequest(method, url, body string, header map[string]string) (string, int,
 	return sData, resp.StatusCode, nil
 }
 
-func doRequestSecure(method, url, body string, header map[string]string) (string, int, error) {
-
-	cert, err := tls.LoadX509KeyPair(config.Get().CertBoletoPathCrt, config.Get().CertBoletoPathKey)
+//BuildTLSTransport creates a TLS Client Transport from crt, ca and key files
+func BuildTLSTransport(crtPath string, keyPath string, caPath string) (*http.Transport, error) {
+	cert, err := tls.LoadX509KeyPair(crtPath, keyPath)
 	if err != nil {
-		return "", 0, err
+		return nil, err
 	}
 
-	caCert, err := ioutil.ReadFile(config.Get().CertBoletoPathCa)
+	caCert, err := ioutil.ReadFile(caPath)
 	if err != nil {
-		return "", 0, err
+		return nil, err
 	}
 
 	caCertPool := x509.NewCertPool()
@@ -90,9 +83,13 @@ func doRequestSecure(method, url, body string, header map[string]string) (string
 		RootCAs:            caCertPool,
 		InsecureSkipVerify: true,
 	}
-	transport := &http.Transport{TLSClientConfig: tlsConfig}
+	return &http.Transport{TLSClientConfig: tlsConfig}, nil
+}
 
-	client := &http.Client{Transport: transport}
+func doRequestTLS(method, url, body string, header map[string]string, transport *http.Transport) (string, int, error) {
+	var client *http.Client = &http.Client{
+		Transport: transport,
+	}
 	b := strings.NewReader(body)
 	req, _ := http.NewRequest(method, url, b)
 
@@ -101,21 +98,22 @@ func doRequestSecure(method, url, body string, header map[string]string) (string
 			req.Header.Add(k, v)
 		}
 	}
-
 	resp, err := client.Do(req)
 	if err != nil {
 		return "", 0, err
 	}
 	defer resp.Body.Close()
-
 	// Dump response
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return "", 0, err
 	}
 	sData := string(data)
-
 	return sData, resp.StatusCode, nil
+}
+
+func PostTLS(url, body string, header map[string]string, transport *http.Transport) (string, int, error) {
+	return doRequestTLS("POST", url, body, header, transport)
 }
 
 //HeaderToMap converte um http Header para um dicionário string -> string

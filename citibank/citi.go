@@ -1,6 +1,9 @@
 package citibank
 
 import (
+	"net/http"
+	"strconv"
+
 	"github.com/PMoneda/flow"
 	"github.com/mundipagg/boleto-api/config"
 	"github.com/mundipagg/boleto-api/log"
@@ -8,12 +11,12 @@ import (
 	"github.com/mundipagg/boleto-api/tmpl"
 	"github.com/mundipagg/boleto-api/util"
 	"github.com/mundipagg/boleto-api/validations"
-	"strconv"
 )
 
 type bankCiti struct {
-	validate *models.Validator
-	log      *log.Log
+	validate  *models.Validator
+	log       *log.Log
+	transport *http.Transport
 }
 
 func New() bankCiti {
@@ -29,6 +32,11 @@ func New() bankCiti {
 	b.validate.Push(citiValidateAccount)
 	b.validate.Push(citiValidateAccountDigit)
 	b.validate.Push(citiValidateWallet)
+	transp, err := util.BuildTLSTransport(config.Get().CertBoletoPathCrt, config.Get().CertBoletoPathKey, config.Get().CertBoletoPathCa)
+	if err != nil {
+		//TODO
+	}
+	b.transport = transp
 	return b
 }
 
@@ -41,7 +49,7 @@ func (b bankCiti) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRes
 	codebar, digitableLine := generateBar(boleto)
 	boleto.Title.OurNumber = calculateOurNumber(boleto)
 	r := flow.NewFlow()
-	serviceURL := config.Get().URLCitiRegisterBoleto
+	serviceURL := config.Get().URLCiti
 	from := getResponseCiti()
 	to := getAPIResponseCiti()
 	bod := r.From("message://?source=inline", boleto, getRequestCiti(), tmpl.GetFuncMaps())
@@ -49,7 +57,7 @@ func (b bankCiti) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRes
 	//TODO: change for tls flow connector (waiting for santander)
 	responseCiti, status, err := b.sendRequest(bod.GetBody().(string))
 	if err != nil {
-		return models.BoletoResponse{},err
+		return models.BoletoResponse{}, err
 	}
 	bod.To("set://?prop=header", map[string]string{"status": strconv.Itoa(status)})
 	bod.To("set://?prop=body", responseCiti)
@@ -81,12 +89,12 @@ func (b bankCiti) ValidateBoleto(boleto *models.BoletoRequest) models.Errors {
 	return models.Errors(b.validate.Assert(boleto))
 }
 
-func (b bankCiti) sendRequest(body string) (string,int,error) {
-	serviceURL := config.Get().URLCitiRegisterBoleto
+func (b bankCiti) sendRequest(body string) (string, int, error) {
+	serviceURL := config.Get().URLCiti
 	if config.Get().MockMode {
 		return util.Post(serviceURL, body, map[string]string{"Soapaction": "RegisterBoleto"})
-	}else{
-		return util.PostSecure(serviceURL, body, map[string]string{"Soapaction": "RegisterBoleto"})
+	} else {
+		return util.PostTLS(serviceURL, body, map[string]string{"Soapaction": "RegisterBoleto"}, b.transport)
 	}
 }
 
