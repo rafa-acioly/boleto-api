@@ -2,8 +2,6 @@ package bradesco
 
 var apiResponse = `
 {
-
-//É preciso configurar essa parte de erro e testar
 	{{if (hasErrorTags . "errorCode")}}
         "Errors": [
             {

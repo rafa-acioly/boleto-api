@@ -1,6 +1,11 @@
 package mock
 
-import gin "gopkg.in/gin-gonic/gin.v1"
+import (
+	gin "gopkg.in/gin-gonic/gin.v1"
+	"io/ioutil"
+	"fmt"
+	"strings"
+)
 
 func registerBoletoBradesco(c *gin.Context) {
 
@@ -29,5 +34,31 @@ const tok = `
     }
 }
 `
+
+const tokErr = `
+{
+    "merchant_id": "90000",
+    "meio_pagamento": "300",
+    "pedido": {
+        "numero": "0-9_A-Z_.MAX-27-CH99",
+        "valor": 15000,
+        "descricao": "Descritivo do pedido"
+    },
+    "boleto": null,
+    "status": {
+        "codigo": -518,
+        "mensagem": "Erro - A Tag ASSINATURA do Boleto não foi encontrada ou está mal-formada",
+        "detalhes": "Erro - A Tag ASSINATURA do Boleto não foi encontrada ou está mal-formada"
+    }
+}
+`
 	c.Data(200, "text/json", []byte(tok))
+	d, _ := ioutil.ReadAll(c.Request.Body)
+	json := string(d)
+	fmt.Println(json)
+	if strings.Contains(json, "valor: 200,") {
+		c.Data(200, "text/json", []byte(tok))
+	} else {
+		c.Data(500, "text/json", []byte(tokErr))
+	}
 }
