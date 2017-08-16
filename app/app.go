@@ -9,6 +9,7 @@ import (
 	"github.com/mundipagg/boleto-api/api"
 	"github.com/mundipagg/boleto-api/config"
 	"github.com/mundipagg/boleto-api/log"
+	"github.com/mundipagg/boleto-api/mock"
 	"github.com/mundipagg/boleto-api/models"
 	"github.com/mundipagg/boleto-api/robot"
 	"github.com/mundipagg/boleto-api/util"
@@ -32,6 +33,9 @@ func Run(params *Params) {
 	configFlags(params.DevMode, params.MockMode, params.DisableLog, params.HTTPOnly)
 	installflowConnectors()
 	robot.GoRobots()
+	if config.Get().MockMode {
+		go mock.Run()
+	}
 	installLog()
 	api.InstallRestAPI()
 
@@ -48,6 +52,7 @@ func installLog() {
 func installflowConnectors() {
 	flow.RegisterConnector("logseq", util.SeqLogConector)
 	flow.RegisterConnector("apierro", models.BoletoErrorConector)
+	flow.RegisterConnector("tls", util.TlsConector)
 }
 
 func configFlags(devMode, mockMode, disableLog, httpOnly bool) {
@@ -62,16 +67,24 @@ func configFlags(devMode, mockMode, disableLog, httpOnly bool) {
 		os.Setenv("URL_BB_REGISTER_BOLETO", "https://cobranca.homologa.bb.com.br:7101/registrarBoleto")
 		os.Setenv("URL_BB_TOKEN", "https://oauth.hm.bb.com.br:43000/oauth/token")
 		os.Setenv("URL_CAIXA", "https://des.barramento.caixa.gov.br/sibar/ManutencaoCobrancaBancaria/Boleto/Externo")
-		os.Setenv("URL_CITI", "https://citigroupsoa.citigroup.com/comercioeletronico/registerboleto/RegisterBoletoSOAP")
+		os.Setenv("URL_CITI", "https://citigroupsoauat.citigroup.com/comercioeletronico/registerboleto/RegisterBoletoSOAP")
+		os.Setenv("URL_CITI_BOLETO", "https://ebillpayer.uat.brazil.citigroup.com/ebillpayer/jspInformaDadosConsulta.jsp")
 		os.Setenv("APP_URL", "http://localhost:3000/boleto")
 		os.Setenv("ELASTIC_URL", "http://localhost:9200")
 		os.Setenv("MONGODB_URL", "localhost:27017")
 		os.Setenv("BOLETO_JSON_STORE", "/home/philippe/boletodb/upMongo")
+		os.Setenv("CERT_BOLETO_CRT", "C:\\cert_boleto_api\\certificate.crt")
+		os.Setenv("CERT_BOLETO_KEY", "C:\\cert_boleto_api\\mundi.key")
+		os.Setenv("CERT_BOLETO_CA", "C:\\cert_boleto_api\\ca-cert.ca")
+		os.Setenv("URL_SANTANDER_TICKET", "https://ymbdlb.santander.com.br/dl-ticket-services/TicketEndpointService")
+		os.Setenv("URL_SANTANDER_REGISTER", "https://ymbcashhml.santander.com.br:443/ymbsrv/CobrancaEndpointService")
 		if mockMode {
 			os.Setenv("URL_BB_REGISTER_BOLETO", "http://localhost:4000/registrarBoleto")
 			os.Setenv("URL_BB_TOKEN", "http://localhost:4000/oauth/token")
 			os.Setenv("URL_CAIXA", "http://localhost:4000/caixa/registrarBoleto")
 			os.Setenv("URL_CITI", "http://localhost:4000/citi/registrarBoleto")
+			os.Setenv("URL_SANTANDER_TICKET", "tls://localhost:4000/santander/get-ticket")
+			os.Setenv("URL_SANTANDER_REGISTER", "tls://localhost:4000/santander/register")
 		}
 	}
 	config.Install(mockMode, devMode, disableLog, httpOnly)

@@ -60,5 +60,4 @@ func (a *Agreement) CalculateAccountDigit(digitCalculator func(agency, account s
 	} else {
 		a.AccountDigit = digitCalculator(a.Agency, a.Account)
 	}
-
 }
