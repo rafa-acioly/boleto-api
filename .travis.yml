@@ -4,16 +4,6 @@ go:
   - 1.8.x
   - tip
 
-addons:
-  apt:
-    sources:
-      - sourceline: 'ppa:masterminds/glide'
-    packages:
-      - glide
-
-before_install:
-  - glide install
-
 script:
   - ./travis_test.sh
 
