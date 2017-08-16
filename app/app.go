@@ -78,9 +78,6 @@ func configFlags(devMode, mockMode, disableLog, httpOnly bool) {
 		os.Setenv("CERT_BOLETO_CA", "C:\\cert_boleto_api\\ca-cert.ca")
 		os.Setenv("URL_SANTANDER_TICKET", "https://ymbdlb.santander.com.br/dl-ticket-services/TicketEndpointService")
 		os.Setenv("URL_SANTANDER_REGISTER", "https://ymbcashhml.santander.com.br:443/ymbsrv/CobrancaEndpointService")
-		os.Setenv("SANTANDER_KEY_PATH", "C:\\certificados\\santander\\mundipagg.key")
-		os.Setenv("SANTANDER_CA_PATH", "C:\\certificados\\santander\\ca.pem")
-		os.Setenv("SANTANDER_CRT_PATH", "C:\\certificados\\santander\\mundipagg.crt")
 		if mockMode {
 			os.Setenv("URL_BB_REGISTER_BOLETO", "http://localhost:4000/registrarBoleto")
 			os.Setenv("URL_BB_TOKEN", "http://localhost:4000/oauth/token")
