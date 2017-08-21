@@ -3,7 +3,6 @@ package mock
 import (
 	gin "gopkg.in/gin-gonic/gin.v1"
 	"io/ioutil"
-	"fmt"
 	"strings"
 )
 
@@ -52,13 +51,11 @@ const tokErr = `
     }
 }
 `
-	c.Data(200, "text/json", []byte(tok))
 	d, _ := ioutil.ReadAll(c.Request.Body)
 	json := string(d)
-	fmt.Println(json)
-	if strings.Contains(json, "valor: 200,") {
+	if strings.Contains(json, "200") {
 		c.Data(200, "text/json", []byte(tok))
 	} else {
-		c.Data(500, "text/json", []byte(tokErr))
+		c.Data(200, "text/json", []byte(tokErr))
 	}
 }

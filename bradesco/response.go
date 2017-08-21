@@ -2,20 +2,20 @@ package bradesco
 
 var apiResponse = `
 {
-	{{if (hasErrorTags . "errorCode")}}
-        "Errors": [
-            {
-                "Code": "{{trim .errorCode}}",
-                "Message": "{{trim .errorMessage}}"
-            }
-        ]
-    {{else}}
-		"DigitableLine": "{{.digitableLine}}",
+	{{if eq .returnCode "0"}}
+       "DigitableLine": "{{.digitableLine}}",
 		"Links": [{
-			"href":"{{trim .url}}",
+			"href":"{{.url}}",
 			"rel": "pdf",
 			"method":"GET"
 		}]
+    {{else}}
+     "Errors": [
+		{
+			"Code": "{{.returnCode}}",
+			"Message": "{{.returnMessage}}"
+		}
+        ]
     {{end}}
 }
 `

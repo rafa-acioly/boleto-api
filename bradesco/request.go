@@ -2,6 +2,7 @@ package bradesco
 
 
 const registerBradesco = `
+## Content-Type:application/json
 ## Authorization:Basic {{base64 (concat .Authentication.Username ":" .Authentication.Password)}}
 {
     "merchant_id": "{{.Authentication.Username}}",
@@ -57,7 +58,7 @@ const registerBradesco = `
             "primeira_instrucao": "00",
             "segunda_instrucao": "00",
             "valor_juros_mora": 0,
-            "data_limite_concessao_desconto": "",
+            "data_limite_concessao_desconto": null,
             "valor_desconto": 0,
             "valor_iof": 0,
             "valor_abatimento": 0,

@@ -8,7 +8,6 @@ import (
 	"github.com/mundipagg/boleto-api/config"
 	"github.com/mundipagg/boleto-api/tmpl"
 	"github.com/mundipagg/boleto-api/util"
-
 )
 
 type bankBradesco struct {
@@ -41,7 +40,6 @@ func (b bankBradesco) RegisterBoleto(boleto *models.BoletoRequest) (models.Bolet
 	from := getResponseBradesco()
 	to := getAPIResponseBradesco()
 	bod := r.From("message://?source=inline", boleto, getRequestBradesco(), tmpl.GetFuncMaps())
-
 	bod.To("logseq://?type=request&url="+serviceURL, b.log)
 	bod = bod.To(serviceURL, map[string]string{"method": "POST", "insecureSkipVerify": "true"})
 	bod = bod.To("logseq://?type=response&url="+serviceURL, b.log)
@@ -50,12 +48,10 @@ func (b bankBradesco) RegisterBoleto(boleto *models.BoletoRequest) (models.Bolet
 	ch.To("transform://?format=json", from, to, tmpl.GetFuncMaps())
 	ch.Otherwise()
 	ch.To("logseq://?type=response&url="+serviceURL, b.log).To("apierro://")
-
 	switch t := bod.GetBody().(type) {
 	case string:
 		response := util.ParseJSON(t, new(models.BoletoResponse)).(*models.BoletoResponse)
 		return *response, nil
-
 	case models.BoletoResponse:
 		return t, nil
 	}
