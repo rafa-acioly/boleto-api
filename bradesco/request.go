@@ -1,6 +1,5 @@
 package bradesco
 
-
 const registerBradesco = `
 ## Content-Type:application/json
 ## Authorization:Basic {{base64 (concat .Authentication.Username ":" .Authentication.Password)}}
@@ -35,24 +34,22 @@ const registerBradesco = `
         "data_vencimento": "{{enDate .Title.ExpireDateTime "-"}}",
         "valor_titulo": {{.Title.AmountInCents}},
         "url_logotipo": "",
-        "mensagem_cabecalho": "mensagem de cabecalho",
-        "tipo_renderizacao": "2",
+        "mensagem_cabecalho": "",
+        "tipo_renderizacao": "1",
         "instrucoes": {
-            "instrucao_linha_1": "{{.Title.Instructions}}",
-            "instrucao_linha_2": "instrucao 02",
-            "instrucao_linha_3": "instrucao 03"
+            "instrucao_linha_1": "{{.Title.Instructions}}"
         },
         "registro": {
-            "agencia_pagador": "00014",
-            "razao_conta_pagador": "07050",
-            "conta_pagador": "12345679",
-            "controle_participante": "Segurança arquivo remessa",
-            "aplicar_multa": true,
+            "agencia_pagador": "",
+            "razao_conta_pagador": "",
+            "conta_pagador": "",
+            "controle_participante": "",
+            "aplicar_multa": false,
             "valor_percentual_multa": 0,
             "valor_desconto_bonificacao": 0,
             "debito_automatico": false,
             "rateio_credito": false,
-            "endereco_debito_automatico": "1",
+            "endereco_debito_automatico": "2",
             "tipo_ocorrencia": "02",
             "especie_titulo": "01",
             "primeira_instrucao": "00",
@@ -63,14 +60,14 @@ const registerBradesco = `
             "valor_iof": 0,
             "valor_abatimento": 0,
             {{if (eq .Buyer.Document.Type "CPF")}}
-            	"tipo_inscricao_pagador": "02",
-			{{else}}
             	"tipo_inscricao_pagador": "01",
+			{{else}}
+            	"tipo_inscricao_pagador": "02",
 			{{end}}
-            "sequencia_registro": "00001"
+            "sequencia_registro": ""
         }
     },
-    "token_request_confirmacao_pagamento": "21323dsd23434ad12178DDasY"
+    "token_request_confirmacao_pagamento": ""
 }
 `
 
@@ -87,10 +84,10 @@ const responseBradesco = `
 }
 `
 
-func getRequestBradesco() string{
+func getRequestBradesco() string {
 	return registerBradesco
 }
 
-func getResponseBradesco() string  {
+func getResponseBradesco() string {
 	return responseBradesco
 }
