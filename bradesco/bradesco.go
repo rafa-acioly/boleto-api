@@ -1,29 +1,32 @@
 package bradesco
 
 import (
-	"github.com/mundipagg/boleto-api/models"
-	"github.com/mundipagg/boleto-api/log"
-	"github.com/mundipagg/boleto-api/validations"
 	"github.com/PMoneda/flow"
 	"github.com/mundipagg/boleto-api/config"
+	"github.com/mundipagg/boleto-api/log"
+	"github.com/mundipagg/boleto-api/models"
 	"github.com/mundipagg/boleto-api/tmpl"
 	"github.com/mundipagg/boleto-api/util"
+	"github.com/mundipagg/boleto-api/validations"
 )
 
 type bankBradesco struct {
-	validate  *models.Validator
-	log 	  *log.Log
+	validate *models.Validator
+	log      *log.Log
 }
 
-func New() bankBradesco  {
+func New() bankBradesco {
 	b := bankBradesco{
 		validate: models.NewValidator(),
-		log: log.CreateLog(),
+		log:      log.CreateLog(),
 	}
 	b.validate.Push(validations.ValidateAmount)
 	b.validate.Push(validations.ValidateExpireDate)
 	b.validate.Push(validations.ValidateBuyerDocumentNumber)
 	b.validate.Push(validations.ValidateRecipientDocumentNumber)
+	b.validate.Push(bradescoValidateAgency)
+	b.validate.Push(bradescoValidateAccount)
+	b.validate.Push(bradescoValidateWallet)
 
 	return b
 }
@@ -58,7 +61,7 @@ func (b bankBradesco) RegisterBoleto(boleto *models.BoletoRequest) (models.Bolet
 	return models.BoletoResponse{}, models.NewInternalServerError("MP500", "Erro interno")
 }
 
-func (b bankBradesco) ProcessBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error)  {
+func (b bankBradesco) ProcessBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
 	errs := b.ValidateBoleto(boleto)
 	if len(errs) > 0 {
 		return models.BoletoResponse{Errors: errs}, nil
@@ -66,12 +69,10 @@ func (b bankBradesco) ProcessBoleto(boleto *models.BoletoRequest) (models.Boleto
 	return b.RegisterBoleto(boleto)
 }
 
-func (b bankBradesco) ValidateBoleto(boleto *models.BoletoRequest) models.Errors  {
+func (b bankBradesco) ValidateBoleto(boleto *models.BoletoRequest) models.Errors {
 	return models.Errors(b.validate.Assert(boleto))
 }
 
 func (b bankBradesco) GetBankNumber() models.BankNumber {
 	return models.Bradesco
 }
-
-
