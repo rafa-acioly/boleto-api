@@ -18,12 +18,12 @@ import (
 
 // BoletoRequest entidade de entrada para o boleto
 type BoletoRequest struct {
-	Authentication Authentication
-	Agreement      Agreement
-	Title          Title
-	Recipient      Recipient
-	Buyer          Buyer
-	BankNumber     BankNumber
+	Authentication Authentication `json:"authentication"`
+	Agreement      Agreement      `json:"agreement"`
+	Title          Title          `json:"title"`
+	Recipient      Recipient      `json:"recipient"`
+	Buyer          Buyer          `json:"buyer"`
+	BankNumber     BankNumber     `json:"bank"`
 }
 
 // BoletoResponse entidade de saída para o boleto
@@ -31,9 +31,9 @@ type BoletoResponse struct {
 	StatusCode    int    `json:"-"`
 	Errors        Errors `json:"errors,omitempty"`
 	ID            string `json:"id,omitempty"`
-	DigitableLine string `json:"digitableLine,omitempty"`
-	BarCodeNumber string `json:"barCodeNumber,omitempty"`
-	OurNumber     string `json:"ourNumber,omitempty"`
+	DigitableLine string `json:"digitable_line,omitempty"`
+	BarCodeNumber string `json:"barcode_number,omitempty"`
+	OurNumber     string `json:"ournumber,omitempty"`
 	Links         []Link `json:"links,omitempty"`
 }
 
@@ -52,10 +52,10 @@ type BoletoView struct {
 	BankLogo      template.HTML `json:"bankLogo,omitempty"`
 	Boleto        BoletoRequest `json:"boleto,omitempty"`
 	BankID        BankNumber    `json:"bankId,omitempty"`
-	CreateDate    time.Time     `json:"createDate,omitempty"`
-	BankNumber    string        `json:"bankNumber,omitempty"`
-	DigitableLine string        `json:"digitableLine,omitempty"`
-	OurNumber     string        `json:"ourNumber,omitempty"`
+	CreateDate    time.Time     `json:"create_date,omitempty"`
+	BankNumber    string        `json:"bank_number,omitempty"`
+	DigitableLine string        `json:"digitable_line,omitempty"`
+	OurNumber     string        `json:"ournumber,omitempty"`
 	Barcode       string        `json:"barcode,omitempty"`
 	Barcode64     string        `json:"barcode64,omitempty"`
 	Links         []Link        `json:"links,omitempty"`

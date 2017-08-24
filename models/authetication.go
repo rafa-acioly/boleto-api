@@ -4,5 +4,5 @@ package models
 type Authentication struct {
 	Username           string `json:"username,omitempty"`
 	Password           string `json:"password,omitempty"`
-	AuthorizationToken string `json:"authenticationToken,omitempty"`
+	AuthorizationToken string `json:"authentication_token,omitempty"`
 }

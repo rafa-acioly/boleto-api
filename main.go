@@ -56,27 +56,34 @@ func main() {
 	flag.Parse()
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	if *mockOnly {
-		w := make(chan int)
-		config.Install(true, true, true, true)
-		robot.GoRobots()
-		<-w
+		runMockOnly()
 	} else {
-		logo1()
-		params := app.NewParams()
-		if *airPlaneMode {
-			params.DevMode = true
-			params.DisableLog = true
-			params.MockMode = true
-			params.HTTPOnly = true
-		} else {
-			params.DevMode = *devMode
-			params.DisableLog = *disableLog
-			params.MockMode = *mockMode
-			params.HTTPOnly = *httpOnly
-		}
-		app.Run(params)
+		runApp()
 	}
+}
 
+func runApp() {
+	logo1()
+	params := app.NewParams()
+	if *airPlaneMode {
+		params.DevMode = true
+		params.DisableLog = true
+		params.MockMode = true
+		params.HTTPOnly = true
+	} else {
+		params.DevMode = *devMode
+		params.DisableLog = *disableLog
+		params.MockMode = *mockMode
+		params.HTTPOnly = *httpOnly
+	}
+	app.Run(params)
+}
+
+func runMockOnly() {
+	w := make(chan int)
+	config.Install(true, true, true, true)
+	robot.GoRobots()
+	<-w
 }
 
 func logo1() {

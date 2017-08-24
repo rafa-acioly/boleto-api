@@ -16,105 +16,55 @@ import (
 )
 
 const body = `{
-
-    "BankNumber": 1,
-
-    "Authentication": {
-
-        "Username": "eyJpZCI6IjgwNDNiNTMtZjQ5Mi00YyIsImNvZGlnb1B1YmxpY2Fkb3IiOjEwOSwiY29kaWdvU29mdHdhcmUiOjEsInNlcXVlbmNpYWxJbnN0YWxhY2FvIjoxfQ",
-
-        "Password": "eyJpZCI6IjBjZDFlMGQtN2UyNC00MGQyLWI0YSIsImNvZGlnb1B1YmxpY2Fkb3IiOjEwOSwiY29kaWdvU29mdHdhcmUiOjEsInNlcXVlbmNpYWxJbnN0YWxhY2FvIjoxLCJzZXF1ZW5jaWFsQ3JlZGVuY2lhbCI6MX0"
-
+    "bank": 1,
+    "authentication": {
+        "username": "user",
+        "password": "pass"
     },
-
-    "Agreement": {
-
-        "AgreementNumber": 1014051,
-
-        "WalletVariation": 19,
-
-        "Agency":"5797",
-        
-        "Account":"6685"
-
+    "agreement": {
+        "agreement_number": 1014051,
+        "wallet_variation": 19,
+        "agency":"5797",        
+        "account":"6685"
     },
-
-    "Title": {
-
-        "ExpireDate": "2017-05-20",
-
-        "AmountInCents": 200,
-
-        "OurNumber": 101405190,
-
-        "Instructions": "Senhor caixa, após o vencimento",
-
-        "DocumentNumber": "123456"
-
+    "title": {
+        "expire_date": "2017-05-20",
+        "amount": 200,
+        "ournumber": 101405190,
+        "instructions": "Senhor caixa, após o vencimento",
+        "document_number": "123456"
     },
-
-    "Buyer": {
-
-        "Name": "Mundipagg Tecnologia em Pagamentos",
-
-        "Document": {
-
-            "Type": "CNPJ",
-
-            "Number": "73400584000166"
-
+    "buyer": {
+        "name": "Mundipagg Tecnologia em Pagamentos",
+        "document": {
+            "type": "CNPJ",
+            "number": "73400584000166"
         },
-
-        "Address": {
-
-            "Street": "R. Conde de Bonfim",
-
-            "Number": "123",
-
-            "Complement": "Apto",
-
-            "ZipCode": "20520051",
-
-            "City": "Rio de Janeiro",
-
-            "District": "Tijuca",
-
-            "StateCode": "RJ"
-
+        "address": {
+            "street": "R. Conde de Bonfim",
+            "number": "123",
+            "complement": "Apto",
+            "zipcode": "20520051",
+            "city": "Rio de Janeiro",
+            "district": "Tijuca",
+            "state_code": "RJ"
         }
-
     },
-
-    "Recipient": {
-
-      "Name": "Mundipagg Tecnologia em Pagamentos",
-
-        "Document": {
-
-            "Type": "CNPJ",
-
-            "Number": "73400584000166"
-
+    "recipient": {
+      "name": "Mundipagg Tecnologia em Pagamentos",
+        "document": {
+            "type": "CNPJ",
+            "number": "73400584000166"
         },
-
-        "Address": {
-
-            "Street": "R. Conde de Bonfim",
-
-            "Number": "123",
-
-            "Complement": "Apto",
-
-            "ZipCode": "20520051",
-
-            "City": "Rio de Janeiro",
-
-            "District": "Tijuca",
-
-            "StateCode": "RJ"
-
+        "address": {
+            "street": "R. Conde de Bonfim",
+            "number": "123",
+            "complement": "Apto",
+            "zipcode": "20520051",
+            "city": "Rio de Janeiro",
+            "district": "Tijuca",
+            "state_code": "RJ"
         }
-
     }
 }
 `
@@ -158,8 +108,8 @@ func TestRegisterBoletoRequest(t *testing.T) {
 	go app.Run(param)
 	time.Sleep(10 * time.Second)
 	Convey("deve-se registrar um boleto e retornar as informações de url, linha digitável e código de barras", t, func() {
-
-		response, st, err := util.Post("http://localhost:3000/v1/boleto/register", getBody(models.BancoDoBrasil, 200), nil)
+		req := getBody(models.BancoDoBrasil, 200)
+		response, st, err := util.Post("http://localhost:3000/v1/boleto/register", req, nil)
 		So(err, ShouldEqual, nil)
 		So(st, ShouldEqual, 200)
 		boleto := models.BoletoResponse{}

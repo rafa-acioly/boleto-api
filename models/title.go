@@ -10,13 +10,13 @@ import (
 
 // Title título de cobrança de entrada
 type Title struct {
-	CreateDate     time.Time `json:"createDate,omitempty"`
-	ExpireDateTime time.Time `json:"expireDateTime,omitempty"`
-	ExpireDate     string    `json:"expireDate,omitempty"`
-	AmountInCents  uint64    `json:"amountInCents,omitempty"`
-	OurNumber      uint      `json:"ourNumber,omitempty"`
+	CreateDate     time.Time `json:"create_date,omitempty"`
+	ExpireDateTime time.Time `json:"expire_datetime,omitempty"`
+	ExpireDate     string    `json:"expire_date,omitempty"`
+	AmountInCents  uint64    `json:"amount,omitempty"`
+	OurNumber      uint      `json:"ournumber,omitempty"`
 	Instructions   string    `json:"instructions,omitempty"`
-	DocumentNumber string    `json:"documentNumber,omitempty"`
+	DocumentNumber string    `json:"document_number,omitempty"`
 	NSU            string    `json:"nsu,omitempty"`
 }
 

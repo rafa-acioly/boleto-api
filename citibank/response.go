@@ -3,27 +3,27 @@ package citibank
 const registerBoletoResponseCiti = `{
     {{if (hasErrorTags . "errorCode" "errorMessage" "exception")}}
         {{if (hasErrorTags . "exception")}}
-            "Errors": [
+            "errors": [
                 {                    
-                    "Code": "{{trim .returnCode}}",
-                    "Message": "{{trim .returnMessage}}"
+                    "code": "{{trim .returnCode}}",
+                    "message": "{{trim .returnMessage}}"
                 }
             ]
         {{else}}
-            "Errors": [
+            "errors": [
                 {                    
-                    "Code": "{{trim .errorCode}}",
-                    "Message": "{{trim .errorMessage}}"
+                    "code": "{{trim .errorCode}}",
+                    "message": "{{trim .errorMessage}}"
                 }
             ]
         {{end}}
         
     {{else}}
         {{if .digitableLine}}
-            "DigitableLine": "{{fmtDigitableLine (trim .digitableLine)}}",
+            "digitable_line": "{{fmtDigitableLine (trim .digitableLine)}}",
         {{end}}
         {{if .barcodeNumber}}
-            "BarCodeNumber": "{{trim .barcodeNumber}}"
+            "barcode_number": "{{trim .barcodeNumber}}"
         {{end}}
         
     {{end}}

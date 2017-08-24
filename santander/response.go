@@ -3,16 +3,16 @@ package santander
 var apiResponse = `
 {
     {{if (hasErrorTags . "errorCode")}}
-        "Errors": [
+        "errors": [
             {                    
-                "Code": "{{trim .errorCode}}",
-                "Message": "{{trim .errorMessage}}"
+                "code": "{{trim .errorCode}}",
+                "message": "{{trim .errorMessage}}"
             }
         ]
     {{else}}
-        "DigitableLine": "{{fmtDigitableLine (trim .digitableLine)}}",
-        "BarCodeNumber": "{{trim .barcodeNumber}}",
-        "OurNumber":"{{.ourNumber}}"
+        "digitable_line": "{{fmtDigitableLine (trim .digitableLine)}}",
+        "barcode_number": "{{trim .barcodeNumber}}",
+        "ournumber":"{{.ourNumber}}"
     {{end}}
 }
 `

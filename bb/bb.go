@@ -17,7 +17,7 @@ type bankBB struct {
 	log      *log.Log
 }
 
-//Cria uma nova instância do objeto que implementa os serviços do Banco do Brasil e configura os validadores que serão utilizados
+//New cria uma nova instância do objeto que implementa os serviços do Banco do Brasil e configura os validadores que serão utilizados
 func New() bankBB {
 	b := bankBB{
 		validate: models.NewValidator(),
@@ -95,11 +95,14 @@ func (b bankBB) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRespo
 	ch = ch.To("unmarshall://?format=json", new(models.BoletoResponse))
 	ch = ch.Otherwise()
 	ch = ch.To("logseq://?type=response&url="+url, b.log).To("apierro://")
+
 	switch t := r.GetBody().(type) {
 	case *models.BoletoResponse:
 		return *t, nil
 	case models.BoletoResponse:
 		return t, nil
+	case error:
+		return models.BoletoResponse{}, t
 	default:
 		return models.BoletoResponse{}, errors.New("erro")
 	}
