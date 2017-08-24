@@ -15,6 +15,7 @@ import (
 	"github.com/mundipagg/boleto-api/config"
 	"github.com/mundipagg/boleto-api/log"
 	"github.com/mundipagg/boleto-api/robot"
+	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
 var (
@@ -76,7 +77,18 @@ func runApp() {
 		params.MockMode = *mockMode
 		params.HTTPOnly = *httpOnly
 	}
-	app.Run(params)
+	gin.SetMode(gin.ReleaseMode)
+	router := gin.New()
+	app.Run(params, router)
+	if params.HTTPOnly || params.DevMode {
+		router.Run(config.Get().APIPort)
+	} else {
+		err := router.RunTLS(config.Get().APIPort, config.Get().TLSCertPath, config.Get().TLSKeyPath)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(-1)
+		}
+	}
 }
 
 func runMockOnly() {

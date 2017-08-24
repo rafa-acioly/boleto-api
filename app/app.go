@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/PMoneda/flow"
+	gin "gopkg.in/gin-gonic/gin.v1"
 
 	"github.com/mundipagg/boleto-api/api"
 	"github.com/mundipagg/boleto-api/config"
@@ -29,7 +30,7 @@ func NewParams() *Params {
 }
 
 //Run starts boleto api Application
-func Run(params *Params) {
+func Run(params *Params, router *gin.Engine) {
 	configFlags(params.DevMode, params.MockMode, params.DisableLog, params.HTTPOnly)
 	installflowConnectors()
 	robot.GoRobots()
@@ -37,7 +38,7 @@ func Run(params *Params) {
 		go mock.Run()
 	}
 	installLog()
-	api.InstallRestAPI()
+	api.InstallRestAPI(router)
 
 }
 
