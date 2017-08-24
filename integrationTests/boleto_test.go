@@ -1,10 +1,13 @@
 package integrationTests
 
 import (
+	"net/http"
+	"net/http/httptest"
 	"strings"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
+	gin "gopkg.in/gin-gonic/gin.v1"
 
 	"encoding/json"
 
@@ -12,7 +15,6 @@ import (
 
 	"github.com/mundipagg/boleto-api/app"
 	"github.com/mundipagg/boleto-api/models"
-	"github.com/mundipagg/boleto-api/util"
 )
 
 const body = `{
@@ -105,45 +107,61 @@ func TestRegisterBoletoRequest(t *testing.T) {
 	param.DisableLog = true
 	param.HTTPOnly = true
 	param.MockMode = true
-	go app.Run(param)
-	time.Sleep(10 * time.Second)
+	router := gin.New()
+	app.Run(param, router)
+
 	Convey("deve-se registrar um boleto e retornar as informações de url, linha digitável e código de barras", t, func() {
-		req := getBody(models.BancoDoBrasil, 200)
-		response, st, err := util.Post("http://localhost:3000/v1/boleto/register", req, nil)
+		req, err := http.NewRequest("POST", "/v1/boleto/register", strings.NewReader(getBody(models.BancoDoBrasil, 200)))
+		w := httptest.NewRecorder()
+		router.ServeHTTP(w, req)
+		response := w.Body.String()
 		So(err, ShouldEqual, nil)
-		So(st, ShouldEqual, 200)
+		So(w.Code, ShouldEqual, 200)
 		boleto := models.BoletoResponse{}
 		errJSON := json.Unmarshal([]byte(response), &boleto)
 		So(errJSON, ShouldEqual, nil)
+		w.Flush()
 		Convey("Se o boleto foi registrado então ele tem que está disponível no formato HTML", func() {
 			So(len(boleto.Links), ShouldBeGreaterThan, 0)
-			html, st, err := util.Get(boleto.Links[0].Href, "", nil)
+			w := httptest.NewRecorder()
+			req, err := http.NewRequest("GET", "/boleto?fmt=html&id="+boleto.ID, strings.NewReader(getBody(models.BancoDoBrasil, 200)))
+			router.ServeHTTP(w, req)
 			So(err, ShouldEqual, nil)
-			So(st, ShouldEqual, 200)
+			So(w.Code, ShouldEqual, 200)
+			html := w.Body.String()
 			htmlFromBoleto := strings.Contains(html, boleto.DigitableLine)
 			So(htmlFromBoleto, ShouldBeTrue)
+			w.Flush()
 		})
 	})
 
 	Convey("Deve-se retornar a lista de erros ocorridos durante o registro", t, func() {
-		response, st, err := util.Post("http://localhost:3000/v1/boleto/register", getBody(models.BancoDoBrasil, 301), nil)
+		req, err := http.NewRequest("POST", "/v1/boleto/register", strings.NewReader(getBody(models.BancoDoBrasil, 301)))
+		w := httptest.NewRecorder()
+		router.ServeHTTP(w, req)
+		response := w.Body.String()
 		So(err, ShouldEqual, nil)
-		So(st, ShouldEqual, 400)
+		So(w.Code, ShouldEqual, 400)
 		boleto := models.BoletoResponse{}
 		errJSON := json.Unmarshal([]byte(response), &boleto)
 		So(errJSON, ShouldEqual, nil)
 		So(len(boleto.Errors), ShouldBeGreaterThan, 0)
+		w.Flush()
 		Convey("Deve-se retornar erro quando passar um Nosso Número inválido", func() {
 			m := getModelBody(models.BancoDoBrasil, 200)
 			m.Title.OurNumber = 999999999999
-			response, st, err := util.Post("http://localhost:3000/v1/boleto/register", stringify(m), nil)
+			w := httptest.NewRecorder()
+			req, err := http.NewRequest("POST", "/v1/boleto/register", strings.NewReader(stringify(m)))
+			router.ServeHTTP(w, req)
+			response := w.Body.String()
 			So(err, ShouldEqual, nil)
-			So(st, ShouldEqual, 400)
+			So(w.Code, ShouldEqual, 400)
 			boleto := models.BoletoResponse{}
 			errJSON := json.Unmarshal([]byte(response), &boleto)
 			So(errJSON, ShouldEqual, nil)
 			So(len(boleto.Errors), ShouldBeGreaterThan, 0)
 			So(boleto.Errors[0].Message, ShouldEqual, "Nosso número inválido")
+			w.Flush()
 		})
 
 		Convey("Deve-se tratar o número da conta", func() {
@@ -151,14 +169,18 @@ func TestRegisterBoletoRequest(t *testing.T) {
 				assert := func(bank models.BankNumber) {
 					m := getModelBody(bank, 200)
 					m.Agreement.Account = ""
-					response, st, err := util.Post("http://localhost:3000/v1/boleto/register", stringify(m), nil)
+					w := httptest.NewRecorder()
+					req, err := http.NewRequest("POST", "/v1/boleto/register", strings.NewReader(stringify(m)))
+					router.ServeHTTP(w, req)
+					response := w.Body.String()
 					So(err, ShouldEqual, nil)
-					So(st, ShouldEqual, 400)
+					So(w.Code, ShouldEqual, 400)
 					boleto := models.BoletoResponse{}
 					errJSON := json.Unmarshal([]byte(response), &boleto)
 					So(errJSON, ShouldEqual, nil)
 					So(len(boleto.Errors), ShouldBeGreaterThan, 0)
 					So(strings.Contains(boleto.Errors[0].Message, "Conta inválida, deve conter até"), ShouldBeTrue)
+					w.Flush()
 				}
 				assert(models.BancoDoBrasil)
 			})
@@ -167,14 +189,18 @@ func TestRegisterBoletoRequest(t *testing.T) {
 				assert := func(bank models.BankNumber) {
 					m := getModelBody(bank, 200)
 					m.Buyer.Document.Type = "FAIL"
-					response, st, err := util.Post("http://localhost:3000/v1/boleto/register", stringify(m), nil)
+					w := httptest.NewRecorder()
+					req, err := http.NewRequest("POST", "/v1/boleto/register", strings.NewReader(stringify(m)))
+					router.ServeHTTP(w, req)
+					response := w.Body.String()
 					So(err, ShouldEqual, nil)
-					So(st, ShouldEqual, 400)
+					So(w.Code, ShouldEqual, 400)
 					boleto := models.BoletoResponse{}
 					errJSON := json.Unmarshal([]byte(response), &boleto)
 					So(errJSON, ShouldEqual, nil)
 					So(len(boleto.Errors), ShouldBeGreaterThan, 0)
 					So(boleto.Errors[0].Message, ShouldEqual, "Tipo de Documento inválido")
+					w.Flush()
 				}
 				assert(models.BancoDoBrasil)
 				assert(models.Caixa)
@@ -186,14 +212,18 @@ func TestRegisterBoletoRequest(t *testing.T) {
 					m := getModelBody(models.BancoDoBrasil, 200)
 					m.Buyer.Document.Type = "CPF"
 					m.Buyer.Document.Number = "ASDA"
-					response, st, err := util.Post("http://localhost:3000/v1/boleto/register", stringify(m), nil)
+					w := httptest.NewRecorder()
+					req, err := http.NewRequest("POST", "/v1/boleto/register", strings.NewReader(stringify(m)))
+					router.ServeHTTP(w, req)
+					response := w.Body.String()
 					So(err, ShouldEqual, nil)
-					So(st, ShouldEqual, 400)
+					So(w.Code, ShouldEqual, 400)
 					boleto := models.BoletoResponse{}
 					errJSON := json.Unmarshal([]byte(response), &boleto)
 					So(errJSON, ShouldEqual, nil)
 					So(len(boleto.Errors), ShouldBeGreaterThan, 0)
 					So(boleto.Errors[0].Message, ShouldEqual, "CPF inválido")
+					w.Flush()
 				}
 				assert(models.BancoDoBrasil)
 				assert(models.Caixa)
@@ -206,71 +236,80 @@ func TestRegisterBoletoRequest(t *testing.T) {
 
 	Convey("Quando um boleto não existir na base de dados", t, func() {
 		Convey("Deve-se retornar um status 404", func() {
-			_, st, err := util.Get("http://localhost:3000/boleto?fmt=html&id=90230843492384", getBody(models.Caixa, 200), nil)
+			req, err := http.NewRequest("GET", "/boleto?fmt=html&id=90230843492384", strings.NewReader(getBody(models.Caixa, 200)))
+			w := httptest.NewRecorder()
+			router.ServeHTTP(w, req)
 			So(err, ShouldBeNil)
-			So(st, ShouldEqual, 404)
+			So(w.Code, ShouldEqual, 404)
+			w.Flush()
 		})
 
 		Convey("A mensagem de retorno deverá ser Boleto não encontrado", func() {
-			resp, _, err := util.Get("http://localhost:3000/boleto?fmt=html&id=90230843492384", getBody(models.Caixa, 200), nil)
+			req, err := http.NewRequest("GET", "/boleto?fmt=html&id=90230843492384", strings.NewReader(getBody(models.Caixa, 200)))
+			w := httptest.NewRecorder()
+			router.ServeHTTP(w, req)
 			So(err, ShouldBeNil)
-			So(resp, ShouldContainSubstring, "Boleto não encontrado na base de dados")
+			So(w.Code, ShouldEqual, 404)
+			So(w.Body.String(), ShouldContainSubstring, "Boleto não encontrado na base de dados")
+			w.Flush()
 		})
 
 	})
 
 	Convey("Deve-se registrar um boleto na Caixa", t, func() {
-		_, st, err := util.Post("http://localhost:3000/v1/boleto/register", getBody(models.Caixa, 200), nil)
+		req, err := http.NewRequest("POST", "/v1/boleto/register", strings.NewReader(getBody(models.Caixa, 200)))
+		w := httptest.NewRecorder()
+		router.ServeHTTP(w, req)
 		So(err, ShouldBeNil)
-		So(st, ShouldEqual, 200)
+		So(w.Code, ShouldEqual, 200)
+		w.Flush()
 		Convey("Deve-se gerar um boleto específico para a Caixa", func() {
 			//TODO
 		})
 	})
 
 	Convey("Deve-se retornar um objeto de erro quando não registra um boleto na Caixa", t, func() {
-		response, st, err := util.Post("http://localhost:3000/v1/boleto/register", getBody(models.Caixa, 300), nil)
+		req, err := http.NewRequest("POST", "/v1/boleto/register", strings.NewReader(getBody(models.Caixa, 300)))
+		w := httptest.NewRecorder()
+		router.ServeHTTP(w, req)
+		response := w.Body.String()
 		So(err, ShouldBeNil)
-		So(st, ShouldEqual, 400)
+		So(w.Code, ShouldEqual, 400)
 		boleto := models.BoletoResponse{}
 		errJSON := json.Unmarshal([]byte(response), &boleto)
 		So(errJSON, ShouldEqual, nil)
 		So(len(boleto.Errors), ShouldBeGreaterThan, 0)
+		w.Flush()
 	})
 
 	Convey("Deve-se retornar um erro quando o campo de instruções tem mais de 40 caracteres", t, func() {
 		m := getModelBody(models.Caixa, 200)
 		m.Title.Instructions = "Senhor caixa, após o vencimento não aceitar o pagamento"
-		response, st, err := util.Post("http://localhost:3000/v1/boleto/register", stringify(m), nil)
+		w := httptest.NewRecorder()
+		req, err := http.NewRequest("POST", "/v1/boleto/register", strings.NewReader(stringify(m)))
+		router.ServeHTTP(w, req)
+		response := w.Body.String()
+
 		So(err, ShouldBeNil)
-		So(st, ShouldEqual, 400)
+		So(w.Code, ShouldEqual, 400)
 		boleto := models.BoletoResponse{}
 		errJSON := json.Unmarshal([]byte(response), &boleto)
 		So(errJSON, ShouldEqual, nil)
 		So(len(boleto.Errors), ShouldBeGreaterThan, 0)
 		So(boleto.Errors[0].Message, ShouldEqual, "O número máximo permitido para instruções é de 40 caracteres")
-
+		w.Flush()
 	})
 
 	Convey("Quando o serviço da caixa estiver offline", t, func() {
 		Convey("Deve-se retornar o status 504", func() {
-			resp, st, _ := util.Post("http://localhost:3000/v1/boleto/register", getBody(models.Caixa, 504), nil)
-			So(st, ShouldEqual, 504)
+			req, _ := http.NewRequest("POST", "/v1/boleto/register", strings.NewReader(getBody(models.Caixa, 504)))
+			w := httptest.NewRecorder()
+			router.ServeHTTP(w, req)
+			resp := w.Body.String()
+			So(w.Code, ShouldEqual, 504)
 			So(strings.Contains(resp, "MP504"), ShouldBeTrue)
+			w.Flush()
 		})
 	})
 
-}
-
-func BenchmarkRegisterBoleto(b *testing.B) {
-	param := app.NewParams()
-	param.DevMode = true
-	param.DisableLog = true
-	param.HTTPOnly = true
-	param.MockMode = true
-	go app.Run(param)
-	for i := 0; i < b.N; i++ {
-		util.Post("http://localhost:3000/v1/boleto/register", body, nil)
-
-	}
 }
