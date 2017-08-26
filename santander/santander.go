@@ -94,10 +94,8 @@ func (b bankSantander) RegisterBoleto(input *models.BoletoRequest) (models.Bolet
 		return *t, nil
 	case error:
 		return models.BoletoResponse{}, t
-	case models.BoletoResponse:
-		return t, nil
 	}
-	return models.BoletoResponse{}, models.NewInternalServerError("Erro interno", "MP500")
+	return models.BoletoResponse{}, models.NewInternalServerError("api_error", "unexpected error")
 }
 func (b bankSantander) ProcessBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
 	boleto.Title.OurNumber = 0

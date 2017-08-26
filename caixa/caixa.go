@@ -42,24 +42,20 @@ func (b bankCaixa) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRe
 	from := getResponseCaixa()
 	to := getAPIResponseCaixa()
 	bod := r.From("message://?source=inline", boleto, getRequestCaixa(), tmpl.GetFuncMaps())
-	bod = bod.To("logseq://?type=request&url="+urlCaixa, b.log)
-	//bod = bod.To("print://?msg=${body}")
-	bod = bod.To(urlCaixa, map[string]string{"method": "POST", "insecureSkipVerify": "true"})
-	bod = bod.To("logseq://?type=response&url="+urlCaixa, b.log)
+	bod.To("logseq://?type=request&url="+urlCaixa, b.log)
+	bod.To(urlCaixa, map[string]string{"method": "POST", "insecureSkipVerify": "true"})
+	bod.To("logseq://?type=response&url="+urlCaixa, b.log)
 	ch := bod.Choice()
-	ch = ch.When(flow.Header("status").IsEqualTo("200"))
-	ch = ch.To("transform://?format=xml", from, to, tmpl.GetFuncMaps())
-	ch = ch.Otherwise()
-	ch = ch.To("logseq://?type=response&url="+urlCaixa, b.log).To("apierro://")
-
+	ch.When(flow.Header("status").IsEqualTo("200"))
+	ch.To("transform://?format=xml", from, to, tmpl.GetFuncMaps())
+	ch.To("unmarshall://?format=json", new(models.BoletoResponse))
+	ch.Otherwise()
+	ch.To("logseq://?type=response&url="+urlCaixa, b.log).To("apierro://")
 	switch t := bod.GetBody().(type) {
-	case string:
-		response := util.ParseJSON(t, new(models.BoletoResponse)).(*models.BoletoResponse)
-		return *response, nil
-	case models.BoletoResponse:
-		return t, nil
+	case *models.BoletoResponse:
+		return *t, nil
 	}
-	return models.BoletoResponse{}, models.NewInternalServerError("MP500", "Erro interno")
+	return models.BoletoResponse{}, models.NewInternalServerError("api_error", "unexpected error")
 }
 func (b bankCaixa) ProcessBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
 	boleto.Title.OurNumber = 0
@@ -68,7 +64,6 @@ func (b bankCaixa) ProcessBoleto(boleto *models.BoletoRequest) (models.BoletoRes
 		return models.BoletoResponse{Errors: errs}, nil
 	}
 	checkSum := b.getCheckSumCode(*boleto)
-	//fmt.Println(checkSum)
 	boleto.Authentication.AuthorizationToken = b.getAuthToken(checkSum)
 	return b.RegisterBoleto(boleto)
 }

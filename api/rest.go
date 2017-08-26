@@ -38,8 +38,12 @@ func checkError(c *gin.Context, err error, l *log.Log) bool {
 			errResp.Errors.Append("bad_request", v.Error())
 			c.JSON(http.StatusBadRequest, errResp)
 		case models.IServerError:
-			errResp.Errors.Append("api_error", "internal error")
+			errResp.Errors.Append("api_error", v.Error())
 			l.Fatal(v.Error(), v.Message())
+			c.JSON(http.StatusInternalServerError, errResp)
+		case error:
+			l.Fatal(err.Error(), "")
+			errResp.Errors.Append("api_error", v.Error())
 			c.JSON(http.StatusInternalServerError, errResp)
 		default:
 			l.Fatal(err.Error(), "")

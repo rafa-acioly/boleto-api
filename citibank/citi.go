@@ -64,18 +64,18 @@ func (b bankCiti) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRes
 	ch := bod.Choice()
 	ch.When(flow.Header("status").IsEqualTo("200"))
 	ch.To("transform://?format=xml", from, to, tmpl.GetFuncMaps())
+	ch.To("unmarshall://?format=json", new(models.BoletoResponse))
 	ch.Otherwise()
 	ch.To("logseq://?type=response&url="+serviceURL, b.log).To("apierro://")
 	switch t := bod.GetBody().(type) {
-	case string:
-		response := util.ParseJSON(t, new(models.BoletoResponse)).(*models.BoletoResponse)
-		response.DigitableLine = digitableLine
-		response.BarCodeNumber = codebar
-		return *response, nil
-	case models.BoletoResponse:
-		return t, nil
+	case *models.BoletoResponse:
+		t.DigitableLine = digitableLine
+		t.BarCodeNumber = codebar
+		return *t, nil
+	case error:
+		return models.BoletoResponse{}, t
 	}
-	return models.BoletoResponse{}, models.NewInternalServerError("Erro interno", "MP500")
+	return models.BoletoResponse{}, models.NewInternalServerError("api_error", "unexpected error")
 }
 func (b bankCiti) ProcessBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
 	errs := b.ValidateBoleto(boleto)

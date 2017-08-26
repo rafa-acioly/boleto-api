@@ -294,7 +294,7 @@ func TestRegisterBoletoRequest(t *testing.T) {
 			doRequest(router, "POST", "/v1/boleto/register", getBody(models.Caixa, 504),
 				func(status int, response string, err error) {
 					So(status, ShouldEqual, 504)
-					So(strings.Contains(response, "MP504"), ShouldBeTrue)
+					So(strings.Contains(response, "gateway_timeout"), ShouldBeTrue)
 				})
 		})
 	})

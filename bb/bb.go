@@ -64,7 +64,7 @@ func (b *bankBB) login(boleto *models.BoletoRequest) (string, error) {
 	case *errorAuth:
 		return "", errors.New(t.ErrorDescription)
 	}
-	return "", errors.New("Saída inválida")
+	return "", errors.New("unexpected error")
 }
 
 //ProcessBoleto faz o processamento de registro de boleto
@@ -99,12 +99,10 @@ func (b bankBB) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRespo
 	switch t := r.GetBody().(type) {
 	case *models.BoletoResponse:
 		return *t, nil
-	case models.BoletoResponse:
-		return t, nil
 	case error:
 		return models.BoletoResponse{}, t
 	default:
-		return models.BoletoResponse{}, errors.New("erro")
+		return models.BoletoResponse{}, models.NewInternalServerError("api_error", "unexpected error")
 	}
 
 }
