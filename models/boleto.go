@@ -23,7 +23,7 @@ type BoletoRequest struct {
 	Title          Title          `json:"title"`
 	Recipient      Recipient      `json:"recipient"`
 	Buyer          Buyer          `json:"buyer"`
-	BankNumber     BankNumber     `json:"bank"`
+	BankNumber     BankNumber     `json:"bank_number"`
 }
 
 // BoletoResponse entidade de saída para o boleto
