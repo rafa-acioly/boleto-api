@@ -1,15 +1,17 @@
 package citibank
 
 const responseCiti = `
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
-   <soapenv:Header/>
-   <soapenv:Body>
-      <RegisterBoletoResponse>
-         <actionCode>{{returnCode}}</actionCode>
-         <reasonMessage>{{returnMessage}}</reasonMessage>
-      </RegisterBoletoResponse>
-   </soapenv:Body>
-</soapenv:Envelope>
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:s1="http://www.citibank.com.br/comercioeletronico/registerboleto">
+    <soap:Body>
+        <s1:RegisterBoletoResponse>
+            <actionCode>{{returnCode}}</actionCode>
+            <reasonMessage>{{returnMessage}}</reasonMessage>
+            <TitlBarCd>{{barcodeNumber}}</TitlBarCd>
+            <TitlDgtLine>{{digitableLine}}</TitlDgtLine>
+        </s1:RegisterBoletoResponse>
+    </soap:Body>
+</soap:Envelope>
 `
 
 const registerBoletoCiti = `

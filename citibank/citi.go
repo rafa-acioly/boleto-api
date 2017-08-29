@@ -46,7 +46,6 @@ func (b bankCiti) Log() *log.Log {
 }
 
 func (b bankCiti) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
-	codebar, digitableLine := generateBar(boleto)
 	boleto.Title.OurNumber = calculateOurNumber(boleto)
 	r := flow.NewFlow()
 	serviceURL := config.Get().URLCiti
@@ -66,17 +65,17 @@ func (b bankCiti) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRes
 	ch.To("transform://?format=xml", from, to, tmpl.GetFuncMaps())
 	ch.Otherwise()
 	ch.To("logseq://?type=response&url="+serviceURL, b.log).To("apierro://")
+
 	switch t := bod.GetBody().(type) {
 	case string:
 		response := util.ParseJSON(t, new(models.BoletoResponse)).(*models.BoletoResponse)
-		response.DigitableLine = digitableLine
-		response.BarCodeNumber = codebar
 		return *response, nil
 	case models.BoletoResponse:
 		return t, nil
 	}
 	return models.BoletoResponse{}, models.NewInternalServerError("Erro interno", "MP500")
 }
+
 func (b bankCiti) ProcessBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
 	errs := b.ValidateBoleto(boleto)
 	if len(errs) > 0 {
