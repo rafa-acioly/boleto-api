@@ -7,6 +7,7 @@ const responseCiti = `
         <s1:RegisterBoletoResponse>
             <actionCode>{{returnCode}}</actionCode>
             <reasonMessage>{{returnMessage}}</reasonMessage>
+            <TitlBarCd>{{barcodeNumber}}</TitlBarCd>
             <TitlDgtLine>{{digitableLine}}</TitlDgtLine>
         </s1:RegisterBoletoResponse>
     </soap:Body>
