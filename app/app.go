@@ -20,7 +20,6 @@ type Params struct {
 	DevMode    bool
 	MockMode   bool
 	DisableLog bool
-	HTTPOnly   bool
 }
 
 //NewParams returns new Empty pointer to ExecutionParameters
@@ -30,7 +29,7 @@ func NewParams() *Params {
 
 //Run starts boleto api Application
 func Run(params *Params) {
-	configFlags(params.DevMode, params.MockMode, params.DisableLog, params.HTTPOnly)
+	configFlags(params.DevMode, params.MockMode, params.DisableLog)
 	installflowConnectors()
 	robot.GoRobots()
 	if config.Get().MockMode {
@@ -55,7 +54,7 @@ func installflowConnectors() {
 	flow.RegisterConnector("tls", util.TlsConector)
 }
 
-func configFlags(devMode, mockMode, disableLog, httpOnly bool) {
+func configFlags(devMode, mockMode, disableLog bool) {
 	if devMode {
 		os.Setenv("API_PORT", "3000")
 		os.Setenv("API_VERSION", "0.0.1")
@@ -87,5 +86,5 @@ func configFlags(devMode, mockMode, disableLog, httpOnly bool) {
 			os.Setenv("URL_SANTANDER_REGISTER", "tls://localhost:4000/santander/register")
 		}
 	}
-	config.Install(mockMode, devMode, disableLog, httpOnly)
+	config.Install(mockMode, devMode, disableLog)
 }
