@@ -3,8 +3,7 @@ services:
   api:
     build: .
     volumes:
-     - ~/boletodb/upMongo:/home/upMongo
-     - ~/boleto_ssh:/home/mundipagg/boleto_ssh
+     - ~/boletodb/upMongo:/home/upMongo     
      - ~/boleto_cert:/home/mundipagg/boleto_cert
     ports:
      - "#{CONF_EXPOSEPORT}#:3000"
@@ -25,9 +24,7 @@ services:
      - URL_CITI=#{CONF_URL_CITI}#
      - URL_CITI_BOLETO=#{CONF_URL_CITI_BOLETO}#
      - URL_SANTANDER_TICKET=#{CONF_URL_SANTANDER_TICKET}#
-     - URL_SANTANDER_REGISTER=#{CONF_URL_SANTANDER_REGISTER}#
-     - TLS_CERT_PATH=#{CONF_TLS_CERT_PATH}#
-     - TLS_KEY_PATH=#{CONF_TLS_KEY_PATH}#
+     - URL_SANTANDER_REGISTER=#{CONF_URL_SANTANDER_REGISTER}#     
      - CERT_BOLETO_CRT=#{CONF_CERT_BOLETO_CRT}#
      - CERT_BOLETO_KEY=#{CONF_CERT_BOLETO_KEY}#
      - CERT_BOLETO_CA=#{CONF_CERT_BOLETO_CA}#
@@ -44,3 +41,10 @@ services:
     ports:
         - 27017:27017
     command: mongod --smallfiles --logpath=/dev/null
+  nginx:
+    image: nginx:latest
+    container_name: "proxy"
+    ports:
+      - "443:443"
+    volumes:
+      - ~/boleto_ssh:/etc/nginx
