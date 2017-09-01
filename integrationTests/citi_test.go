@@ -2,19 +2,19 @@ package integrationTests
 
 import (
 	"fmt"
+	"strings"
+	"testing"
+
 	"github.com/mundipagg/boleto-api/app"
 	"github.com/mundipagg/boleto-api/models"
 	"github.com/mundipagg/boleto-api/util"
 	. "github.com/smartystreets/goconvey/convey"
-	"strings"
-	"testing"
 )
 
 func TestRegisterBoletoCiti(t *testing.T) {
 	param := app.NewParams()
 	param.DevMode = true
 	param.DisableLog = true
-	param.HTTPOnly = true
 	param.MockMode = true
 	go app.Run(param)
 	Convey("Deve-se registrar um boleto no Citi", t, func() {
