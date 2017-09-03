@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	wkhtmltopdf "github.com/SebastiaanKlippert/go-wkhtmltopdf"
+	"github.com/gin-gonic/gin"
 
 	"strings"
 
@@ -19,7 +20,6 @@ import (
 	"github.com/mundipagg/boleto-api/log"
 	"github.com/mundipagg/boleto-api/models"
 	"github.com/mundipagg/boleto-api/util"
-	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
 //Regista um boleto em um determinado banco

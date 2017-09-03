@@ -1,5 +1,5 @@
-hash: e28ba24e924b7ea05053d4cf2d887911e719c1869c7ff862706e4214ac3154c9
-updated: 2017-07-03T16:08:17.6641271-03:00
+hash: e8003fe36855f4514c815fff5ed2150db872f61c5314e179d7c4a9e72dec2f8a
+updated: 2017-09-06T18:31:05.5812677-03:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 349dd0209470eabd9514242c688c403c0926d266
@@ -10,8 +10,10 @@ imports:
   subpackages:
   - twooffive
   - utils
+- name: github.com/gin-contrib/sse
+  version: 22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae
 - name: github.com/gin-gonic/gin
-  version: d5b353c5d5a560322e6d96121c814115562501f7
+  version: d459835d2b077e44f7c9b453505ee29881d5d12d
   subpackages:
   - binding
   - render
@@ -21,14 +23,18 @@ imports:
   - proto
 - name: github.com/google/uuid
   version: 064e2069ce9c359c118179501254f67d7d37ba24
+- name: github.com/influxdata/influxdb
+  version: 9d9001036d3585cf21925c13a57881bc6c8dcc7e
+  subpackages:
+  - client/v2
+  - models
+  - pkg/escape
 - name: github.com/Jeffail/gabs
   version: 2a3aa15961d5fee6047b8151b67ac2f08ba2c48c
 - name: github.com/jtolds/gls
   version: 8ddce2a84170772b95dd5d576c48d517b22cac63
 - name: github.com/jung-kurt/gofpdf
   version: b572f8a6f278a31b4ff7dd03c0bb348545022f51
-- name: github.com/manucorporat/sse
-  version: ee05b128a739a0fb76c7ebd3ae4810c1de808d6d
 - name: github.com/mattn/go-isatty
   version: fc9e8d8ef48496124e79ae0df75490096eccf6fe
 - name: github.com/mundipagg/goseq
@@ -37,6 +43,11 @@ imports:
   version: 8c3362a5e6781e0d1046f1267b3c1f19b2cde334
 - name: github.com/PMoneda/flow
   version: 4aa5b710bf23b59160a1e957d3de385dca7924d0
+- name: github.com/PMoneda/telemetry
+  version: a15a033a5092b545e54635173a59f2f84ff595cc
+  subpackages:
+  - influxdb
+  - registry
 - name: github.com/PuerkitoBio/goquery
   version: e1271ee34c6a305e38566ecd27ae374944907ee9
 - name: github.com/SebastiaanKlippert/go-wkhtmltopdf
@@ -47,10 +58,13 @@ imports:
   - convey
   - convey/gotest
   - convey/reporting
+- name: github.com/ugorji/go
+  version: 8c0409fcbb70099c748d71f714529204975f6c3f
+  subpackages:
+  - codec
 - name: golang.org/x/net
   version: f315505cf3349909cdf013ea56690da34e96a451
   subpackages:
-  - context
   - html
   - html/atom
 - name: golang.org/x/sys
@@ -62,8 +76,6 @@ imports:
   subpackages:
   - transform
   - unicode/norm
-- name: gopkg.in/gin-gonic/gin.v1
-  version: e2212d40c62a98b388a5eb48ecbdcf88534688ba
 - name: gopkg.in/go-playground/validator.v8
   version: c193cecd124b5cc722d7ee5538e945bdb3348435
 - name: gopkg.in/mgo.v2

@@ -3,11 +3,11 @@ package mock
 import (
 	"net/http/httputil"
 
+	"github.com/gin-gonic/gin"
+
 	"strings"
 
 	"errors"
-
-	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
 /*

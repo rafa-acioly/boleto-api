@@ -161,6 +161,8 @@ func (b BankNumber) BankName() string {
 		return "Caixa"
 	case Bradesco:
 		return "Bradesco"
+	case Citibank:
+		return "Citibank"
 	default:
 		return ""
 	}

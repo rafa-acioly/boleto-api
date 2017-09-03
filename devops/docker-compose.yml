@@ -21,6 +21,8 @@ services:
      - CERT_BOLETO_CRT=/home/mundipagg/boleto_cert/certificate.crt
      - CERT_BOLETO_KEY=/home/mundipagg/boleto_cert/mundi.key
      - CERT_BOLETO_CA=/home/mundipagg/boleto_cert/ca-cert.ca
+     - INFLUXDB_HOST=http://localhost
+     - INFLUXDB_PORT=8086
      - URL_BB_REGISTER_BOLETO=https://cobranca.desenv.bb.com.br:7101/registrarBoleto
      - URL_BB_TOKEN=https://oauth.desenv.bb.com.br:43000/oauth/token
      - URL_CAIXA=https://des.barramento.caixa.gov.br/sibar/ManutencaoCobrancaBancaria/Boleto/Externo

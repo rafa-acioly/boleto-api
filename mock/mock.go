@@ -1,8 +1,6 @@
 package mock
 
-import (
-	gin "gopkg.in/gin-gonic/gin.v1"
-)
+import "github.com/gin-gonic/gin"
 
 //Run sobe uma aplicação web para mockar a integração com os Bancos
 func Run() {
