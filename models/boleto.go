@@ -80,6 +80,8 @@ func NewBoletoView(boleto BoletoRequest, response BoletoResponse) BoletoView {
 	switch boleto.BankNumber {
 	case Caixa:
 		view.Links = response.Links
+	case Bradesco:
+		view.Links = response.Links
 	default:
 		view.Links = view.CreateLinks()
 	}

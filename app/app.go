@@ -77,6 +77,7 @@ func configFlags(devMode, mockMode, disableLog bool) {
 		os.Setenv("CERT_BOLETO_CA", "C:\\cert_boleto_api\\ca-cert.ca")
 		os.Setenv("URL_SANTANDER_TICKET", "https://ymbdlb.santander.com.br/dl-ticket-services/TicketEndpointService")
 		os.Setenv("URL_SANTANDER_REGISTER", "https://ymbcashhml.santander.com.br:443/ymbsrv/CobrancaEndpointService")
+		os.Setenv("URL_BRADESCO", "https://homolog.meiosdepagamentobradesco.com.br/api/transacao")
 		if mockMode {
 			os.Setenv("URL_BB_REGISTER_BOLETO", "http://localhost:4000/registrarBoleto")
 			os.Setenv("URL_BB_TOKEN", "http://localhost:4000/oauth/token")
@@ -84,6 +85,7 @@ func configFlags(devMode, mockMode, disableLog bool) {
 			os.Setenv("URL_CITI", "http://localhost:4000/citi/registrarBoleto")
 			os.Setenv("URL_SANTANDER_TICKET", "tls://localhost:4000/santander/get-ticket")
 			os.Setenv("URL_SANTANDER_REGISTER", "tls://localhost:4000/santander/register")
+			os.Setenv("URL_BRADESCO", "http://localhost:4000/bradesco/registrarBoleto")
 		}
 	}
 	config.Install(mockMode, devMode, disableLog)

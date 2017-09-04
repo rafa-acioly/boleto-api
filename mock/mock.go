@@ -13,9 +13,9 @@ func Run() {
 	router.POST("/registrarBoleto", registerBoletoBB)
 	router.POST("/caixa/registrarBoleto", registerBoletoCaixa)
 	router.POST("/citi/registrarBoleto", registerBoletoCiti)
-
 	router.POST("/santander/get-ticket", getTicket)
 	router.POST("/santander/register", registerBoletoSantander)
+	router.POST("/bradesco/registrarBoleto", registerBoletoBradesco)
 
 	router.Run(":4000")
 }
