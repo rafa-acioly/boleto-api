@@ -29,7 +29,6 @@ services:
      - URL_SANTANDER_TICKET=https://ymbdlb.santander.com.br/dl-ticket-services/TicketEndpointService
      - URL_SANTANDER_REGISTER=https://ymbcashhml.santander.com.br:443/ymbsrv/CobrancaEndpointService
      - URL_BRADESCO=https://homolog.meiosdepagamentobradesco.com.br/api/transacao
-
   mongodb:
         image: mongo:latest
         container_name: "mongodb"
