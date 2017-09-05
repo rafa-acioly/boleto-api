@@ -79,13 +79,13 @@ func configFlags(devMode, mockMode, disableLog bool) {
 		os.Setenv("URL_SANTANDER_REGISTER", "https://ymbcashhml.santander.com.br:443/ymbsrv/CobrancaEndpointService")
 		os.Setenv("URL_BRADESCO", "https://homolog.meiosdepagamentobradesco.com.br/api/transacao")
 		if mockMode {
-			os.Setenv("URL_BB_REGISTER_BOLETO", "http://localhost:4000/registrarBoleto")
-			os.Setenv("URL_BB_TOKEN", "http://localhost:4000/oauth/token")
-			os.Setenv("URL_CAIXA", "http://localhost:4000/caixa/registrarBoleto")
-			os.Setenv("URL_CITI", "http://localhost:4000/citi/registrarBoleto")
-			os.Setenv("URL_SANTANDER_TICKET", "tls://localhost:4000/santander/get-ticket")
-			os.Setenv("URL_SANTANDER_REGISTER", "tls://localhost:4000/santander/register")
-			os.Setenv("URL_BRADESCO", "http://localhost:4000/bradesco/registrarBoleto")
+			os.Setenv("URL_BB_REGISTER_BOLETO", "http://localhost:9091/registrarBoleto")
+			os.Setenv("URL_BB_TOKEN", "http://localhost:9091/oauth/token")
+			os.Setenv("URL_CAIXA", "http://localhost:9091/caixa/registrarBoleto")
+			os.Setenv("URL_CITI", "http://localhost:9091/citi/registrarBoleto")
+			os.Setenv("URL_SANTANDER_TICKET", "tls://localhost:9091/santander/get-ticket")
+			os.Setenv("URL_SANTANDER_REGISTER", "tls://localhost:9091/santander/register")
+			os.Setenv("URL_BRADESCO", "http://localhost:9091/bradesco/registrarBoleto")
 		}
 	}
 	config.Install(mockMode, devMode, disableLog)

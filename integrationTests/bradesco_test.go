@@ -14,7 +14,6 @@ func TestRegisterBoletoBradesco(t *testing.T) {
 	param := app.NewParams()
 	param.DevMode = true
 	param.DisableLog = true
-	param.HTTPOnly = true
 	param.MockMode = true
 	go app.Run(param)
 	Convey("Deve-se registrar um boleto no Bradesco", t, func() {
