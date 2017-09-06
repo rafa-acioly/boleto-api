@@ -3,11 +3,11 @@ package api
 import (
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"github.com/mundipagg/boleto-api/config"
 	"github.com/mundipagg/boleto-api/log"
 
 	"github.com/mundipagg/boleto-api/models"
-	gin "gopkg.in/gin-gonic/gin.v1"
 )
 
 //InstallRestAPI "instala" e sobe o servico de rest

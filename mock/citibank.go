@@ -4,7 +4,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	gin "gopkg.in/gin-gonic/gin.v1"
+	"github.com/gin-gonic/gin"
 )
 
 func registerBoletoCiti(c *gin.Context) {

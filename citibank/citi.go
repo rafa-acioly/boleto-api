@@ -7,6 +7,7 @@ import (
 	"github.com/PMoneda/flow"
 	"github.com/mundipagg/boleto-api/config"
 	"github.com/mundipagg/boleto-api/log"
+	"github.com/mundipagg/boleto-api/metrics"
 	"github.com/mundipagg/boleto-api/models"
 	"github.com/mundipagg/boleto-api/tmpl"
 	"github.com/mundipagg/boleto-api/util"
@@ -46,6 +47,7 @@ func (b bankCiti) Log() *log.Log {
 }
 
 func (b bankCiti) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoResponse, error) {
+	timing := metrics.GetTimingMetrics()
 	boleto.Title.OurNumber = calculateOurNumber(boleto)
 	r := flow.NewFlow()
 	serviceURL := config.Get().URLCiti
@@ -54,10 +56,16 @@ func (b bankCiti) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRes
 	bod := r.From("message://?source=inline", boleto, getRequestCiti(), tmpl.GetFuncMaps())
 	bod.To("logseq://?type=request&url="+serviceURL, b.log)
 	//TODO: change for tls flow connector (waiting for santander)
-	responseCiti, status, err := b.sendRequest(bod.GetBody().(string))
+	var responseCiti string
+	var status int
+	var err error
+	duration := util.Duration(func() {
+		responseCiti, status, err = b.sendRequest(bod.GetBody().(string))
+	})
 	if err != nil {
 		return models.BoletoResponse{}, err
 	}
+	timing.Push("citibank-register-boleto-online", duration.Seconds())
 	bod.To("set://?prop=header", map[string]string{"status": strconv.Itoa(status)})
 	bod.To("set://?prop=body", responseCiti)
 	ch := bod.Choice()

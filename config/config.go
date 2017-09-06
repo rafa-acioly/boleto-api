@@ -8,6 +8,8 @@ import (
 
 //Config é a estrutura que tem todas as configurações da aplicação
 type Config struct {
+	InfluxDBHost               string
+	InfluxDBPort               string
 	APIPort                    string
 	Version                    string
 	SEQUrl                     string
@@ -35,8 +37,7 @@ type Config struct {
 	CertBoletoPathCa           string
 	URLTicketSantander         string
 	URLRegisterBoletoSantander string
-	URLBradesco		   		   string
-
+	URLBradesco                string
 }
 
 var cnf Config
@@ -77,7 +78,9 @@ func Install(mockMode, devMode, disableLog bool) {
 		CertBoletoPathCa:           os.Getenv("CERT_BOLETO_CA"),
 		URLTicketSantander:         os.Getenv("URL_SANTANDER_TICKET"),
 		URLRegisterBoletoSantander: os.Getenv("URL_SANTANDER_REGISTER"),
-		URLBradesco: 			    os.Getenv("URL_BRADESCO"),
+		URLBradesco:                os.Getenv("URL_BRADESCO"),
+		InfluxDBHost:               os.Getenv("INFLUXDB_HOST"),
+		InfluxDBPort:               os.Getenv("INFLUXDB_PORT"),
 	}
 }
 

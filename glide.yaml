@@ -2,8 +2,6 @@ package: github.com/mundipagg/boleto-api
 import:
 - package: github.com/beevik/etree
   version: v0
-- package: gopkg.in/gin-gonic/gin.v1
-  version: v1.1.4
 - package: github.com/mundipagg/goseq
   version: v0.2.0
 - package: github.com/Pallinder/go-randomdata
@@ -19,3 +17,9 @@ import:
   version: v4.2.0
 - package: github.com/PMoneda/flow
   version: ^v0.2.2
+- package: github.com/PMoneda/telemetry
+- package: github.com/gin-contrib/sse
+- package: github.com/influxdata/influxdb
+  version: v1.3.5
+  subpackages:
+  - client/v2

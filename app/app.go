@@ -5,10 +5,10 @@ import (
 	"os"
 
 	"github.com/PMoneda/flow"
-
 	"github.com/mundipagg/boleto-api/api"
 	"github.com/mundipagg/boleto-api/config"
 	"github.com/mundipagg/boleto-api/log"
+	"github.com/mundipagg/boleto-api/metrics"
 	"github.com/mundipagg/boleto-api/mock"
 	"github.com/mundipagg/boleto-api/models"
 	"github.com/mundipagg/boleto-api/robot"
@@ -35,6 +35,7 @@ func Run(params *Params) {
 	if config.Get().MockMode {
 		go mock.Run()
 	}
+	metrics.Install()
 	installLog()
 	api.InstallRestAPI()
 
@@ -56,6 +57,8 @@ func installflowConnectors() {
 
 func configFlags(devMode, mockMode, disableLog bool) {
 	if devMode {
+		os.Setenv("INFLUXDB_HOST", "http://localhost")
+		os.Setenv("INFLUXDB_PORT", "8086")
 		os.Setenv("API_PORT", "3000")
 		os.Setenv("API_VERSION", "0.0.1")
 		os.Setenv("ENVIROMENT", "Development")
