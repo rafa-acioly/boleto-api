@@ -31,6 +31,8 @@ services:
      - URL_SANTANDER_TICKET=#{CONF_URL_SANTANDER_TICKET}#
      - URL_SANTANDER_REGISTER=#{CONF_URL_SANTANDER_REGISTER}#
      - URL_BRADESCO=#{CONF_URL_BRADESCO}#
+  links:
+     - influxdb
   mongodb:
     image: mongo:latest
     container_name: "mongodb"

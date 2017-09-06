@@ -1,6 +1,7 @@
 package influxdb
 
 import (
+	"fmt"
 	"strings"
 	"sync"
 	"time"
@@ -34,7 +35,7 @@ func New(host, port string) *InfluxDB {
 	db.Port = port
 	db.Precision = "s"
 	db.Buffer = make(map[string]client.BatchPoints)
-	db.Connect()
+	fmt.Println(db.Connect())
 	return db
 }
 
@@ -62,7 +63,11 @@ func (db *InfluxDB) Flush(tag string) (err error) {
 	meta := db.parseTag(tag)
 	bp, found := db.Buffer[meta.DB+"."+meta.Retention]
 	if found {
-		err = db.Client.Write(bp)
+		if db.Client != nil {
+			err = db.Client.Write(bp)
+		} else {
+			fmt.Println("not flush")
+		}
 	}
 	return
 }
