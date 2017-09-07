@@ -52,7 +52,7 @@ const registerBoletoCiti = `
          <TitlAmt>{{.Title.AmountInCents}}</TitlAmt>
          <TitlBarCdInd>0</TitlBarCdInd>
          <TitlCcyCd>09</TitlCcyCd>
-         <TitlCiaCdId>{{.Title.DocumentNumber}}</TitlCiaCdId>
+         <TitlCiaCdId>{{padLeft .Title.DocumentNumber "0" 10}}</TitlCiaCdId>
          <TitlDueDt>{{enDate .Title.ExpireDateTime "-"}}</TitlDueDt>
          <TitlInstrNmDtExec>0</TitlInstrNmDtExec>
          <TitlInstrProtInd> </TitlInstrProtInd>

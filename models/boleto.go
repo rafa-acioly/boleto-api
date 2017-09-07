@@ -44,6 +44,14 @@ type Link struct {
 	Method string `json:"method,omitempty"`
 }
 
+type ConfigBank struct {
+	Logo         string
+	EspecieDoc   string
+	Aceite       string
+	Quantidade   string
+	ValorCotacao string
+}
+
 // BoletoView contem as informações que serão preenchidas no boleto
 type BoletoView struct {
 	ID            string
@@ -59,6 +67,7 @@ type BoletoView struct {
 	Barcode       string        `json:"barcode,omitempty"`
 	Barcode64     string        `json:"barcode64,omitempty"`
 	Links         []Link        `json:"links,omitempty"`
+	ConfigBank    ConfigBank    `json:"configBank,omitempty"`
 }
 
 // NewBoletoView cria um novo objeto view de boleto a partir de um boleto request, codigo de barras e linha digitavel
@@ -76,6 +85,7 @@ func NewBoletoView(boleto BoletoRequest, response BoletoResponse) BoletoView {
 		OurNumber:     response.OurNumber,
 		BankNumber:    boleto.BankNumber.GetBoletoBankNumberAndDigit(),
 		CreateDate:    time.Now(),
+		ConfigBank:    GetConfig(boleto.BankNumber),
 	}
 	switch boleto.BankNumber {
 	case Caixa:
@@ -90,15 +100,8 @@ func NewBoletoView(boleto BoletoRequest, response BoletoResponse) BoletoView {
 
 //EncodeURL tranforma o boleto view na forma que será escrito na url
 func (b *BoletoView) EncodeURL(format string) string {
-	var _url string
-	switch b.BankID {
-	case Citibank:
-		citiURL := config.Get().URLCitiBoleto
-		query := "?seuNumero=%s&cpfSacado=%s&cpfCedente=%s"
-		_url = citiURL + fmt.Sprintf(query, b.Boleto.Title.DocumentNumber, b.Boleto.Buyer.Document.Number, b.Boleto.Recipient.Document.Number)
-	default:
-		_url = fmt.Sprintf("%s?fmt=%s&id=%s", config.Get().AppURL, format, b.ID)
-	}
+	_url := fmt.Sprintf("%s?fmt=%s&id=%s", config.Get().AppURL, format, b.ID)
+
 	return _url
 }
 
@@ -208,4 +211,29 @@ func BoletoErrorConector(e *flow.ExchangeMessage, u flow.URI, params ...interfac
 	resp.StatusCode = st
 	e.SetBody(resp)
 	return nil
+}
+
+func GetConfig(number BankNumber) ConfigBank {
+	switch number {
+	case BancoDoBrasil:
+		return configBB()
+	case Santander:
+		return configSantander()
+	case Citibank:
+		return configCiti()
+	default:
+		return ConfigBank{}
+	}
+}
+
+func configCiti() ConfigBank {
+	return ConfigBank{Logo: LogoCiti, EspecieDoc: "DMI", Aceite: "N", Quantidade: "", ValorCotacao: ""}
+}
+
+func configBB() ConfigBank {
+	return ConfigBank{Logo: LogoBB, EspecieDoc: "DM", Aceite: "N", Quantidade: "N", ValorCotacao: ""}
+}
+
+func configSantander() ConfigBank {
+	return ConfigBank{Logo: LogoSantander, EspecieDoc: "DM", Aceite: "N", Quantidade: "N", ValorCotacao: ""}
 }

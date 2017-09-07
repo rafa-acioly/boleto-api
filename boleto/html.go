@@ -9,7 +9,7 @@ import (
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/twooffive"
 
-	"image/jpeg"
+	"image/png"
 
 	"github.com/mundipagg/boleto-api/models"
 	"github.com/mundipagg/boleto-api/tmpl"
@@ -41,7 +41,7 @@ const templateBoleto = `
         .document {
             margin: auto auto;
             width: 216mm;
-            height: 108mm;
+            height: 87mm;
         }
 
         .headerBtn {
@@ -175,7 +175,11 @@ const templateBoleto = `
 
 	<hr/>
 	{{template "boletoForm" .}}
-    </div>	
+	<div class="left">
+		<img style="margin-left:5mm;" src="data:image/png;base64,{{.Barcode64}}" alt="">
+		<br/>
+		</div>
+    </div>
 </body>
 
 </html>
@@ -228,7 +232,7 @@ const boletoForm = `
                     <span class="title">Agência/Código Beneficiário</span>
                     <br/>
                     <br/>
-                    <p class="content right">{{.Boleto.Agreement.Agency}}/{{.Boleto.Agreement.Account}}-{{.Boleto.Agreement.AccountDigit}}</p>
+                    <p class="content right">{{.Boleto.Agreement.Agency}}/{{.Boleto.Agreement.Account}}</p>
                 </td>
             </tr>
 
@@ -246,12 +250,12 @@ const boletoForm = `
                 <td width="10%">
                     <span class="title">Espécie doc</span>
                     <br/>
-                    <p class="content center">DM</p>
+                    <p class="content center">{{.ConfigBank.EspecieDoc}}</p>
                 </td>
                 <td width="8%">
                     <span class="title">Aceite</span>
                     <br/>
-                    <p class="content center">N</p>
+                    <p class="content center">{{.ConfigBank.Aceite}}</p>
                 </td>
                 <td>
                     <span class="title">Data Processamento</span>
@@ -262,7 +266,7 @@ const boletoForm = `
                     <span class="title">Carteira/Nosso Número</span>
                     <br/>
                     <br/>
-                    <p class="content right">17/{{.Boleto.Title.OurNumber}}</p>
+                    <p class="content right">{{.Boleto.Agreement.Wallet}}/{{.Boleto.Title.OurNumber}}</p>
                 </td>
             </tr>
 
@@ -275,7 +279,7 @@ const boletoForm = `
                 <td width="10%">
                     <span class="title">Carteira</span>
                     <br/>
-                    <p class="content center">17</p>
+                    <p class="content center">{{.Boleto.Agreement.Wallet}}</p>
                 </td>
                 <td width="10%">
                     <span class="title">Espécie</span>
@@ -285,12 +289,12 @@ const boletoForm = `
                 <td width="8%" colspan="2">
                     <span class="title">Quantidade</span>
                     <br/>
-                    <p class="content center">N</p>
+                    <p class="content center">{{.ConfigBank.Quantidade}}</p>
                 </td>
                 <td>
                     <span class="title">Valor</span>
                     <br/>
-                    <p class="content center">{{fmtNumber .Boleto.Title.AmountInCents}}</p>
+                    <p class="content center">{{.ConfigBank.ValorCotacao}}</p>
                 </td>
                 <td width="30%">
                     <span class="title">(=) Valor do Documento</span>
@@ -302,7 +306,7 @@ const boletoForm = `
             <tr>
                 <td colspan="6" rowspan="4">
                     <span class="title">Instruções de responsabilidade do BENEFICIÁRIO. Qualquer dúvida sobre este boleto contate o beneficiário.</span>
-                    <p class="content">{{.Boleto.Title.Instructions}}</p>
+                    <p class="content">{{unescapeHtmlString .Boleto.Title.Instructions}}</p>
                 </td>
             </tr>
             <tr>
@@ -348,10 +352,6 @@ const boletoForm = `
             </tr>
         </table>
 		<br/>
-		<div class="left">
-		<img style="margin-left:5mm;" src="data:image/jpg;base64,{{.Barcode64}}" alt="">
-		<br/>		
-		</div>
     </div>
 
 	{{end}}
@@ -360,30 +360,19 @@ const boletoForm = `
 //HTML renderiza HTML do boleto
 func HTML(boleto models.BoletoView, format string) string {
 	b := tmpl.New()
-	boleto.BankLogo = template.HTML(GetLogo(boleto.Boleto.BankNumber))
+
+	boleto.BankLogo = template.HTML(boleto.ConfigBank.Logo)
 	boleto.Format = format
 	bcode, _ := twooffive.Encode(boleto.Barcode, true)
 	orgBounds := bcode.Bounds()
 	orgWidth := orgBounds.Max.X - orgBounds.Min.X
 	img, _ := barcode.Scale(bcode, orgWidth, 50)
 	buf := new(bytes.Buffer)
-	err := jpeg.Encode(buf, img, nil)
+	err := png.Encode(buf, img)
 	boleto.Barcode64 = base64.StdEncoding.EncodeToString(buf.Bytes())
 	s, err := b.From(boleto).To(templateBoleto).Transform(boletoForm)
 	if err != nil {
 		fmt.Println(err)
 	}
 	return s
-}
-
-//Seleciona a logo do banco.
-func GetLogo(number models.BankNumber) string {
-	switch number {
-	case models.BancoDoBrasil:
-		return logoBB
-	case models.Santander:
-		return logoSantander
-	default:
-		return fmt.Sprintf("Banco %d não existe", number)
-	}
 }

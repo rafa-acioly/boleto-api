@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"fmt"
+
 	"github.com/PMoneda/flow"
 	"github.com/mundipagg/boleto-api/config"
 	"github.com/mundipagg/boleto-api/log"
@@ -31,7 +33,6 @@ func New() bankCiti {
 	b.validate.Push(validations.ValidateRecipientDocumentNumber)
 	b.validate.Push(citiValidateAgency)
 	b.validate.Push(citiValidateAccount)
-	b.validate.Push(citiValidateAccountDigit)
 	b.validate.Push(citiValidateWallet)
 	transp, err := util.BuildTLSTransport(config.Get().CertBoletoPathCrt, config.Get().CertBoletoPathKey, config.Get().CertBoletoPathCa)
 	if err != nil {
@@ -54,6 +55,7 @@ func (b bankCiti) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRes
 	from := getResponseCiti()
 	to := getAPIResponseCiti()
 	bod := r.From("message://?source=inline", boleto, getRequestCiti(), tmpl.GetFuncMaps())
+	fmt.Println(bod.GetBody())
 	bod.To("logseq://?type=request&url="+serviceURL, b.log)
 	//TODO: change for tls flow connector (waiting for santander)
 	var responseCiti string

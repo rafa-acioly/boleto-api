@@ -10,6 +10,8 @@ import (
 
 	"fmt"
 
+	"html"
+
 	"github.com/mundipagg/boleto-api/models"
 	"github.com/mundipagg/boleto-api/util"
 )
@@ -36,17 +38,24 @@ var funcMap = template.FuncMap{
 	"concat":                 concat,
 	"base64":                 base64,
 	"unscape":                unscape,
+	"unescapeHtmlString":     unescapeHtmlString,
 }
 
 func GetFuncMaps() template.FuncMap {
 	return funcMap
 }
 func padLeft(value, char string, total uint) string {
-	return util.PadLeft(value, char, total)
+	s := util.PadLeft(value, char, total)
+	return s
 }
 func unscape(s string) template.HTML {
 	return template.HTML(s)
 }
+
+func unescapeHtmlString(s string) template.HTML {
+	return template.HTML(html.UnescapeString(s))
+}
+
 func hasErrorTags(mapValues map[string]string, errorTags ...string) bool {
 	hasError := false
 	for _, v := range errorTags {
