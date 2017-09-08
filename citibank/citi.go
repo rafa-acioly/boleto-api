@@ -31,7 +31,6 @@ func New() bankCiti {
 	b.validate.Push(validations.ValidateRecipientDocumentNumber)
 	b.validate.Push(citiValidateAgency)
 	b.validate.Push(citiValidateAccount)
-	b.validate.Push(citiValidateAccountDigit)
 	b.validate.Push(citiValidateWallet)
 	transp, err := util.BuildTLSTransport(config.Get().CertBoletoPathCrt, config.Get().CertBoletoPathKey, config.Get().CertBoletoPathCa)
 	if err != nil {
