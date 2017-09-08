@@ -39,6 +39,7 @@ var funcMap = template.FuncMap{
 	"base64":                 base64,
 	"unscape":                unscape,
 	"unescapeHtmlString":     unescapeHtmlString,
+	"trimLeft":		  		  trimLeft,
 }
 
 func GetFuncMaps() template.FuncMap {
@@ -54,6 +55,10 @@ func unscape(s string) template.HTML {
 
 func unescapeHtmlString(s string) template.HTML {
 	return template.HTML(html.UnescapeString(s))
+}
+
+func trimLeft(s string, caract string) string {
+	return strings.TrimLeft(s, caract)
 }
 
 func hasErrorTags(mapValues map[string]string, errorTags ...string) bool {

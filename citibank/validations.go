@@ -3,6 +3,7 @@ package citibank
 import (
 	"errors"
 	"fmt"
+
 	"github.com/mundipagg/boleto-api/models"
 	"github.com/mundipagg/boleto-api/validations"
 )
@@ -24,7 +25,7 @@ func citiValidateAccount(b interface{}) error {
 	switch t := b.(type) {
 	case *models.BoletoRequest:
 		if len(t.Agreement.Account) != 10 {
-			return errors.New(fmt.Sprintf("A conta e dígito deve conter somente 10 digítos."))
+			return errors.New(fmt.Sprintf("A conta junto com o dígito devem conter somente 10 digítos."))
 		}
 		return nil
 	default:
