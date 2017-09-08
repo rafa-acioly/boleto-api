@@ -202,7 +202,7 @@ const boletoForm = `
                 <td width="70%" colspan="6">
                     <span class="title">Local de Pagamento</span>
                     <br/>
-                    <span class="text">ATÉ O VENCIMENTO EM QUALQUER BANCO OU CORRESPONDENTE NÃO BANCÁRIO, APÓS O VENCIMENTO, PAGUE EM QUALQUER BANCO OU CORRESPONDENTE NÃO BANCÁRIO</span>
+                    <span class="text">ATÉ O VENCIMENTO EM QUALQUER BANCO OU CORRESPONDENTE NÃO BANCÁRIO</span>
                 </td>
                 <td width="30%">
                     <span class="title">Data de Vencimento</span>
