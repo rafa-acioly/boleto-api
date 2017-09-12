@@ -18,6 +18,7 @@ import (
 
 var funcMap = template.FuncMap{
 	"today":                  today,
+	"todayCiti":              todayCiti,
 	"brdate":                 brDate,
 	"replace":                replace,
 	"docType":                docType,
@@ -39,7 +40,7 @@ var funcMap = template.FuncMap{
 	"base64":                 base64,
 	"unscape":                unscape,
 	"unescapeHtmlString":     unescapeHtmlString,
-	"trimLeft":		  		  trimLeft,
+	"trimLeft":               trimLeft,
 }
 
 func GetFuncMaps() template.FuncMap {
@@ -97,6 +98,13 @@ func toString(number uint) string {
 
 func today() time.Time {
 	return time.Now()
+}
+
+func todayCiti() time.Time {
+	z, _ := time.LoadLocation("America/New_York")
+	t := time.Now()
+	local := t.In(z)
+	return local
 }
 
 func fulldate(t time.Time) string {

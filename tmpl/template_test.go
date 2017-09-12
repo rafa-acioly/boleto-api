@@ -1,27 +1,12 @@
 package tmpl
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/mundipagg/boleto-api/models"
 
-	"time"
-
 	. "github.com/smartystreets/goconvey/convey"
 )
-
-func TestShouldTransformFromOriginToDestiny(t *testing.T) {
-	Convey("Deve-se transformar texto de origem para texto de destino", t, func() {
-		tmp := `Ola {{.Username}} {{replace (today | brdate) "/" "."}}`
-		b := New()
-		final, err := b.From(struct{ Username string }{"username"}).To(tmp).Transform()
-		So(err, ShouldBeNil)
-		date := time.Now().Format("02.01.2006")
-		s := fmt.Sprintf("Ola username %s", date)
-		So(final, ShouldEqual, s)
-	})
-}
 
 func TestShouldPadLeft(t *testing.T) {
 	Convey("O texto deve ter zeros a esqueda e até 5 caracteres", t, func() {
