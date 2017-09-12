@@ -58,7 +58,7 @@ const registerBoletoCiti = `
          <TitlInstrProtInd> </TitlInstrProtInd>
          <TitlInstrWrtOffInd> </TitlInstrWrtOffInd>
          <TitlIOFAmt>0</TitlIOFAmt>
-         <TitlIssDt>{{enDate today "-"}}</TitlIssDt>
+         <TitlIssDt>{{enDate todayCiti "-"}}</TitlIssDt>
          <TitlOurNb>{{padLeft (toString .Title.OurNumber) "0" 12}}</TitlOurNb>
          <TitlPortCd>1</TitlPortCd>
          <TitlRbtAmt>0</TitlRbtAmt>
