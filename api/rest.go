@@ -36,9 +36,11 @@ func checkError(c *gin.Context, err error, l *log.Log) bool {
 			c.JSON(http.StatusBadRequest, errResp)
 		case models.IHttpNotFound:
 			errResp.Errors.Append("MP404", v.Error())
+			l.Warn(errResp, v.Error())
 			c.JSON(http.StatusNotFound, errResp)
 		case models.IFormatError:
 			errResp.Errors.Append("MP400", v.Error())
+			l.Warn(errResp, v.Error())
 			c.JSON(http.StatusBadRequest, errResp)
 		case models.IServerError:
 			errResp.Errors.Append("MP500", "Erro interno")

@@ -67,7 +67,7 @@ func (b bankCiti) RegisterBoleto(boleto *models.BoletoRequest) (models.BoletoRes
 	timing.Push("citibank-register-boleto-online", duration.Seconds())
 	bod.To("set://?prop=header", map[string]string{"status": strconv.Itoa(status)})
 	bod.To("set://?prop=body", responseCiti)
-	bod.To("logseq://?type=request&url="+serviceURL, b.log)
+	bod.To("logseq://?type=response&url="+serviceURL, b.log)
 	ch := bod.Choice()
 	ch.When(flow.Header("status").IsEqualTo("200"))
 	ch.To("transform://?format=xml", from, to, tmpl.GetFuncMaps())

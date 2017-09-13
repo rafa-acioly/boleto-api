@@ -63,7 +63,9 @@ func ParseBoleto() gin.HandlerFunc {
 		l := log.CreateLog()
 		l.NossoNumero = boleto.Title.OurNumber
 		l.Operation = "RegisterBoleto"
-		l.Recipient = "BoletoApi"
+		l.Recipient = boleto.Recipient.Name
+		l.RequestKey = boleto.RequestKey
+		l.BankName = boleto.BankNumber.BankName()
 		l.Request(boleto, c.Request.URL.RequestURI(), util.HeaderToMap(c.Request.Header))
 		c.Set("boleto", boleto)
 		c.Next()

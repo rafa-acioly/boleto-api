@@ -18,12 +18,13 @@ import (
 
 // BoletoRequest entidade de entrada para o boleto
 type BoletoRequest struct {
-	Authentication Authentication
-	Agreement      Agreement
-	Title          Title
-	Recipient      Recipient
-	Buyer          Buyer
-	BankNumber     BankNumber
+	Authentication Authentication `json:"authentication"`
+	Agreement      Agreement      `json:"agreement"`
+	Title          Title          `json:"title"`
+	Recipient      Recipient      `json:"recipient"`
+	Buyer          Buyer          `json:"buyer"`
+	BankNumber     BankNumber     `json:"bankNumber"`
+	RequestKey     string         `json:"requestKey,omitempty"`
 }
 
 // BoletoResponse entidade de saída para o boleto

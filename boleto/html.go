@@ -240,7 +240,7 @@ const boletoForm = `
                 <td width="15%">
                     <span class="title">Data do Documento</span>
                     <br/>
-                    <p class="content center">{{today | brdate}}</p>
+                    <p class="content center">{{.Boleto.Title.CreateDate | brdate}}</p>
                 </td>
                 <td width="17%" colspan="2">
                     <span class="title">Num. do Documento</span>
@@ -260,7 +260,7 @@ const boletoForm = `
                 <td>
                     <span class="title">Data Processamento</span>
                     <br/>
-                    <p class="content center">{{today | brdate}}</p>
+                    <p class="content center">{{.Boleto.Title.CreateDate | brdate}}</p>
                 </td>
                 <td width="30%">
                     <span class="title">Carteira/Nosso Número</span>
