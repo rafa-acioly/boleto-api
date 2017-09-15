@@ -27,28 +27,28 @@ const registerBoletoCiti = `
             <CdClrSys>745</CdClrSys>
             <CdIspb>33479023</CdIspb>
             <CdtrId>{{.Authentication.Username}}</CdtrId>
-            <CdtrNm>{{.Recipient.Name}}</CdtrNm>
-            <CdtrTaxId>{{.Recipient.Document.Number}}</CdtrTaxId>
+            <CdtrNm>{{truncate .Recipient.Name 40}}</CdtrNm>
+            <CdtrTaxId>{{truncate .Recipient.Document.Number 14}}</CdtrTaxId>
             <CdtrTaxTp>J</CdtrTaxTp>
          </GrpBenf>
          <GrpClPgd>
-            <DbtrNm>{{.Buyer.Name}}</DbtrNm>
-            <DbtrTaxId>{{.Buyer.Document.Number}}</DbtrTaxId>
+            <DbtrNm>{{truncate .Buyer.Name 50}}</DbtrNm>
+            <DbtrTaxId>{{truncate .Buyer.Document.Number 14}}</DbtrTaxId>
 			{{if (eq .Buyer.Document.Type "CPF")}}
             	<DbtrTaxTp>F</DbtrTaxTp>
 			{{else}}
             	<DbtrTaxTp>J</DbtrTaxTp>
 			{{end}}
             <GrpClPgdAdr>
-               <DbtrAdrTp>{{.Buyer.Address.Street}} {{.Buyer.Address.Number}} {{.Buyer.Address.Complement}}</DbtrAdrTp>
-               <DbtrCtrySubDvsn>{{.Buyer.Address.StateCode}}</DbtrCtrySubDvsn>
-               <DbtrPstCd>{{.Buyer.Address.ZipCode}}</DbtrPstCd>
-               <DbtrTwnNm>{{.Buyer.Address.City}}</DbtrTwnNm>
+               <DbtrAdrTp>{{truncate (joinSpace .Buyer.Address.Street .Buyer.Address.Number .Buyer.Address.Complement) 40}}</DbtrAdrTp>
+               <DbtrCtrySubDvsn>{{truncate .Buyer.Address.StateCode 2}}</DbtrCtrySubDvsn>
+               <DbtrPstCd>{{truncate .Buyer.Address.ZipCode 8}}</DbtrPstCd>
+               <DbtrTwnNm>{{truncate .Buyer.Address.City 15}}</DbtrTwnNm>
             </GrpClPgdAdr>
          </GrpClPgd>
          <CdOccTp>01</CdOccTp>
          <DbtrGrntNm> </DbtrGrntNm>
-         <DbtrMsg>{{.Title.Instructions}}</DbtrMsg>
+         <DbtrMsg>{{truncate .Title.Instructions 40}}</DbtrMsg>
          <TitlAmt>{{.Title.AmountInCents}}</TitlAmt>
          <TitlBarCdInd>0</TitlBarCdInd>
          <TitlCcyCd>09</TitlCcyCd>

@@ -31,6 +31,7 @@ var funcMap = template.FuncMap{
 	"fmtDoc":                 fmtDoc,
 	"truncate":               truncateString,
 	"fmtNumber":              fmtNumber,
+	"joinSpace":              joinSpace,
 	"brDateWithoutDelimiter": brDateWithoutDelimiter,
 	"enDateWithoutDelimiter": enDateWithoutDelimiter,
 	"fullDate":               fulldate,
@@ -69,6 +70,10 @@ func truncateString(str string, num int) string {
 		bnoden = str[0:num]
 	}
 	return bnoden
+}
+
+func joinSpace(str ...string) string {
+	return strings.Join(str, " ")
 }
 
 func hasErrorTags(mapValues map[string]string, errorTags ...string) bool {
