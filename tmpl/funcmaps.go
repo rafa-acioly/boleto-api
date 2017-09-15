@@ -97,14 +97,11 @@ func toString(number uint) string {
 }
 
 func today() time.Time {
-	return time.Now()
+	return util.BrNow()
 }
 
 func todayCiti() time.Time {
-	z, _ := time.LoadLocation("America/New_York")
-	t := time.Now()
-	local := t.In(z)
-	return local
+	return util.NycNow()
 }
 
 func fulldate(t time.Time) string {
