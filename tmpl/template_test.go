@@ -28,6 +28,15 @@ func TestFormatDigitableLine(t *testing.T) {
 	})
 }
 
+func TestTruncate(t *testing.T) {
+	Convey("Deve-se truncar um string", t, func() {
+		s := "00000000000000000000"
+		So(truncateString(s, 5), ShouldEqual, "00000")
+		So(truncateString(s, 50), ShouldEqual, "00000000000000000000")
+		So(truncateString("", 50), ShouldEqual, "")
+	})
+}
+
 func TestFormatCNPJ(t *testing.T) {
 	Convey("O CNPJ deve ser formatado corretamente", t, func() {
 		s := "01000000000100"

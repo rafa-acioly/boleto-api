@@ -29,6 +29,7 @@ var funcMap = template.FuncMap{
 	"fmtCNPJ":                fmtCNPJ,
 	"fmtCPF":                 fmtCPF,
 	"fmtDoc":                 fmtDoc,
+	"truncate":               truncateString,
 	"fmtNumber":              fmtNumber,
 	"brDateWithoutDelimiter": brDateWithoutDelimiter,
 	"enDateWithoutDelimiter": enDateWithoutDelimiter,
@@ -60,6 +61,14 @@ func unescapeHtmlString(s string) template.HTML {
 
 func trimLeft(s string, caract string) string {
 	return strings.TrimLeft(s, caract)
+}
+
+func truncateString(str string, num int) string {
+	bnoden := str
+	if len(str) > num {
+		bnoden = str[0:num]
+	}
+	return bnoden
 }
 
 func hasErrorTags(mapValues map[string]string, errorTags ...string) bool {
