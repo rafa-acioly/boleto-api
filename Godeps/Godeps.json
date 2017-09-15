@@ -120,6 +120,11 @@
 			"Rev": "77f18212c9c7edc9bd6a33d383a7b545ce62f064"
 		},
 		{
+			"ImportPath": "github.com/kennygrant/sanitize",
+			"Comment": "v1.2-3-gb38f6c6",
+			"Rev": "b38f6c674c896b4e27dcd769332a50700450dec9"
+		},
+		{
 			"ImportPath": "github.com/mattn/go-isatty",
 			"Comment": "v0.0.2",
 			"Rev": "fc9e8d8ef48496124e79ae0df75490096eccf6fe"

@@ -29,11 +29,27 @@ func TestFormatDigitableLine(t *testing.T) {
 }
 
 func TestTruncate(t *testing.T) {
-	Convey("Deve-se truncar um string", t, func() {
+	Convey("Deve-se truncar uma string", t, func() {
 		s := "00000000000000000000"
 		So(truncateString(s, 5), ShouldEqual, "00000")
 		So(truncateString(s, 50), ShouldEqual, "00000000000000000000")
 		So(truncateString("", 50), ShouldEqual, "")
+	})
+}
+
+func TestClearString(t *testing.T) {
+	Convey("Deve-se limpar uma string", t, func() {
+		So(clearString("óláçñê"), ShouldEqual, "olacne")
+		So(clearString("ola"), ShouldEqual, "ola")
+		So(clearString(""), ShouldEqual, "")
+		So(clearString("Jardim Novo Cambuí "), ShouldEqual, "Jardim Novo Cambui")
+		So(clearString("Jardim Novo Cambuí�"), ShouldEqual, "Jardim Novo Cambui")
+	})
+}
+
+func TestJoinStringSpace(t *testing.T) {
+	Convey("Deve-se fazer um join em uma string com espaços", t, func() {
+		So(joinSpace("a", "b", "c"), ShouldEqual, "a b c")
 	})
 }
 

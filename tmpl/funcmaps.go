@@ -12,6 +12,7 @@ import (
 
 	"html"
 
+	"github.com/kennygrant/sanitize"
 	"github.com/mundipagg/boleto-api/models"
 	"github.com/mundipagg/boleto-api/util"
 )
@@ -24,6 +25,7 @@ var funcMap = template.FuncMap{
 	"docType":                docType,
 	"trim":                   trim,
 	"padLeft":                padLeft,
+	"clearString":            clearString,
 	"toString":               toString,
 	"fmtDigitableLine":       fmtDigitableLine,
 	"fmtCNPJ":                fmtCNPJ,
@@ -31,6 +33,7 @@ var funcMap = template.FuncMap{
 	"fmtDoc":                 fmtDoc,
 	"truncate":               truncateString,
 	"fmtNumber":              fmtNumber,
+	"joinSpace":              joinSpace,
 	"brDateWithoutDelimiter": brDateWithoutDelimiter,
 	"enDateWithoutDelimiter": enDateWithoutDelimiter,
 	"fullDate":               fulldate,
@@ -69,6 +72,21 @@ func truncateString(str string, num int) string {
 		bnoden = str[0:num]
 	}
 	return bnoden
+}
+
+func clearString(str string) string {
+	s := sanitize.Accents(str)
+	var buffer bytes.Buffer
+	for _, ch := range s {
+		if ch <= 122 && ch >= 32 {
+			buffer.WriteString(string(ch))
+		}
+	}
+	return buffer.String()
+}
+
+func joinSpace(str ...string) string {
+	return strings.Join(str, " ")
 }
 
 func hasErrorTags(mapValues map[string]string, errorTags ...string) bool {
