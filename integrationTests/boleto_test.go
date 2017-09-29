@@ -228,6 +228,7 @@ func TestRegisterBoletoRequest(t *testing.T) {
 				assert(models.BancoDoBrasil)
 				assert(models.Caixa)
 				assert(models.Citibank)
+				assert(models.Santander)
 			})
 
 			Convey("O CPF deve ser válido", func() {
@@ -247,6 +248,7 @@ func TestRegisterBoletoRequest(t *testing.T) {
 				assert(models.BancoDoBrasil)
 				assert(models.Caixa)
 				assert(models.Citibank)
+				assert(models.Santander)
 
 			})
 

@@ -1,10 +1,11 @@
-package citibank
+package util
 
 import (
 	"strconv"
 )
 
-func mod11(valueSequence string) string {
+//Mod11 calculate Mod11 DV from string
+func Mod11(valueSequence string) string {
 	digit := 0
 	sum := 0
 	weight := 2

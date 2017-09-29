@@ -3,7 +3,7 @@ package boleto
 import (
 	"bytes"
 	"encoding/base64"
-	"fmt"
+	"errors"
 	"html/template"
 
 	"github.com/boombuler/barcode"
@@ -358,7 +358,10 @@ const boletoForm = `
 `
 
 //HTML renderiza HTML do boleto
-func HTML(boleto models.BoletoView, format string) string {
+func HTML(boleto models.BoletoView, format string) (string, error) {
+	if boleto.Barcode == "" {
+		return "", errors.New("boleto not found")
+	}
 	b := tmpl.New()
 
 	boleto.BankLogo = template.HTML(boleto.ConfigBank.Logo)
@@ -372,7 +375,7 @@ func HTML(boleto models.BoletoView, format string) string {
 	boleto.Barcode64 = base64.StdEncoding.EncodeToString(buf.Bytes())
 	s, err := b.From(boleto).To(templateBoleto).Transform(boletoForm)
 	if err != nil {
-		fmt.Println(err)
+		return "", err
 	}
-	return s
+	return s, nil
 }

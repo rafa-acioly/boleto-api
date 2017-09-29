@@ -13,6 +13,7 @@ import (
 	"html"
 
 	"github.com/kennygrant/sanitize"
+	"github.com/mundipagg/boleto-api/config"
 	"github.com/mundipagg/boleto-api/models"
 	"github.com/mundipagg/boleto-api/util"
 )
@@ -45,11 +46,40 @@ var funcMap = template.FuncMap{
 	"unscape":                unscape,
 	"unescapeHtmlString":     unescapeHtmlString,
 	"trimLeft":               trimLeft,
+	"santanderNSUPrefix":     santanderNSUPrefix,
+	"santanderEnv":           santanderEnv,
+	"formatSingleLine":       formatSingleLine,
+	"diff":                   diff,
+	"mod11dv":                calculateOurNumberMod11,
 }
 
 func GetFuncMaps() template.FuncMap {
 	return funcMap
 }
+
+func santanderNSUPrefix(number string) string {
+	if config.Get().DevMode {
+		return "TST" + number
+	}
+	return number
+}
+
+func diff(a string, b string) bool {
+	return a != b
+}
+
+func formatSingleLine(s string) string {
+	s1 := strings.Replace(s, "\r", "", -1)
+	return strings.Replace(s1, "\n", "; ", -1)
+}
+
+func santanderEnv() string {
+	if config.Get().DevMode {
+		return "T"
+	}
+	return "P"
+}
+
 func padLeft(value, char string, total uint) string {
 	s := util.PadLeft(value, char, total)
 	return s
@@ -220,4 +250,10 @@ func concat(s ...string) string {
 
 func base64(s string) string {
 	return util.Base64(s)
+}
+
+func calculateOurNumberMod11(number uint) uint {
+	ourNumberWithDigit := strconv.Itoa(int(number)) + util.Mod11(strconv.Itoa(int(number)))
+	value, _ := strconv.Atoi(ourNumberWithDigit)
+	return uint(value)
 }
