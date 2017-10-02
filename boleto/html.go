@@ -359,6 +359,7 @@ const boletoForm = `
 
 //HTML renderiza HTML do boleto
 func HTML(boleto models.BoletoView, format string) string {
+	fmt.Println(boleto)
 	b := tmpl.New()
 
 	boleto.BankLogo = template.HTML(boleto.ConfigBank.Logo)
