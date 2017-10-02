@@ -106,7 +106,10 @@ func getBoleto(c *gin.Context) {
 		fd.Close()
 	}
 
-	s := boleto.HTML(bleto, format)
+	s, err := boleto.HTML(bleto, format)
+	if checkError(c, err, log.CreateLog()) {
+		return
+	}
 	if format == "html" {
 		c.Header("Content-Type", "text/html; charset=utf-8")
 		c.Writer.WriteString(s)

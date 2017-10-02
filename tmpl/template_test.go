@@ -75,6 +75,13 @@ func TestFormatNumber(t *testing.T) {
 	})
 }
 
+func TestMod11OurNumber(t *testing.T) {
+	Convey("Deve-se calcular o mod11 do nosso número e retornar o digito à esquerda", t, func() {
+		So(calculateOurNumberMod11(12000000114), ShouldEqual, 120000001148)
+		So(calculateOurNumberMod11(8423657), ShouldEqual, 84236574)
+	})
+}
+
 func TestToFloatStr(t *testing.T) {
 	Convey("O valor em inteiro deve ser convertido para uma string com duas casas decimais separado por ponto (0.00)", t, func() {
 		So(toFloatStr(50332), ShouldEqual, "503.32")
